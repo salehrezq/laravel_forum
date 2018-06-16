@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Thread;
+use App\Reply;
 
 class User extends Authenticatable {
 
@@ -26,5 +28,13 @@ class User extends Authenticatable {
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function threads() {
+        return $this->hasMany(Thread::class);
+    }
+
+    public function replies() {
+        return $this->hasMany(Reply::class);
+    }
 
 }

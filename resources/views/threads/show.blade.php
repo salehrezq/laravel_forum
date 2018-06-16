@@ -5,18 +5,21 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{$thread->title}}</div>
+                <div class="card-header thread">{{$thread->title}}</div>
                 <div class="card-body">
                     {{$thread->body}}
                 </div>
+
             </div>
+            <hr>
         </div>
     </div>
-    @foreach ($thread->replies as $reply)
+
+    @foreach ($replies as $reply)
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card"  style="margin-top: 10px">
-                <div class="card-header card-header2">sdg</div>
+            <div class="card">
+                <div class="card-header">By:&nbsp;{{$reply->user->name}}&nbsp;&nbsp;|&nbsp;&nbsp;{{$reply->createdAtForHumans()}}</div>
                 <div class="card-body">
                     {{$reply->body}}
                 </div>
