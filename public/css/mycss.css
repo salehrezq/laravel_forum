@@ -20,3 +20,11 @@ and open the template in the editor.
     background-color: rgba(187, 156, 81, 0.41);
     font-weight: bold;
 }
+
+.threadby{
+    color: cornsilk;
+}
+
+.thread-reply-form{
+    padding: 10px;
+}

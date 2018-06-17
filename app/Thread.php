@@ -20,4 +20,11 @@ class Thread extends Model {
         return route('threads.show', ['thread' => $this->id]);
     }
 
+    public function addReply($reply) {
+        $this->replies()->create([
+            'user_id' => auth()->id(),
+            'body' => $reply
+        ]);
+    }
+
 }

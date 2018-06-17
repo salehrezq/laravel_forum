@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 
 class ThreadsController extends Controller {
 
+    public function __construct() {
+        return $this->middleware('auth')->except('index', 'show');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -44,7 +48,7 @@ class ThreadsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show(Thread $thread) {
-        $replies = Reply::where('thread_id', $thread->id)->with('user')->get();
+        $replies = Reply::where('thread_id', $thread->id)->latest()->with('user')->get();
         return view('threads.show', compact('thread', 'replies'));
     }
 
