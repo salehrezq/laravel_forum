@@ -17,12 +17,12 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card thread-reply-form">
-                <form method="POST" action="{{route('threads.reply', ['thread' => $thread->id])}}">
+                <form method="POST" action="{{route('thread.replies', ['thread' => $thread->id])}}">
                     @csrf
                     <div class="form-group">
                         <textarea rows="3" name="replyBody" class="form-control" placeholder="write a reply..."></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Post</button>
+                    <button type="submit" class="btn btn-primary">Reply</button>
                 </form>
             </div>
         </div>

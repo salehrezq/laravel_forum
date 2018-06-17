@@ -8,6 +8,8 @@ use App\User;
 
 class Thread extends Model {
 
+    protected $fillable = ['user_id', 'title', 'body'];
+
     public function user() {
         return $this->belongsTo(User::class);
     }
@@ -20,10 +22,18 @@ class Thread extends Model {
         return route('threads.show', ['thread' => $this->id]);
     }
 
-    public function addReply($reply) {
+    public function addReply($replyBody) {
         $this->replies()->create([
             'user_id' => auth()->id(),
-            'body' => $reply
+            'body' => $replyBody
+        ]);
+    }
+
+    public function addThread($threadTitle, $threadBody) {
+        return $this->create([
+                    'user_id' => auth()->id(),
+                    'title' => $threadTitle,
+                    'body' => $threadBody
         ]);
     }
 

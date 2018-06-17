@@ -38,10 +38,10 @@ class RepliesController extends Controller {
      */
     public function store(Thread $thread, Request $request) {
         $this->validate($request, [
-            'reply' => 'required'
+            'replyBody' => 'required'
         ]);
 
-        $thread->addReply($request->reply);
+        $thread->addReply($request->replyBody);
 
         return back();
     }

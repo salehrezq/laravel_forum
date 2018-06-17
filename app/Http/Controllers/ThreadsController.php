@@ -28,7 +28,7 @@ class ThreadsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        //
+        return view('threads.create');
     }
 
     /**
@@ -37,8 +37,14 @@ class ThreadsController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
-        //
+    public function store(Thread $thread, Request $request) {
+        $this->validate($request, [
+            'threadTitle' => 'required',
+            'threadBody' => 'required'
+        ]);
+
+        $savedThread = $thread->addThread($request->threadTitle, $request->threadBody);
+        return redirect($savedThread->path());
     }
 
     /**
