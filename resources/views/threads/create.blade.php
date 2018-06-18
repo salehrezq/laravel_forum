@@ -11,14 +11,14 @@
                 <form method="POST" action="{{route('threads.store')}}">
                     @csrf
                     <div class="form-group">
-                        <input type="text" name="threadTitle" class="form-control" placeholder="Title...">
+                        <input type="text" name="threadTitle" value="{{old('threadTitle')}}" class="form-control" placeholder="Title...">
                     </div>
                     <div class="form-group">
-                        <textarea rows="5" name="threadBody" class="form-control"></textarea>
+                        <textarea rows="5" name="threadBody" value="{{old('threadBody')}}" class="form-control"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="channels">Select a channel</label>
-                        <select id="channels" name="threadChannel" class="form-control">
+                        <select id="channels" name="channelId" value="{{old('channelId')}}" class="form-control">
                             @foreach ($channels as $channel)
                             <option value="{{$channel->id}}">{{$channel->name}}</option>
                             @endforeach

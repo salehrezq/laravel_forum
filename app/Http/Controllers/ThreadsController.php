@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Thread;
 use App\Reply;
 use App\Channel;
@@ -40,15 +42,20 @@ class ThreadsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Thread $thread, Request $request) {
-        $this->validate($request, [
-            'threadTitle' => 'required',
-            'threadBody' => 'required',
-            'threadChannel' => 'required'
+
+        $validator = Validator::make($request->all(), [
+                    'threadTitle' => 'required',
+                    'threadBody' => 'required',
+                    'channelId' => 'required|exists:channels,id'
         ]);
+
+        if ($validator->fails()) {
+            return back()->withInput();
+        }
 
         $savedThread = Thread::create([
                     'user_id' => auth()->id(),
-                    'channel_id' => $request->threadChannel,
+                    'channel_id' => $request->channelId,
                     'title' => $request->threadTitle,
                     'body' => $request->threadBody
         ]);

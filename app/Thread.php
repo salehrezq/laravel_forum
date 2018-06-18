@@ -16,7 +16,7 @@ class Thread extends Model {
     }
 
     public function channel() {
-        $this->belongsTo(Channel::class);
+        return $this->belongsTo(Channel::class);
     }
 
     public function replies() {
@@ -25,7 +25,7 @@ class Thread extends Model {
 
     public function path() {
         return route('threads.show', [
-            'channel' => Channel::find($this->channel_id)->name,
+            'channel' => $this->channel->slug,
             'thread' => $this->id
         ]);
     }
