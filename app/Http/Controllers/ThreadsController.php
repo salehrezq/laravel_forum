@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Thread;
 use App\Reply;
-use Illuminate\Http\Request;
+use App\Channel;
 
 class ThreadsController extends Controller {
 
@@ -28,7 +29,8 @@ class ThreadsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        return view('threads.create');
+        $channels = Channel::all();
+        return view('threads.create', compact('channels'));
     }
 
     /**
@@ -40,10 +42,17 @@ class ThreadsController extends Controller {
     public function store(Thread $thread, Request $request) {
         $this->validate($request, [
             'threadTitle' => 'required',
-            'threadBody' => 'required'
+            'threadBody' => 'required',
+            'threadChannel' => 'required'
         ]);
 
-        $savedThread = $thread->addThread($request->threadTitle, $request->threadBody);
+        $savedThread = Thread::create([
+                    'user_id' => auth()->id(),
+                    'channel_id' => $request->threadChannel,
+                    'title' => $request->threadTitle,
+                    'body' => $request->threadBody
+        ]);
+
         return redirect($savedThread->path());
     }
 
@@ -53,9 +62,9 @@ class ThreadsController extends Controller {
      * @param  \App\Thread  $thread
      * @return \Illuminate\Http\Response
      */
-    public function show(Thread $thread) {
+    public function show($channel, Thread $thread) {
         $replies = Reply::where('thread_id', $thread->id)->latest()->with('user')->get();
-        return view('threads.show', compact('thread', 'replies'));
+        return view('threads.show', compact('thread', 'replies', 'channel'));
     }
 
     /**

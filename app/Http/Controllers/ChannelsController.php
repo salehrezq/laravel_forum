@@ -2,15 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Reply;
-use App\Thread;
 use Illuminate\Http\Request;
 
-class RepliesController extends Controller {
-
-    public function __construct() {
-        return $this->middleware('auth')->except('index', 'show');
-    }
+class ChannelsController extends Controller {
 
     /**
      * Display a listing of the resource.
@@ -36,33 +30,27 @@ class RepliesController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($channel, Thread $thread, Request $request) {
-        $this->validate($request, [
-            'replyBody' => 'required'
-        ]);
-
-        $thread->addReply($request->replyBody);
-
-        return back();
+    public function store(Request $request) {
+        //
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Reply  $reply
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Reply $reply) {
+    public function show($id) {
         //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Reply  $reply
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Reply $reply) {
+    public function edit($id) {
         //
     }
 
@@ -70,20 +58,20 @@ class RepliesController extends Controller {
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Reply  $reply
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Reply $reply) {
+    public function update(Request $request, $id) {
         //
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Reply  $reply
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Reply $reply) {
+    public function destroy($id) {
         //
     }
 

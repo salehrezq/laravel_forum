@@ -16,6 +16,14 @@
                     <div class="form-group">
                         <textarea rows="5" name="threadBody" class="form-control"></textarea>
                     </div>
+                    <div class="form-group">
+                        <label for="channels">Select a channel</label>
+                        <select id="channels" name="threadChannel" class="form-control">
+                            @foreach ($channels as $channel)
+                            <option value="{{$channel->id}}">{{$channel->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     <button type="submit" class="btn btn-primary">Post</button>
                 </form>
             </div>

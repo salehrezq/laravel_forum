@@ -5,13 +5,18 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Reply;
 use App\User;
+use App\Channel;
 
 class Thread extends Model {
 
-    protected $fillable = ['user_id', 'title', 'body'];
+    protected $fillable = ['user_id', 'channel_id', 'title', 'body'];
 
     public function user() {
         return $this->belongsTo(User::class);
+    }
+
+    public function channel() {
+        $this->belongsTo(Channel::class);
     }
 
     public function replies() {
@@ -19,21 +24,16 @@ class Thread extends Model {
     }
 
     public function path() {
-        return route('threads.show', ['thread' => $this->id]);
+        return route('threads.show', [
+            'channel' => Channel::find($this->channel_id)->name,
+            'thread' => $this->id
+        ]);
     }
 
     public function addReply($replyBody) {
         $this->replies()->create([
             'user_id' => auth()->id(),
             'body' => $replyBody
-        ]);
-    }
-
-    public function addThread($threadTitle, $threadBody) {
-        return $this->create([
-                    'user_id' => auth()->id(),
-                    'title' => $threadTitle,
-                    'body' => $threadBody
         ]);
     }
 

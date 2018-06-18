@@ -22,6 +22,13 @@ $factory->define(App\User::class, function (Faker $faker) {
     ];
 });
 
+$factory->define(App\Channel::class, function (Faker $faker) {
+    return [
+        'name' => $faker->word,
+        'slug' => $faker->word,
+    ];
+});
+
 $factory->define(App\Thread::class, function (Faker $faker) {
     return [
         'user_id' => mt_rand(1, 20),
