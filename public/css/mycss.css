@@ -40,3 +40,13 @@ and open the template in the editor.
         with: 445px;
     }
 }
+
+.menu-channels-link{
+    padding: .3rem .9rem .3rem .0rem;
+    color: #191919;
+    font-size: 1rem;
+}
+
+.navbar-brand{
+    font-size: 1rem;
+}

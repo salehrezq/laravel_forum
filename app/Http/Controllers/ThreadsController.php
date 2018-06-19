@@ -20,8 +20,16 @@ class ThreadsController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
-        $threads = Thread::latest()->get();
+    public function index(channel $channelSlug = null) {
+
+        $threads = null;
+
+        if (isset($channelSlug)) {
+            $threads = $channelSlug->threads()->latest()->get();
+        } else {
+            $threads = Thread::latest()->get();
+        }
+
         return view('threads.index', compact('threads'));
     }
 
@@ -69,9 +77,9 @@ class ThreadsController extends Controller {
      * @param  \App\Thread  $thread
      * @return \Illuminate\Http\Response
      */
-    public function show($channel, Thread $thread) {
+    public function show($channelSlug, Thread $thread) {
         $replies = Reply::where('thread_id', $thread->id)->latest()->with('user')->get();
-        return view('threads.show', compact('thread', 'replies', 'channel'));
+        return view('threads.show', compact('thread', 'replies', 'channelSlug'));
     }
 
     /**

@@ -21,13 +21,21 @@
                     <a class="navbar-brand" href="{{ url('/') }}">
                         {{ config('app.name', 'Laravel') }}
                     </a>
-                    <a class="navbar-brand" href="{{ route('threads.index') }}">
-                        All threads
-                    </a>
+                    <a class="navbar-brand" href="{{ route('threads.index') }}">All threads</a>
+                    <a class="navbar-brand" href="{{route('threads.create')}}">Create New Thread</a>
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle menu-channels-link" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Channels
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            @foreach (App\Channel::all() as $channel)
+                            <a class="dropdown-item" href="{{route('threads.channel', ['channelSlug' => $channel->slug])}}">{{$channel->slug}}</a>
+                            @endforeach
+                        </div>
+                    </div>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <!-- Left Side Of Navbar -->
                         <ul class="navbar-nav mr-auto">

@@ -17,7 +17,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card thread-reply-form">
-                <form method="POST" action="{{route('thread.replies', ['channel' => $channel, 'thread' => $thread->id])}}">
+                <form method="POST" action="{{route('thread.replies', ['channelSlug' => $channelSlug, 'thread' => $thread->id])}}">
                     @csrf
                     <div class="form-group">
                         <textarea rows="3" name="replyBody" class="form-control" placeholder="write a reply..."></textarea>
