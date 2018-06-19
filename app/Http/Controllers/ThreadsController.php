@@ -39,8 +39,7 @@ class ThreadsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        $channels = Channel::all();
-        return view('threads.create', compact('channels'));
+        return view('threads.create');
     }
 
     /**

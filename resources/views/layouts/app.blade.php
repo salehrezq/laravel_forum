@@ -28,7 +28,7 @@
                             Channels
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            @foreach (App\Channel::all() as $channel)
+                            @foreach ($channels as $channel)
                             <a class="dropdown-item" href="{{route('threads.channel', ['channelSlug' => $channel->slug])}}">{{$channel->slug}}</a>
                             @endforeach
                         </div>

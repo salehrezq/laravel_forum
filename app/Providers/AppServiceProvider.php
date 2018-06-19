@@ -13,6 +13,9 @@ class AppServiceProvider extends ServiceProvider {
      * @return void
      */
     public function boot() {
+
+        view()->share('channels', \App\Channel::all());
+
         Schema::defaultStringLength(191);
     }
 
