@@ -50,3 +50,7 @@ and open the template in the editor.
 .navbar-brand{
     font-size: 1rem;
 }
+
+.errors-create-thread{
+    margin-top: 15px;
+}

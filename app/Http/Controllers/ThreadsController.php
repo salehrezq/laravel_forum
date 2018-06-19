@@ -58,7 +58,7 @@ class ThreadsController extends Controller {
         ]);
 
         if ($validator->fails()) {
-            return back()->withInput();
+            return back()->withInput()->withErrors($validator);
         }
 
         $savedThread = Thread::create([

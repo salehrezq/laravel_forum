@@ -14,18 +14,32 @@
                         <input type="text" name="threadTitle" value="{{old('threadTitle')}}" class="form-control" placeholder="Title...">
                     </div>
                     <div class="form-group">
-                        <textarea rows="5" name="threadBody" value="{{old('threadBody')}}" class="form-control"></textarea>
+                        <textarea rows="5" name="threadBody" class="form-control">{{old('threadBody')}}</textarea>
                     </div>
                     <div class="form-group">
                         <label for="channels">Select a channel</label>
                         <select id="channels" name="channelId" value="{{old('channelId')}}" class="form-control">
-                            @foreach ($channels as $channel)
-                            <option value="{{$channel->id}}">{{$channel->name}}</option>
+                            @foreach($channels as $channel)
+                            <option
+                                {{(intval(old('channelId')) === $channel->id)? 'selected' : ''}} 
+                                value="{{$channel->id}}">{{$channel->slug}}
+                            </option>
                             @endforeach
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Post</button>
                 </form>
+                <div class="errors-create-thread">
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
