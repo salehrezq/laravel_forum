@@ -14,6 +14,15 @@ class Thread extends Model {
 
     protected $fillable = ['user_id', 'channel_id', 'title', 'body'];
 
+    protected static function boot() {
+
+        parent::boot();
+
+        static::addGlobalScope('repliesCount', function ($builder) {
+            $builder->withCount('replies');
+        });
+    }
+
     public function user() {
         return $this->belongsTo(User::class);
     }
@@ -38,6 +47,10 @@ class Thread extends Model {
             'user_id' => auth()->id(),
             'body' => $replyBody
         ]);
+    }
+
+    public function createdAtForHumans() {
+        return $this->created_at->diffForHumans();
     }
 
 }
