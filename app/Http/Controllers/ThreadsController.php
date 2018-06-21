@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Helpers\ThreadsFilters;
 use App\Thread;
 use App\Reply;
 use App\Channel;
@@ -20,11 +21,14 @@ class ThreadsController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(channel $channelSlug = null) {
+    public function index(Channel $channelSlug = null) {
 
-        $threads = null;
+        // Add query string values as needed
+        $queryFilters = ['user_id'];
 
-        if (isset($channelSlug)) {
+        if ($this->isFiltered($queryFilters)) {
+            $threads = Thread::filter(new ThreadsFilters(request()))->get();
+        } elseif (isset($channelSlug)) {
             $threads = $channelSlug->threads()->latest()->get();
         } else {
             $threads = Thread::latest()->get();
@@ -48,7 +52,7 @@ class ThreadsController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Thread $thread, Request $request) {
+    public function store(Request $request) {
 
         $validator = Validator::make($request->all(), [
                     'threadTitle' => 'required',
@@ -76,9 +80,11 @@ class ThreadsController extends Controller {
      * @param  \App\Thread  $thread
      * @return \Illuminate\Http\Response
      */
-    public function show($channelSlug, Thread $thread) {
-        $replies = Reply::where('thread_id', $thread->id)->latest()->with('user')->get();
-        return view('threads.show', compact('thread', 'replies', 'channelSlug'));
+    public function show(Channel $channelSlug, Thread $thread) {
+        if ($thread->channel_id === $channelSlug->id) {
+            $replies = Reply::where('thread_id', $thread->id)->latest()->with('user')->get();
+            return view('threads.show', compact('thread', 'replies', 'channelSlug'));
+        }
     }
 
     /**
@@ -110,6 +116,18 @@ class ThreadsController extends Controller {
      */
     public function destroy(Thread $thread) {
         //
+    }
+
+    private function isFiltered($queryFilters) {
+
+        $requestQueryFilters = request()->all();
+
+        foreach ($queryFilters as $queryFilter) {
+            if (array_key_exists($queryFilter, $requestQueryFilters)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

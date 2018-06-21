@@ -21,7 +21,17 @@
                     <a class="navbar-brand" href="{{ url('/') }}">
                         {{ config('app.name', 'Laravel') }}
                     </a>
-                    <a class="navbar-brand" href="{{ route('threads.index') }}">All threads</a>
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle menu-channels-link" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Browse
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="{{ route('threads.index') }}">All threads</a>
+                            @if(auth()->check())
+                                <a class="dropdown-item" href="{{ route('threads.index', ['user_id' => auth()->user()->id])}}">My threads</a>
+                            @endif
+                        </div>
+                    </div>
                     <a class="navbar-brand" href="{{route('threads.create')}}">Create New Thread</a>
                     <div class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle menu-channels-link" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

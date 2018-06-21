@@ -6,8 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Reply;
 use App\User;
 use App\Channel;
+use App\Http\Controllers\Helpers\Filterable;
 
 class Thread extends Model {
+
+    use Filterable;
 
     protected $fillable = ['user_id', 'channel_id', 'title', 'body'];
 
