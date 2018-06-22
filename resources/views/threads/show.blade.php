@@ -49,7 +49,7 @@
         </div>
     </div>
     @endforeach
+   {{$replies->links()}}
 </div>
-
 @endsection
 

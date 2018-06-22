@@ -54,3 +54,8 @@ and open the template in the editor.
 .errors-create-thread{
     margin-top: 15px;
 }
+
+.pagination{
+    margin: 0 auto;
+    width: 50%;
+}
