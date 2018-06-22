@@ -12,7 +12,12 @@
                 <div class="card-body">
                     @foreach ($threads as $thread)
                     <article>
-                        <a href="{{$thread->path()}}">{{$thread->title}}</a>
+                        <div class="level">
+                            <h4 class="flex">
+                                <a href="{{$thread->path()}}">{{$thread->title}}</a>
+                            </h4>
+                            <span>{{$thread->replies_count}}&nbsp;{{str_plural('comment', $thread->replies_count)}}</span>
+                        </div>
                         <div class="body">{{$thread->body}}</div>
                         <hr>
                     </article>

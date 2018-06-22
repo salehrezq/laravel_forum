@@ -22,12 +22,11 @@ class ThreadsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(Channel $channelSlug = null) {
+    
+        $threadsFilters = new ThreadsFilters(request());
 
-        // Add query string values as needed
-        $queryFilters = ['user_id'];
-
-        if ($this->isFiltered($queryFilters)) {
-            $threads = Thread::filter(new ThreadsFilters(request()))->get();
+        if ($this->isFiltered($threadsFilters->queryfilters)) {
+            $threads = Thread::filter($threadsFilters)->get();
         } elseif (isset($channelSlug)) {
             $threads = $channelSlug->threads()->latest()->get();
         } else {

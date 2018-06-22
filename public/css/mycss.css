@@ -59,3 +59,12 @@ and open the template in the editor.
     margin: 0 auto;
     width: 50%;
 }
+
+.level{
+   display: flex;
+   align-items: center;
+}
+
+.flex{
+    flex: 1;
+}
