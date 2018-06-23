@@ -61,10 +61,27 @@ and open the template in the editor.
 }
 
 .level{
-   display: flex;
-   align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .flex{
     flex: 1;
+}
+
+span.likeReplyBtnToggle{
+    color: #007bff;
+    cursor:pointer;
+    text-decoration: none;
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects;
+}
+
+span.likeReplyBtnToggle:focus {
+    outline: -webkit-focus-ring-color auto 5px;
+}
+
+span.likeReplyBtnToggle:hover {
+    color: #0056b3;
+    text-decoration: underline;
 }

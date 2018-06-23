@@ -41,7 +41,18 @@
     <div class="row">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">By:&nbsp;<a href="#">{{$reply->user->name}}</a>&nbsp;&nbsp;|&nbsp;&nbsp;{{$reply->createdAtForHumans()}}</div>
+                <div class="card-header level">
+                    <div class="flex">
+                        By:&nbsp;<a href="#">{{$reply->user->name}}</a>&nbsp;&nbsp;|&nbsp;&nbsp;{{$reply->createdAtForHumans()}}
+                    </div>
+                    @if(auth()->check())
+                    <div class='likeArea'>
+                        <span class="likesCounter">{{$reply->usersLikes()->count()}}</span>
+                        <input type="hidden" class='replyId' value="{{$reply->id}}">
+                        <span class='likeReplyBtnToggle'>{{$reply->is_liked? 'Unlike' : 'Like'}}</span>
+                    </div>
+                    @endif
+                </div>
                 <div class="card-body">
                     {{$reply->body}}
                 </div>
@@ -49,7 +60,7 @@
         </div>
     </div>
     @endforeach
-   {{$replies->links()}}
+    {{$replies->links()}}
 </div>
 @endsection
 

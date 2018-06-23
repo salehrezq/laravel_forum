@@ -37,4 +37,12 @@ class User extends Authenticatable {
         return $this->hasMany(Reply::class);
     }
 
+    public function likedReplies() {
+        return $this->morphedByMany(Reply::class, 'likeable');
+    }
+
+    public function likeReplyToggle($reply) {
+        return $this->likedReplies()->toggle($reply);
+    }
+
 }
