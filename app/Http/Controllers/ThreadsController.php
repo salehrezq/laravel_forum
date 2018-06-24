@@ -22,7 +22,7 @@ class ThreadsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(Channel $channelSlug = null) {
-    
+
         $threadsFilters = new ThreadsFilters(request());
 
         if ($this->isFiltered($threadsFilters->queryfilters)) {
@@ -80,7 +80,7 @@ class ThreadsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show(Channel $channelSlug, Thread $thread) {
-        
+
         if ($thread->channel_id === $channelSlug->id) {
             $replies = Reply::where('thread_id', $thread->id)->latest()->with('user')->paginate(5);
             return view('threads.show', compact('thread', 'replies', 'channelSlug'));

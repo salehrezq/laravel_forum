@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Reply;
 
 class UsersController extends Controller {
 
@@ -78,6 +79,22 @@ class UsersController extends Controller {
      */
     public function destroy($id) {
         //
+    }
+
+    public function storeLikeReplyToggle() {
+
+        $replyId = request('reply_id');
+        auth()->user()->likeReplyToggle($replyId);
+
+        $reply = Reply::find($replyId);
+
+        $count = $reply->usersLikes()->count();
+        $was_it_a_like_or_unlick = $reply->is_liked; // Tell if it was like or unlick.
+
+        return response()->json([
+                    'was_it_like_or_unlick' => $was_it_a_like_or_unlick,
+                    'likescount' => $count
+        ]);
     }
 
 }

@@ -26,3 +26,6 @@ Route::post('/threads', 'ThreadsController@store')->name('threads.store');
 Route::get('/threads/{channelSlug}/{thread}', 'ThreadsController@show')->name('threads.show');
 
 Route::post('/threads/{channelSlug}/{thread}/reply', 'RepliesController@store')->name('thread.replies');
+
+Route::post('/users/likereply', 'UsersController@storeLikeReplyToggle')->name('user.like.reply.toggle');
+
