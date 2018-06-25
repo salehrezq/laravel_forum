@@ -89,7 +89,7 @@ class UsersController extends Controller {
         $reply = Reply::find($replyId);
 
         $count = $reply->usersLikes()->count();
-        $was_it_a_like_or_unlick = $reply->is_liked; // Tell if it was like or unlick.
+        $was_it_a_like_or_unlick = $reply->isAlreadyLiked(); // Tell if it was like or unlick.
 
         return response()->json([
                     'was_it_like_or_unlick' => $was_it_a_like_or_unlick,

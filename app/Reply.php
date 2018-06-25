@@ -11,16 +11,7 @@ class Reply extends Model {
 
     protected $fillable = ['body', 'user_id'];
 
-    protected $appends = ['is_liked'];
-
-    /**
-     * Eloquent special method called accessor.
-     * An instance of Reply can access it this way: $reply->is_liked
-     * @return boolean
-     */
-    public function getIsLikedAttribute() {
-        return $this->isAlreadyLiked();
-    }
+    protected $with = ['user']; // eager load the related user of the reply.
 
     /**
      * Check if the reply is liked by the authenticated user.

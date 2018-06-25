@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Helpers\ThreadsFilters;
@@ -82,7 +83,24 @@ class ThreadsController extends Controller {
     public function show(Channel $channelSlug, Thread $thread) {
 
         if ($thread->channel_id === $channelSlug->id) {
-            $replies = Reply::where('thread_id', $thread->id)->latest()->with('user')->paginate(5);
+
+            if (auth()->check()) { // user:
+                $user_id = auth()->id();
+                $replies = Reply::select('replies.*', DB::raw("(select count(*) "
+                                                . "from `users` inner join `likeables` "
+                                                . "on `users`.`id` = `likeables`.`user_id` "
+                                                . "where `replies`.`id` = `likeables`.`likeable_id` "
+                                                . "and `likeables`.`likeable_type` = 'App\\\Reply') "
+                                                . "as `users_likes_count`"),
+                                                DB::raw("(select exists(select * from `likeables` "
+                                                . "where `user_id` = $user_id and `likeable_id` = `replies`.`id`)) "
+                                                . "as `was_this_reply_liked_by_auth_user`"))
+                                ->from(DB::raw("`replies` where `thread_id` = $thread->id"))->latest()->paginate(5);
+
+            } else {//guest:
+                $replies = Reply::where('thread_id', $thread->id)->latest()->paginate(5);
+            }
+
             return view('threads.show', compact('thread', 'replies', 'channelSlug'));
         }
     }

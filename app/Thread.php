@@ -12,6 +12,8 @@ class Thread extends Model {
 
     use Filterable;
 
+    protected $with = ['channel'];
+
     protected $fillable = ['user_id', 'channel_id', 'title', 'body'];
 
     protected static function boot() {
@@ -19,7 +21,7 @@ class Thread extends Model {
         parent::boot();
 
         static::addGlobalScope('repliesCount', function ($builder) {
-            $builder->withCount('replies');
+            $builder->withCount('replies'); // access it like this: $thread->replies_count
         });
     }
 

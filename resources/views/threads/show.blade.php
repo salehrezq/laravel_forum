@@ -47,9 +47,9 @@
                     </div>
                     @if(auth()->check())
                     <div class='likeArea'>
-                        <span class="likesCounter">{{$reply->usersLikes()->count()}}</span>
+                        <span class="likesCounter">{{ $reply->users_likes_count }}</span>
                         <input type="hidden" class='replyId' value="{{$reply->id}}">
-                        <span class='likeReplyBtnToggle'>{{$reply->is_liked? 'Unlike' : 'Like'}}</span>
+                        <span class='likeReplyBtnToggle'>{{ $reply->was_this_reply_liked_by_auth_user? 'Unlike' : 'Like' }}</span>
                     </div>
                     @endif
                 </div>

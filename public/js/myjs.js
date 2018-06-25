@@ -1,6 +1,6 @@
 $(function () {
 
-    $('.likeArea').on('click', '.likeReplyBtnToggle', function (e) {
+    $('.likeArea').on('click', '.likeReplyBtnToggle', function () {
 
         $likeArea = $(this).parent();
         $id = $likeArea.find('.replyId').val();

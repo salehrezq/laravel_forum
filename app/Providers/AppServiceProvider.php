@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Cache;
 
 class AppServiceProvider extends ServiceProvider {
 
@@ -14,7 +15,11 @@ class AppServiceProvider extends ServiceProvider {
      */
     public function boot() {
 
-        view()->share('channels', \App\Channel::all());
+        $channeles = Cache::rememberForever('channels', function () {
+                    return \App\Channel::all();
+                });
+
+        view()->share('channels', $channeles);
 
         Schema::defaultStringLength(191);
     }
