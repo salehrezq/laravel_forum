@@ -49,7 +49,7 @@ class UsersController extends Controller {
      */
     public function show(User $user) {
         $user_profile = $user;
-        $user_threads = Thread::where('user_id', $user->id)->latest()->paginate(2);
+        $user_threads = Thread::where('user_id', $user->id)->latest()->paginate(10);
         return view('users.show', compact('user_profile', 'user_threads'));
     }
 

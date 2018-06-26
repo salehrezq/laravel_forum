@@ -27,12 +27,14 @@ class ThreadsController extends Controller {
         $threadsFilters = new ThreadsFilters(request());
 
         if ($this->isFiltered($threadsFilters->queryfilters)) {
-            $threads = Thread::filter($threadsFilters)->get();
+            $threads = Thread::filter($threadsFilters);
         } elseif (isset($channelSlug)) {
-            $threads = $channelSlug->threads()->latest()->get();
+            $threads = $channelSlug->threads()->latest();
         } else {
-            $threads = Thread::latest()->get();
+            $threads = Thread::latest();
         }
+
+        $threads = $threads->with('user')->get();
 
         return view('threads.index', compact('threads'));
     }
@@ -84,6 +86,8 @@ class ThreadsController extends Controller {
 
         if ($thread->channel_id === $channelSlug->id) {
 
+            $paginate = 5;
+
             if (auth()->check()) { // user:
                 $user_id = auth()->id();
                 $replies = Reply::select('replies.*', DB::raw("(select count(*) "
@@ -91,14 +95,12 @@ class ThreadsController extends Controller {
                                                 . "on `users`.`id` = `likeables`.`user_id` "
                                                 . "where `replies`.`id` = `likeables`.`likeable_id` "
                                                 . "and `likeables`.`likeable_type` = 'App\\\Reply') "
-                                                . "as `users_likes_count`"),
-                                                DB::raw("(select exists(select * from `likeables` "
+                                                . "as `users_likes_count`"), DB::raw("(select exists(select * from `likeables` "
                                                 . "where `user_id` = $user_id and `likeable_id` = `replies`.`id`)) "
                                                 . "as `was_this_reply_liked_by_auth_user`"))
-                                ->from(DB::raw("`replies` where `thread_id` = $thread->id"))->latest()->paginate(5);
-
+                                ->from(DB::raw("`replies` where `thread_id` = $thread->id"))->latest()->paginate($paginate);
             } else {//guest:
-                $replies = Reply::where('thread_id', $thread->id)->latest()->paginate(5);
+                $replies = Reply::where('thread_id', $thread->id)->latest()->paginate($paginate);
             }
 
             return view('threads.show', compact('thread', 'replies', 'channelSlug'));

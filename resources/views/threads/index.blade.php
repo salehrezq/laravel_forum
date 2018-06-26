@@ -5,26 +5,22 @@
     <div class="div-left">
         <a href="{{route('threads.create')}}">Create New Thread</a>
     </div>
+    @foreach ($threads as $thread)
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Threads</div>
+                <div class="card-header level">
+                    <div class="flex">
+                        <a href="{{$thread->path()}}">{{$thread->title}}</a> by <a href="{{route('users.show', ['user' => $thread->user->id])}}">{{$thread->user->name}}</a>
+                    </div>
+                    {{$thread->replies_count}}&nbsp;{{str_plural('comment', $thread->replies_count)}}&nbsp;&nbsp;|&nbsp;&nbsp;{{$thread->createdAtForHumans()}}
+                </div>
                 <div class="card-body">
-                    @foreach ($threads as $thread)
-                    <article>
-                        <div class="level">
-                            <h4 class="flex">
-                                <a href="{{$thread->path()}}">{{$thread->title}}</a>
-                            </h4>
-                            <span>{{$thread->replies_count}}&nbsp;{{str_plural('comment', $thread->replies_count)}}</span>
-                        </div>
-                        <div class="body">{{$thread->body}}</div>
-                        <hr>
-                    </article>
-                    @endforeach
+                    {{$thread->body}}
                 </div>
             </div>
         </div>
     </div>
+    @endforeach
 </div>
 @endsection
