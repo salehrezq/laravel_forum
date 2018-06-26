@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Reply;
+use App\Thread;
 
 class UsersController extends Controller {
 
@@ -47,7 +48,9 @@ class UsersController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show(User $user) {
-        return view('');
+        $user_profile = $user;
+        $user_threads = Thread::where('user_id', $user->id)->latest()->paginate(2);
+        return view('users.show', compact('user_profile', 'user_threads'));
     }
 
     /**

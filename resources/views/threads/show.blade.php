@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header thread">{{$thread->title}}&nbsp;&nbsp;<span class="threadby">by</span>&nbsp;&nbsp;{{$thread->user->name}}</div>
+                <div class="card-header thread">{{$thread->title}}&nbsp;&nbsp;<span class="threadby">by</span>&nbsp;&nbsp;<a href="{{route('users.show', ['user' => $thread->user->id])}}">{{$thread->user->name}}</a></div>
                 <div class="card-body">
                     {{$thread->body}}
                 </div>
@@ -43,7 +43,7 @@
             <div class="card">
                 <div class="card-header level">
                     <div class="flex">
-                        By:&nbsp;<a href="#">{{$reply->user->name}}</a>&nbsp;&nbsp;|&nbsp;&nbsp;{{$reply->createdAtForHumans()}}
+                        By:&nbsp;<a href="{{route('users.show', ['user' => $reply->user->id])}}">{{$reply->user->name}}</a>&nbsp;&nbsp;|&nbsp;&nbsp;{{$reply->createdAtForHumans()}}
                     </div>
                     @if(auth()->check())
                     <div class='likeArea'>
