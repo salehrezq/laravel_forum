@@ -27,7 +27,7 @@ $(function () {
         }).then((response) => {
             if (response.data.state === true) {
                 $($threadBox).fadeOut(1000);
-            }else{
+            } else {
                 console.log('thread cannot be deleted due to server issue.');
             }
         }).catch((error) => {

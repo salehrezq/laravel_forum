@@ -3,9 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Reply;
-use App\User;
-use App\Channel;
+use Illuminate\Support\Facades\Event;
+use App\Events\ModelActivityEvent;
 use App\Http\Controllers\Helpers\Filterable;
 
 class Thread extends Model {
@@ -13,7 +12,6 @@ class Thread extends Model {
     use Filterable;
 
     protected $with = ['channel'];
-
     protected $fillable = ['user_id', 'channel_id', 'title', 'body'];
 
     protected static function boot() {
@@ -22,6 +20,10 @@ class Thread extends Model {
 
         static::addGlobalScope('repliesCount', function ($builder) {
             $builder->withCount('replies'); // access it like this: $thread->replies_count
+        });
+
+        static::created(function($thread) {
+            event(new ModelActivityEvent($thread, 'created'));
         });
     }
 
@@ -35,6 +37,10 @@ class Thread extends Model {
 
     public function replies() {
         return $this->hasMany(Reply::class);
+    }
+
+    public function activity() {
+        return $this->morphMany(Activity::class, 'subject');
     }
 
     public function path() {
