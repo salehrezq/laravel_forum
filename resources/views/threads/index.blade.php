@@ -5,7 +5,7 @@
     <div class="div-left">
         <a href="{{route('threads.create')}}">Create New Thread</a>
     </div>
-    @foreach ($threads as $thread)
+    @forelse($threads as $thread)
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -21,6 +21,8 @@
             </div>
         </div>
     </div>
-    @endforeach
+    @empty
+    <p>There are no threads associated with this tag for the time being.</p>
+    @endforelse
 </div>
 @endsection

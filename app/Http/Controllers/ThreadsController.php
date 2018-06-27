@@ -134,8 +134,23 @@ class ThreadsController extends Controller {
      * @param  \App\Thread  $thread
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Thread $thread) {
-        //
+    public function destroy() {
+
+        $thread = Thread::find(request('thread_id'));
+
+        // $this->authorize('delete', $thread);
+
+        if (auth()->user()->can('delete', $thread)) {
+
+            $is_deleted = $thread->delete();
+
+            if ($is_deleted === true) {
+                $state = true;
+            } else {
+                $state = false;
+            }
+            return response()->json(['state' => $state]);
+        }
     }
 
     private function isFiltered($queryFilters) {

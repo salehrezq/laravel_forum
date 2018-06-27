@@ -34,13 +34,14 @@ $factory->define(App\Thread::class, function (Faker $faker) {
         'user_id' => mt_rand(1, 20),
         'title' => $faker->sentence,
         'body' => $faker->paragraph,
+        'channel_id' => mt_rand(1, 10),
     ];
 });
 
 $factory->define(App\Reply::class, function (Faker $faker) {
     return [
         'user_id' => mt_rand(1, 20),
-        'thread_id' => mt_rand(1, 20),
+        'thread_id' => mt_rand(1, 200),
         'body' => $faker->paragraph,
     ];
 });

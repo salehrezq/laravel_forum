@@ -14,4 +14,24 @@ $(function () {
             console.log(error);
         });
     });
+
+    $('.deleteThreadArea').on('click', '.deleteThreadBtn', function () {
+
+        $deleteThreadArea = $(this).parent();
+        $threadBox = $deleteThreadArea.closest('.thread');
+        $id = $deleteThreadArea.find('.threadId').val();
+
+        axios.post('/threads/delete', {
+            _method: 'delete',
+            thread_id: $id,
+        }).then((response) => {
+            if (response.data.state === true) {
+                $($threadBox).fadeOut(1000);
+            }else{
+                console.log('thread cannot be deleted due to server issue.');
+            }
+        }).catch((error) => {
+            console.log(error);
+        });
+    });
 });
