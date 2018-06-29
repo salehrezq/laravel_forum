@@ -11,7 +11,6 @@ class Thread extends Model {
 
     use Filterable;
 
-    protected $with = ['channel'];
     protected $fillable = ['user_id', 'channel_id', 'title', 'body'];
 
     protected static function boot() {

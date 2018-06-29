@@ -4,8 +4,6 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Thread;
-use App\Reply;
 
 class User extends Authenticatable {
 
@@ -43,6 +41,10 @@ class User extends Authenticatable {
 
     public function likeReplyToggle($reply) {
         return $this->likedReplies()->toggle($reply);
+    }
+
+    public function activities() {
+        return $this->hasMany(Activity::class);
     }
 
 }

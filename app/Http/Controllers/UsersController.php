@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Reply;
 use App\Thread;
+use App\Channel;
+use App\Activity;
 
 class UsersController extends Controller {
 
@@ -48,9 +50,12 @@ class UsersController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show(User $user) {
+
         $user_profile = $user;
-        $user_threads = Thread::where('user_id', $user->id)->latest()->paginate(10);
-        return view('users.show', compact('user_profile', 'user_threads'));
+       // $activities = $user->activities()->with('subject')->with('user')->latest()->paginate(10);
+        $activitiesDays = Activity::feed($user_profile);
+
+        return view('users.show', compact('user_profile', 'activitiesDays'));
     }
 
     /**

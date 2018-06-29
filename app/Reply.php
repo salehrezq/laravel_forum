@@ -9,7 +9,6 @@ use App\Events\ModelActivityEvent;
 class Reply extends Model {
 
     protected $fillable = ['body', 'user_id'];
-    protected $with = ['user']; // eager load the related user of the reply.
 
     protected static function boot() {
 

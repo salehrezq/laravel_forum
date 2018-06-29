@@ -34,7 +34,7 @@ class ThreadsController extends Controller {
             $threads = Thread::latest();
         }
 
-        $threads = $threads->with('user')->get();
+        $threads = $threads->with('user')->with('channel')->get();
 
         return view('threads.index', compact('threads'));
     }
