@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder {
 
@@ -10,7 +11,19 @@ class DatabaseSeeder extends Seeder {
      * @return void
      */
     public function run() {
-        // $this->call(UsersTableSeeder::class);
+ 
+        DB::table('activities')->truncate();
+        DB::table('replies')->truncate();
+        DB::table('threads')->delete();
+        DB::update("ALTER TABLE threads AUTO_INCREMENT = 1");
+
+        $user = auth()->loginUsingId(7);
+ 
+       factory('App\Thread', 10)->create(['user_id' => $user->id])->each(function ($thread) {
+           for ($i = 0; $i < 5; $i++) {
+               $thread->replies()->save(factory('App\Reply')->create(['thread_id' => $thread->id]));
+           }
+       });
     }
 
 }

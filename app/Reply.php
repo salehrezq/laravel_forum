@@ -12,6 +12,8 @@ class Reply extends Model {
 
     protected static function boot() {
 
+        parent::boot();
+
         static::created(function($reply) {
             event(new ModelActivityEvent($reply, 'created'));
         });
