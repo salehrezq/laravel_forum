@@ -73,7 +73,7 @@ class ThreadsController extends Controller {
                     'body' => $request->threadBody
         ]);
 
-        return redirect($savedThread->path());
+        return redirect($savedThread->path())->with('flash', 'Your thread has been published successfully.');
     }
 
     /**

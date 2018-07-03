@@ -85,3 +85,9 @@ span.btn-span:hover {
     color: #0056b3;
     text-decoration: underline;
 }
+
+.redirect-alert{
+    position: fixed;
+    right: 35px;
+    bottom: 57px;
+}

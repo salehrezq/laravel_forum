@@ -34,4 +34,6 @@ $(function () {
             console.log(error);
         });
     });
+    
+    $('.redirect-alert').fadeOut(5000);
 });

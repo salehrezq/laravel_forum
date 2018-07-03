@@ -43,7 +43,7 @@ class RepliesController extends Controller {
 
         $thread->addReply($request->replyBody);
 
-        return back();
+        return back()->with('flash', 'Your reply has been published successfully.');
     }
 
     /**

@@ -87,10 +87,15 @@
                 @yield('content')
             </main>
         </div>
+        @if(session('flash'))
+        <div class="alert alert-success redirect-alert" role="alert">
+            {{session('flash')}}
+        </div>
+        @endif
 
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}"></script>
-        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="{{asset('js/axios.js')}}"></script>
         <script src="{{asset('js/myjs.js')}}"></script>
     </body>
 </html>
