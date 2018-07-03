@@ -102,9 +102,12 @@ class ThreadsController extends Controller {
                                 ->where('thread_id', '=', $thread->id)
                                 ->latest()->paginate($paginate);
             } else {//guest:
-                $replies = Reply::where('thread_id', $thread->id)->latest()->paginate($paginate);
+                $replies = Reply::select('replies.user_id', 'replies.body', 'replies.created_at', 'users.name as user_name')
+                                ->join('users', 'replies.user_id', '=', 'users.id')
+                                ->where('replies.thread_id', $thread->id)
+                                ->latest()->paginate($paginate);
             }
-   
+
             return view('threads.show', compact('thread', 'replies', 'channelSlug'));
         }
     }
