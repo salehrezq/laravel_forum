@@ -29,13 +29,14 @@ class Thread extends Model {
         static::deleting(function ($thread) {
 
             // Get array of ids that will be used to delete the activities records
-            // that belong to replies of this deleted thread
+            // that belong to replies of this deleted thread.
+            // It also includes the likes activities on those replies (by design)
             $replies_ids = Activity::select('replies.id')
                             ->join('replies', 'activities.subject_id', '=', 'replies.id')
                             ->where('activities.subject_type', 'App\\Reply')
                             ->where('replies.thread_id', $thread->id)->get()->toArray();
 
-            // Do the deletion of activities records of replies of this deleted thread
+            // Do the deletion of activities records of replies and their associated likes of this deleted thread
             DB::table('activities')
                     ->whereIn('subject_id', array_values($replies_ids))
                     ->where('subject_type', 'App\\Reply')

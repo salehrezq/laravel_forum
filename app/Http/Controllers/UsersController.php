@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Events\ModelActivityEvent;
 use App\User;
 use App\Reply;
 use App\Thread;
@@ -52,7 +53,7 @@ class UsersController extends Controller {
     public function show(User $user) {
 
         $user_profile = $user;
-       // $activities = $user->activities()->with('subject')->with('user')->latest()->paginate(10);
+        // $activities = $user->activities()->with('subject')->with('user')->latest()->paginate(10);
         $activitiesDays = Activity::feed($user_profile);
 
         return view('users.show', compact('user_profile', 'activitiesDays'));
@@ -97,12 +98,25 @@ class UsersController extends Controller {
         $reply = Reply::find($replyId);
 
         $count = $reply->usersLikes()->count();
-        $was_it_a_like_or_unlick = $reply->isAlreadyLiked(); // Tell if it was like or unlick.
+        $was_it_like_or_unlike = $reply->isAlreadyLiked(); // Tell if it was like or unlick.
+
+        $this->toggleLikeActivity($reply, $was_it_like_or_unlike);
 
         return response()->json([
-                    'was_it_like_or_unlick' => $was_it_a_like_or_unlick,
-                    'likescount' => $count
+                    'was_it_like_or_unlike' => $was_it_like_or_unlike,
+                    'likesCount' => $count
         ]);
+    }
+
+    protected function toggleLikeActivity($reply, $was_it_like_or_unlike) {
+        if ($was_it_like_or_unlike) { // register activity of that like on reply.
+            event(new ModelActivityEvent($reply, 'liked'));
+        } else { // unregister activity due to removal of that like on reply.
+            Activity::where('subject_id', $reply->id)
+                    ->where('activity_type', 'liked')
+                    ->where('user_id', auth()->id())
+                    ->delete();
+        }
     }
 
 }
