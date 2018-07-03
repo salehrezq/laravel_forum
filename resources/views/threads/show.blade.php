@@ -43,7 +43,7 @@
             <div class="card">
                 <div class="card-header level">
                     <div class="flex">
-                        By:&nbsp;<a href="{{route('users.show', ['user' => $reply->user->id])}}">{{$reply->user->name}}</a>&nbsp;&nbsp;|&nbsp;&nbsp;{{$reply->createdAtForHumans()}}
+                        By:&nbsp;<a href="{{route('users.show', ['user' => $reply->user_id])}}">{{$reply->user_name}}</a>&nbsp;&nbsp;|&nbsp;&nbsp;{{$reply->createdAtForHumans()}}
                     </div>
                     @if(auth()->check())
                     <div class='likeArea'>

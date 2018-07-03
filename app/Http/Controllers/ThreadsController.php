@@ -90,7 +90,7 @@ class ThreadsController extends Controller {
 
             if (auth()->check()) { // user:
                 $user_id = auth()->id();
-                $replies = Reply::select('replies.*', DB::raw("(select count(*) "
+                $replies = Reply::select('replies.*', 'users.name as user_name', 'users.id as user_id', DB::raw("(select count(*) "
                                                 . "from `users` inner join `likeables` "
                                                 . "on `users`.`id` = `likeables`.`user_id` "
                                                 . "where `replies`.`id` = `likeables`.`likeable_id` "
@@ -98,11 +98,13 @@ class ThreadsController extends Controller {
                                                 . "as `users_likes_count`"), DB::raw("(select exists(select * from `likeables` "
                                                 . "where `user_id` = $user_id and `likeable_id` = `replies`.`id`)) "
                                                 . "as `was_this_reply_liked_by_auth_user`"))
-                                ->from(DB::raw("`replies` where `thread_id` = $thread->id"))->latest()->paginate($paginate);
+                                ->join('users', 'users.id', '=', 'replies.user_id')
+                                ->where('thread_id', '=', $thread->id)
+                                ->latest()->paginate($paginate);
             } else {//guest:
                 $replies = Reply::where('thread_id', $thread->id)->latest()->paginate($paginate);
             }
-
+   
             return view('threads.show', compact('thread', 'replies', 'channelSlug'));
         }
     }
