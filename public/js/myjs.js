@@ -1,5 +1,6 @@
 $(function () {
 
+    // resources\views\threads\show.blade.php
     $('.likeArea').on('click', '.likeReplyBtnToggle', function () {
 
         $likeArea = $(this).parent();
@@ -15,6 +16,7 @@ $(function () {
         });
     });
 
+    // resources\views\threads\index.blade.php
     $('.deleteThreadArea').on('click', '.deleteThreadBtn', function () {
 
         $deleteThreadArea = $(this).parent();
@@ -35,5 +37,6 @@ $(function () {
         });
     });
     
+    // resources\views\layouts\app.blade.php
     $('.redirect-alert').fadeOut(5000);
 });
