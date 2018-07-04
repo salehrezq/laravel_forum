@@ -14,13 +14,14 @@ class DatabaseSeeder extends Seeder {
  
         DB::table('activities')->truncate();
         DB::table('replies')->truncate();
+        DB::table('likeables')->truncate();
         DB::table('threads')->delete();
         DB::update("ALTER TABLE threads AUTO_INCREMENT = 1");
 
         $user = auth()->loginUsingId(7);
- 
-       factory('App\Thread', 10)->create(['user_id' => $user->id])->each(function ($thread) {
-           for ($i = 0; $i < 5; $i++) {
+
+       factory('App\Thread', 2)->create(['user_id' => $user->id])->each(function ($thread) {
+           for ($i = 0; $i < 1; $i++) {
                $thread->replies()->save(factory('App\Reply')->create(['thread_id' => $thread->id]));
            }
        });

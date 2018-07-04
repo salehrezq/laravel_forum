@@ -10,8 +10,10 @@
         @foreach ($activities as $itemActivity)
             @if($itemActivity->subject_type === 'App\\Thread')
                 @include('users.activities.created_thread')
-            @elseif($itemActivity->subject_type === 'App\\Reply')
+            @elseif(($itemActivity->subject_type === 'App\\Reply') && ($itemActivity->activity_type === 'created'))
                 @include('users.activities.created_reply')
+            @elseif(($itemActivity->subject_type === 'App\\Reply') && ($itemActivity->activity_type === 'liked'))
+                @include('users.activities.liked_reply')
             @endif
         @endforeach
     @endforeach
