@@ -20,8 +20,8 @@ class DatabaseSeeder extends Seeder {
 
         $user = auth()->loginUsingId(7);
 
-       factory('App\Thread', 2)->create(['user_id' => $user->id])->each(function ($thread) {
-           for ($i = 0; $i < 1; $i++) {
+       factory('App\Thread', 1)->create(['user_id' => $user->id])->each(function ($thread) {
+           for ($i = 0; $i < 100; $i++) {
                $thread->replies()->save(factory('App\Reply')->create(['thread_id' => $thread->id]));
            }
        });

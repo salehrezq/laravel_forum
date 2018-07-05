@@ -1,6 +1,6 @@
 $(function () {
 
-    // resources\views\threads\show.blade.php
+    // used in path: resources\views\threads\show.blade.php
     $('.likeArea').on('click', '.likeReplyBtnToggle', function () {
 
         $likeArea = $(this).parent();
@@ -16,7 +16,7 @@ $(function () {
         });
     });
 
-    // resources\views\threads\index.blade.php
+    // used in path: resources\views\threads\index.blade.php
     $('.deleteThreadArea').on('click', '.deleteThreadBtn', function () {
 
         $deleteThreadArea = $(this).parent();
@@ -36,7 +36,21 @@ $(function () {
             console.log(error);
         });
     });
-    
-    // resources\views\layouts\app.blade.php
+
+    // used in path: resources\views\layouts\app.blade.php
     $('.redirect-alert').fadeOut(5000);
+
+    // used in path: resources\views\threads\show.blade.php
+    var link = window.location.href;
+    // match '#reply-' followed by digit.
+    var intendedReply = link.match(/(?<name>#reply-)\d+/)[0];
+    // get the digit from matched hash above, to be used as the id
+    var replyId = intendedReply.match(/\d+/)[0];
+    $reply = $('#reply-body-' + replyId);
+    // do the background-color animated change.
+    $reply.css({"background-color": "#f4a83d", "transition": "background-color 1.8s ease"});
+    setTimeout(function () {
+        $reply.css("background-color", "#ffffff");
+    }, 2000);
+
 });

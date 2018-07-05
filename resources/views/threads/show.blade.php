@@ -39,7 +39,7 @@
     @endif
     @foreach ($replies as $reply)
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-8" id='reply-{{$reply->id}}'>
             <div class="card">
                 <div class="card-header level">
                     <div class="flex">
@@ -53,7 +53,7 @@
                     </div>
                     @endif
                 </div>
-                <div class="card-body">
+                <div class="card-body" id="reply-body-{{$reply->id}}">
                     {{$reply->body}}
                 </div>
             </div>
