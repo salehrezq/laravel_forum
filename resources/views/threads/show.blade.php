@@ -38,12 +38,18 @@
     <p class="text-center">Please&nbsp;<a href="{{route('login')}}">sign in</a>&nbsp;to participate in this thread.</p>
     @endif
     @foreach ($replies as $reply)
-    <div class="row">
+    <div class="row reply">
         <div class="col-md-8" id='reply-{{$reply->id}}'>
             <div class="card">
                 <div class="card-header level">
                     <div class="flex">
                         By:&nbsp;<a href="{{route('users.show', ['user' => $reply->user_id])}}">{{$reply->user_name}}</a>&nbsp;&nbsp;|&nbsp;&nbsp;{{$reply->createdAtForHumans()}}
+                        @can('delete', $reply)
+                            <div class='deleteReplyArea'>
+                            <input type="hidden" class='replyId' value="{{$reply->id}}">
+                            &nbsp;<span class='btn-span deleteReplyBtn'>Delete</span>
+                            </div>
+                        @endcan
                     </div>
                     @if(auth()->check())
                     <div class='likeArea'>

@@ -28,20 +28,30 @@ class Thread extends Model {
 
         static::deleting(function ($thread) {
 
-            // Get array of ids that will be used to delete the activities records
-            // that belong to replies of this deleted thread.
-            // It also includes the likes activities on those replies (by design)
-            $replies_ids = Activity::select('replies.id')
-                            ->join('replies', 'activities.subject_id', '=', 'replies.id')
-                            ->where('activities.subject_type', 'App\\Reply')
-                            ->where('replies.thread_id', $thread->id)->get()->toArray();
+             // Deletion of this thread also causes the database to delete
+             // its associated replies using a database cascade delete constraint
 
-            // Do the deletion of activities records of replies and their associated likes of this deleted thread
-            DB::table('activities')
-                    ->whereIn('subject_id', array_values($replies_ids))
+            // Get array of ids that will be used to delete the activities records
+            // which refer to the replies of this deleted thread.
+            // The likes activities on those replies will be deleted by design.
+            $replies_ids = array_values(Reply::where('thread_id', $thread->id)->get(['id'])->toArray());
+
+            // Do the deletion of the activities records
+            // which refer to the replies on this deleted thread
+            // and also the activities of the likes on those replies
+            Activity::whereIn('subject_id', $replies_ids)
                     ->where('subject_type', 'App\\Reply')
+                    ->where(function ($query) {
+                        $query->where('activity_type', 'created')
+                        ->orWhere('activity_type', 'liked');
+                    })->delete();
+
+            // Delete the likeables table records of the likes that belong to the deleted replies
+            DB::table('likeables')->whereIn('likeable_id', $replies_ids)
+                    ->where('likeable_type', 'App\\Reply')
                     ->delete();
 
+            // Delete the activity record that refers to this deleted thread
             $thread->activity()->delete();
         });
     }

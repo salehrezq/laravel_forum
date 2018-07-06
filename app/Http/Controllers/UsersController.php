@@ -93,19 +93,22 @@ class UsersController extends Controller {
     public function storeLikeReplyToggle() {
 
         $replyId = request('reply_id');
-        auth()->user()->likeReplyToggle($replyId);
-
         $reply = Reply::find($replyId);
 
-        $count = $reply->usersLikes()->count();
-        $was_it_like_or_unlike = $reply->isAlreadyLiked(); // Tell if it was like or unlick.
+        if ($reply !== null) {
 
-        $this->toggleLikeActivity($reply, $was_it_like_or_unlike);
+            auth()->user()->likeReplyToggle($replyId);
 
-        return response()->json([
-                    'was_it_like_or_unlike' => $was_it_like_or_unlike,
-                    'likesCount' => $count
-        ]);
+            $count = $reply->usersLikes()->count();
+            $was_it_like_or_unlike = $reply->isAlreadyLiked(); // Tell if it was like or unlick.
+
+            $this->toggleLikeActivity($reply, $was_it_like_or_unlike);
+
+            return response()->json([
+                        'was_it_like_or_unlike' => $was_it_like_or_unlike,
+                        'likesCount' => $count
+            ]);
+        }
     }
 
     protected function toggleLikeActivity($reply, $was_it_like_or_unlike) {

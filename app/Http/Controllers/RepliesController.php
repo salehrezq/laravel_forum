@@ -83,8 +83,26 @@ class RepliesController extends Controller {
      * @param  \App\Reply  $reply
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Reply $reply) {
-        //
+    public function destroy() {
+
+        $reply = Reply::find(request('reply_id'));
+
+        // $this->authorize('delete', $reply);
+
+        if ($reply !== null) {
+
+            if (auth()->user()->can('delete', $reply)) {
+
+                $is_deleted = $reply->delete();
+
+                if ($is_deleted === true) {
+                    $state = true;
+                } else {
+                    $state = false;
+                }
+                return response()->json(['state' => $state]);
+            }
+        }
     }
 
 }

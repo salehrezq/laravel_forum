@@ -17,6 +17,23 @@ class Reply extends Model {
         static::created(function($reply) {
             event(new ModelActivityEvent($reply, 'created'));
         });
+
+        static::deleted(function ($reply) {
+
+            // Do the deletion of the activity record that refers to this deleted reply
+            // and also the activities of the likes on this reply
+            Activity::where('subject_id', $reply->id)
+                    ->where('subject_type', 'App\\Reply')
+                    ->where(function ($query) {
+                        $query->where('activity_type', 'created')
+                        ->orWhere('activity_type', 'liked');
+                    })->delete();
+
+            DB::table('likeables')
+                    ->where('likeable_id', $reply->id)
+                    ->where('likeable_type', 'App\\Reply')
+                    ->delete();
+        });
     }
 
     /**

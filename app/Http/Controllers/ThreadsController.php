@@ -145,16 +145,21 @@ class ThreadsController extends Controller {
 
         // $this->authorize('delete', $thread);
 
-        if (auth()->user()->can('delete', $thread)) {
+        if ($thread !== null) {
 
-            $is_deleted = $thread->delete();
+            if (auth()->user()->can('delete', $thread)) {
 
-            if ($is_deleted === true) {
-                $state = true;
-            } else {
-                $state = false;
+                // Deletion of this thread also causes the database to delete
+                // its associated replies using a database cascade delete constraint
+                $is_deleted = $thread->delete();
+
+                if ($is_deleted === true) {
+                    $state = true;
+                } else {
+                    $state = false;
+                }
+                return response()->json(['state' => $state]);
             }
-            return response()->json(['state' => $state]);
         }
     }
 

@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder {
      * @return void
      */
     public function run() {
- 
+
         DB::table('activities')->truncate();
         DB::table('replies')->truncate();
         DB::table('likeables')->truncate();
@@ -20,11 +20,14 @@ class DatabaseSeeder extends Seeder {
 
         $user = auth()->loginUsingId(7);
 
-       factory('App\Thread', 1)->create(['user_id' => $user->id])->each(function ($thread) {
-           for ($i = 0; $i < 100; $i++) {
-               $thread->replies()->save(factory('App\Reply')->create(['thread_id' => $thread->id]));
-           }
-       });
+        factory('App\Thread', 1)->create(['user_id' => $user->id])->each(function ($thread) {
+            for ($i = 0; $i < 3; $i++) {
+                $reply = $thread->replies()->save(factory('App\Reply')->create([
+                            'thread_id' => $thread->id,
+                            'user_id' => mt_rand(6, 7)
+                ]));
+            }
+        });
     }
 
 }
