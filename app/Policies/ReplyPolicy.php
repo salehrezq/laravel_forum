@@ -39,7 +39,9 @@ class ReplyPolicy {
      * @return mixed
      */
     public function update(User $user, Reply $reply) {
-        //
+        if ($reply->user_id === $user->id) {
+            return true;
+        }
     }
 
     /**

@@ -36,3 +36,5 @@ Route::get('/users/{user}', 'UsersController@show')->name('users.show');
 
 // Called by XMLHttpRequest in JS file
 Route::delete('/replies/delete', 'RepliesController@destroy')->name('replies.destroy');
+// Called by XMLHttpRequest in JS file
+Route::patch('/replies/edit', 'RepliesController@update')->name('replies.update');

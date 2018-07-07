@@ -23,13 +23,15 @@
     @if(auth()->check())
     <div class="row">
         <div class="col-md-8">
-            <div class="card thread-reply-form">
+            <div class="card padding10">
                 <form method="POST" action="{{route('thread.replies', ['channelSlug' => $channelSlug, 'thread' => $thread->id])}}">
                     @csrf
                     <div class="form-group">
                         <textarea rows="3" name="replyBody" class="form-control" placeholder="write a reply..."></textarea>
                     </div>
+                    <div class="form-group">
                     <button type="submit" class="btn btn-primary">Reply</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -45,9 +47,16 @@
                     <div class="flex">
                         By:&nbsp;<a href="{{route('users.show', ['user' => $reply->user_id])}}">{{$reply->user_name}}</a>&nbsp;&nbsp;|&nbsp;&nbsp;{{$reply->createdAtForHumans()}}
                         @can('delete', $reply)
-                            <div class='deleteReplyArea'>
+                            <div class='deleteReplyArea inline'>
                             <input type="hidden" class='replyId' value="{{$reply->id}}">
                             &nbsp;<span class='btn-span deleteReplyBtn'>Delete</span>
+                            </div>
+                        @endcan
+                        @can('update', $reply)
+                            <!-- The editing is done through JavaScript -->
+                            <div class='editReplyMode inline'>
+                            <input type="hidden" class='replyId' value="{{$reply->id}}">
+                            &nbsp;<span class='btn-span editReplyBtn'>Edit</span>
                             </div>
                         @endcan
                     </div>
@@ -59,8 +68,10 @@
                     </div>
                     @endif
                 </div>
-                <div class="card-body" id="reply-body-{{$reply->id}}">
-                    {{$reply->body}}
+                <div id="reply-container-{{$reply->id}}">
+                    <div class="card-body" id="reply-body-{{$reply->id}}">
+                        {{$reply->body}}
+                    </div>
                 </div>
             </div>
         </div>

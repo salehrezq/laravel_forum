@@ -73,8 +73,29 @@ class RepliesController extends Controller {
      * @param  \App\Reply  $reply
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Reply $reply) {
-        //
+    public function update() {
+
+        $reply = Reply::find(request('replyId'));
+
+        if ($reply !== null) {
+            if (auth()->user()->can('update', $reply)) {
+
+                $newReplyBody = request('replyBody');
+
+                if (strlen($newReplyBody) != 0) {
+
+                    $reply->body = $newReplyBody;
+
+                    if ($reply->save() !== null) {
+                        $state = true;
+                    } else {
+                        $state = false;
+                    }
+                    return response()->json(['state' => $state]);
+                }
+            }
+        }
+        return response()->json(['state' => false]);
     }
 
     /**
@@ -93,9 +114,7 @@ class RepliesController extends Controller {
 
             if (auth()->user()->can('delete', $reply)) {
 
-                $is_deleted = $reply->delete();
-
-                if ($is_deleted === true) {
+                if ($reply->delete() === true) {
                     $state = true;
                 } else {
                     $state = false;
