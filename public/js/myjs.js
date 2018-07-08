@@ -55,7 +55,9 @@ $(function () {
             reply_id: $id,
         }).then((response) => {
             if (response.data.state === true) {
-                $($replyBox).fadeOut(500);
+                $replyBox.fadeOut(500);
+                $('#replies_count').text(response.data.replies_count)
+                $('#replies_name').text(replies_name(response.data.replies_count))
             } else {
                 console.log('reply cannot be deleted due to server issue.');
             }
@@ -63,6 +65,10 @@ $(function () {
             console.log(error);
         });
     });
+
+    function replies_name(count) {
+        return (count === 1) ? 'reply' : 'replies'
+    }
 
     /**
      * used in path: resources\views\threads\show.blade.php

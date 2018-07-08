@@ -119,9 +119,17 @@ class RepliesController extends Controller {
                 } else {
                     $state = false;
                 }
-                return response()->json(['state' => $state]);
+                return response()->json([
+                            'state' => $state,
+                            'replies_count' => $this->getRepliesCount($reply->thread_id)
+                ]);
             }
         }
+    }
+
+    private function getRepliesCount($threadId) {
+
+        return Thread::find($threadId)->replies()->count();
     }
 
 }

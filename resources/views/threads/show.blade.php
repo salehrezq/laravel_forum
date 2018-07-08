@@ -15,7 +15,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <p>This thread was created {{$thread->createdAtForHumans()}} by <a href="#">{{$thread->user->name}}</a>. It has {{$thread->replies_count}} {{str_plural('comment', $thread->replies_count)}}</p>
+                    <p>This thread was created {{$thread->createdAtForHumans()}} by <a href="#">{{$thread->user->name}}</a>. It has <span id="replies_count">{{$thread->replies_count}}</span> <span id="replies_name">{{str_plural('reply', $thread->replies_count)}}</span></p>
                 </div>
             </div>
         </div>

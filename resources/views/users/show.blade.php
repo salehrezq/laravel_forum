@@ -5,7 +5,7 @@
     <div class="page-header">
         <h1>{{$user_profile->name}}</h1>
     </div>
-    @foreach ($activitiesDays as $dayActivity => $activities)
+    @forelse ($activitiesDays as $dayActivity => $activities)
     <h2>{{$dayActivity}}</h2>
         @foreach ($activities as $itemActivity)
             @if($itemActivity->subject_type === 'App\\Thread')
@@ -16,6 +16,8 @@
                 @include('users.activities.liked_reply')
             @endif
         @endforeach
-    @endforeach
+    @empty
+    <p>There are no activities for this user yet.</p>
+    @endforelse
 </div>
 @endsection
