@@ -30,7 +30,8 @@
                             @if(auth()->check())
                                 <a class="dropdown-item" href="{{ route('threads.index', ['user_id' => auth()->user()->id])}}">My threads</a>
                             @endif
-                            <a class="dropdown-item" href="{{ route('threads.index', ['popular'])}}">Popular</a>
+                            <a class="dropdown-item" href="{{ route('threads.index', ['popular'])}}">Popular threads</a>
+                            <a class="dropdown-item" href="{{ route('threads.index', ['unanswered'])}}">Unanswered threads</a>
                         </div>
                     </div>
                     <a class="navbar-brand" href="{{route('threads.create')}}">Create New Thread</a>
