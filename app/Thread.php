@@ -80,7 +80,7 @@ class Thread extends Model {
     }
 
     public function addReply($replyBody) {
-        $this->replies()->create([
+        return $this->replies()->create([
             'user_id' => auth()->id(),
             'body' => $replyBody
         ]);

@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder {
         $user = auth()->loginUsingId(7);
 
         factory('App\Thread', 1)->create(['user_id' => $user->id])->each(function ($thread) {
-            for ($i = 0; $i < 3; $i++) {
+            for ($i = 0; $i < 0; $i++) {
                 $reply = $thread->replies()->save(factory('App\Reply')->create([
                             'thread_id' => $thread->id,
                             'user_id' => mt_rand(6, 7)

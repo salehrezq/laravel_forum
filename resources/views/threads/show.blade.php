@@ -24,10 +24,12 @@
     <div class="row">
         <div class="col-md-8">
             <div class="card padding10">
-                <form method="POST" action="{{route('thread.replies', ['channelSlug' => $channelSlug, 'thread' => $thread->id])}}">
+                <!-- Sent by xmlhttprequest instead -->
+                <form class="reply_form" method="POST" action="{{route('replies.store')}}">
                     @csrf
+                    <input type="hidden" name="threadId" value="{{$thread->id}}">
                     <div class="form-group">
-                        <textarea rows="3" name="replyBody" class="form-control" placeholder="write a reply..."></textarea>
+                        <textarea rows="3" required name="replyBody" class="replyBodyTextArea form-control" placeholder="write a reply..."></textarea>
                     </div>
                     <div class="form-group">
                     <button type="submit" class="btn btn-primary">Reply</button>
@@ -39,44 +41,46 @@
     @else
     <p class="text-center">Please&nbsp;<a href="{{route('login')}}">sign in</a>&nbsp;to participate in this thread.</p>
     @endif
-    @foreach ($replies as $reply)
-    <div class="row reply">
-        <div class="col-md-8" id='reply-{{$reply->id}}'>
-            <div class="card">
-                <div class="card-header level">
-                    <div class="flex">
-                        By:&nbsp;<a href="{{route('users.show', ['user' => $reply->user_id])}}">{{$reply->user_name}}</a>&nbsp;&nbsp;|&nbsp;&nbsp;{{$reply->createdAtForHumans()}}
-                        @can('delete', $reply)
-                            <div class='deleteReplyArea inline'>
+    <div class="repliesArea">
+        @foreach ($replies as $reply)
+        <div class="row reply">
+            <div class="col-md-8" id='reply-{{$reply->id}}'>
+                <div class="card">
+                    <div class="card-header level">
+                        <div class="flex">
+                            By:&nbsp;<a href="{{route('users.show', ['user' => $reply->user_id])}}">{{$reply->user_name}}</a>&nbsp;&nbsp;|&nbsp;&nbsp;{{$reply->createdAtForHumans()}}
+                            @can('delete', $reply)
+                                <div class='deleteReplyArea inline'>
+                                <input type="hidden" class='replyId' value="{{$reply->id}}">
+                                &nbsp;<span class='btn-span deleteReplyBtn'>Delete</span>
+                                </div>
+                            @endcan
+                            @can('update', $reply)
+                                <!-- The editing is done through JavaScript -->
+                                <div class='editReplyMode inline'>
+                                <input type="hidden" class='replyId' value="{{$reply->id}}">
+                                &nbsp;<span class='btn-span editReplyBtn'>Edit</span>
+                                </div>
+                            @endcan
+                        </div>
+                        @if(auth()->check())
+                        <div class='likeArea'>
+                            <span class="likesCounter">{{ $reply->users_likes_count }}</span>
                             <input type="hidden" class='replyId' value="{{$reply->id}}">
-                            &nbsp;<span class='btn-span deleteReplyBtn'>Delete</span>
-                            </div>
-                        @endcan
-                        @can('update', $reply)
-                            <!-- The editing is done through JavaScript -->
-                            <div class='editReplyMode inline'>
-                            <input type="hidden" class='replyId' value="{{$reply->id}}">
-                            &nbsp;<span class='btn-span editReplyBtn'>Edit</span>
-                            </div>
-                        @endcan
+                            <span class='btn-span likeReplyBtnToggle'>{{ $reply->was_this_reply_liked_by_auth_user? 'Unlike' : 'Like' }}</span>
+                        </div>
+                        @endif
                     </div>
-                    @if(auth()->check())
-                    <div class='likeArea'>
-                        <span class="likesCounter">{{ $reply->users_likes_count }}</span>
-                        <input type="hidden" class='replyId' value="{{$reply->id}}">
-                        <span class='btn-span likeReplyBtnToggle'>{{ $reply->was_this_reply_liked_by_auth_user? 'Unlike' : 'Like' }}</span>
-                    </div>
-                    @endif
-                </div>
-                <div id="reply-container-{{$reply->id}}">
-                    <div class="card-body" id="reply-body-{{$reply->id}}">
-                        {{$reply->body}}
+                    <div id="reply-container-{{$reply->id}}">
+                        <div class="card-body" id="reply-body-{{$reply->id}}">
+                            {{$reply->body}}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        @endforeach
     </div>
-    @endforeach
     {{$replies->links()}}
 </div>
 @endsection

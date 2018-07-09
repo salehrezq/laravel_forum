@@ -3,7 +3,102 @@ $(function () {
     /**
      * used in path: resources\views\threads\show.blade.php
      */
-    $('.likeArea').on('click', '.likeReplyBtnToggle', function () {
+    $('.reply_form').on('submit', function (e) {
+
+        e.preventDefault();
+        var $form = $(this);
+        var formData = $form.serializeArray();
+
+        var threadId = formData[1].value;
+        var textAreaContetn = formData[2].value;
+
+        if (textAreaContetn === '' || textAreaContetn == null) {
+            return;
+        }
+
+        axios.post('/replies', {
+            threadId: threadId,
+            replyBody: textAreaContetn,
+        }).then((response) => {
+            if (response.data.state === true) {
+                success(response)
+            } else {
+                console.log(response.data.state + ' ' + response.data.message);
+            }
+        }).catch((response) => {
+            console.log(response);
+        });
+
+        function success(response) {
+            $('.replyBodyTextArea').val('');
+            var replyId = response.data.replyId;
+            var replyBody = response.data.replyBody;
+            var replyUserId = response.data.replyUserId;
+            createReplyElement(replyId, replyBody, replyUserId, response.data.username);
+            setRepliesCount(response.data.replies_count);
+            showFlashMessage(response.data.message);
+        }
+    });
+
+    function createReplyElement(replyId, replyBody, replyUserId, username) {
+        var replycomponent = `<div class="row reply">
+        <div class="col-md-8" id='reply-${replyId}'>
+            <div class="card">
+                <div class="card-header level">
+                    <div class="flex">
+                        By:&nbsp;<a href="/users/${replyUserId}">${username}</a>&nbsp;&nbsp;|&nbsp;&nbsp;Just now
+                      <!--  @can('delete', $reply) -->
+                            <div class='deleteReplyArea inline'>
+                            <input type="hidden" class='replyId' value="${replyId}">
+                            &nbsp;<span class='btn-span deleteReplyBtn'>Delete</span>
+                            </div>
+                      <!--  @endcan -->
+                      <!--  @can('update', $reply) -->
+                            <!-- The editing is done through JavaScript -->
+                            <div class='editReplyMode inline'>
+                            <input type="hidden" class='replyId' value="${replyId}">
+                            &nbsp;<span class='btn-span editReplyBtn'>Edit</span>
+                            </div>
+                       <!-- @endcan -->
+                    </div>
+                  <!--  @if(auth()->check()) -->
+                    <div class='likeArea'>
+                        <span class="likesCounter">0</span>
+                        <input type="hidden" class='replyId' value="${replyId}">
+                        <span class='btn-span likeReplyBtnToggle'>Like</span>
+                    </div>
+                 <!--   @endif -->
+                </div>
+                <div id="reply-container-${replyId}">
+                    <div class="card-body" id="reply-body-${replyId}">
+                        ${replyBody}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>`;
+
+        $('.repliesArea').prepend(replycomponent);
+    }
+
+    /*
+     * To show a flash message from within JavaScript based on server response
+     * 
+     * @param string message
+     * @returns void
+     */
+    function showFlashMessage(message) {
+        var flashElement = `<div class="alert alert-success redirect-alert" role="alert">${message}</div>`;
+        $('.flashDiv').append(flashElement);
+        $('.redirect-alert').fadeOut(5000, function () {
+            $(this).remove();
+        });
+    }
+
+    /**
+     * used in path: resources\views\threads\show.blade.php
+     */
+    $('body').on('click', '.likeArea .likeReplyBtnToggle', function () {
 
         $likeArea = $(this).parent();
         $id = $likeArea.find('.replyId').val();
@@ -44,7 +139,7 @@ $(function () {
     /**
      * used in path: resources\views\threads\show.blade.php
      */
-    $('.deleteReplyArea').on('click', '.deleteReplyBtn', function () {
+    $('body').on('click', '.deleteReplyArea .deleteReplyBtn', function () {
 
         var $deleteReplyArea = $(this).parent();
         var $replyBox = $deleteReplyArea.closest('.reply');
@@ -56,8 +151,7 @@ $(function () {
         }).then((response) => {
             if (response.data.state === true) {
                 $replyBox.fadeOut(500);
-                $('#replies_count').text(response.data.replies_count)
-                $('#replies_name').text(replies_name(response.data.replies_count))
+                setRepliesCount(response.data.replies_count);
             } else {
                 console.log('reply cannot be deleted due to server issue.');
             }
@@ -66,14 +160,19 @@ $(function () {
         });
     });
 
+    function setRepliesCount(replies_count) {
+        $('#replies_count').text(replies_count)
+        $('#replies_name').text(replies_name(replies_count))
+    }
+
     function replies_name(count) {
-        return (count === 1) ? 'reply' : 'replies'
+        return (count === 1) ? 'reply' : 'replies';
     }
 
     /**
      * used in path: resources\views\threads\show.blade.php
      */
-    $('.editReplyMode').on('click', '.editReplyBtn', function () {
+    $('body').on('click', '.editReplyMode .editReplyBtn', function () {
 
         var $editBtn = $(this); // The button is actually a <span> element.
 

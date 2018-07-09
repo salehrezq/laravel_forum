@@ -87,11 +87,13 @@
                 @yield('content')
             </main>
         </div>
-        @if(session('flash'))
-        <div class="alert alert-success redirect-alert" role="alert">
-            {{session('flash')}}
+        <div class="flashDiv">
+            @if(session('flash'))
+            <div class="alert alert-success redirect-alert" role="alert">
+                {{session('flash')}}
+            </div>
+            @endif
         </div>
-        @endif
 
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}"></script>

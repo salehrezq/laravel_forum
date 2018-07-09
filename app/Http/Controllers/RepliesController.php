@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Validator;
 use App\Reply;
 use App\Thread;
+use App\User;
 use Illuminate\Http\Request;
 
 class RepliesController extends Controller {
@@ -36,14 +38,41 @@ class RepliesController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($channelSlug, Thread $thread, Request $request) {
-        $this->validate($request, [
-            'replyBody' => 'required'
+    public function store(Request $request) {
+
+        $validator = Validator::make($request->all(), [
+                    'replyBody' => 'required',
+                    'threadId' => 'required',
         ]);
 
-        $thread->addReply($request->replyBody);
+        if ($validator->fails()) {
+            return response()->json([
+                        'state' => false,
+                        'message' => 'The reply body is required.'
+            ]);
+        }
 
-        return back()->with('flash', 'Your reply has been published successfully.');
+        $thread = Thread::find($request->threadId);
+
+        if ($thread !== null) {
+
+           $reply = $thread->addReply($request->replyBody);
+
+                      return response()->json([
+                        'state' => true,
+                        'replyId' => $reply->id,
+                        'replyBody' => $reply->body,
+                        'replyUserId' => $reply->user_id,
+                        'username' => $reply->user->name,
+                        'replies_count' => $this->getRepliesCount($thread->id),
+                        'message' => 'Your reply has been published successfully.'
+            ]);
+        }
+
+        return response()->json([
+                    'state' => false,
+                    'message' => 'The thread you are replying has been deleted.'
+        ]);
     }
 
     /**
