@@ -28,9 +28,9 @@ class Thread extends Model {
 
         static::deleting(function ($thread) {
 
-             // Deletion of this thread also causes the database to delete
-             // its associated replies using a database cascade delete constraint
-
+            // Deletion of this thread also causes the database to delete
+            // its associated replies using a database cascade delete constraint
+            // 
             // Get array of ids that will be used to delete the activities records
             // which refer to the replies of this deleted thread.
             // The likes activities on those replies will be deleted by design.
@@ -72,6 +72,10 @@ class Thread extends Model {
         return $this->morphMany(Activity::class, 'subject');
     }
 
+    public function subscriptions() {
+        return $this->hasMany(Subscription::class);
+    }
+
     public function path() {
         return route('threads.show', [
             'channel' => $this->channel->slug,
@@ -81,8 +85,8 @@ class Thread extends Model {
 
     public function addReply($replyBody) {
         return $this->replies()->create([
-            'user_id' => auth()->id(),
-            'body' => $replyBody
+                    'user_id' => auth()->id(),
+                    'body' => $replyBody
         ]);
     }
 

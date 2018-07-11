@@ -2,6 +2,16 @@
 
 @section('content')
 <div class="container">
+@auth
+    @can('subscribe', $thread)
+        <input class='threadId' type="hidden" value="{{$thread->id}}">
+        <div class="row">
+            <div class="col-md-1">
+                <button type="button" class="btn btn-link btn_subscribe">{{$thread->was_this_thread_subscribed_to_by_auth_user? 'Unsubscribe from this thread' : 'Subscribe to this thread'}}</button>
+            </div>
+        </div>
+    @endcan
+@endauth
     <div class="row">
         <div class="col-md-8">
             <div class="card">
@@ -43,6 +53,8 @@
     @endif
     <div class="repliesArea">
         @foreach ($replies as $reply)
+        <!-- The following div element is used as template in JS file,
+        so make sure to update BOTH when required -->
         <div class="row reply">
             <div class="col-md-8" id='reply-{{$reply->id}}'>
                 <div class="card">

@@ -90,12 +90,19 @@ class ThreadsController extends Controller {
 
             if (auth()->check()) { // user:
                 $user_id = auth()->id();
+
+                $thread = Thread::select('threads.*', DB::raw("(exists(select * from subscriptions "
+                                        . "where user_id = $user_id "
+                                        . "and thread_id = $thread->id)) as was_this_thread_subscribed_to_by_auth_user"))
+                        ->where('id', $thread->id)
+                        ->first();
+
                 $replies = Reply::select('replies.*', 'users.name as user_name', 'users.id as user_id', DB::raw("(select count(*) "
                                                 . "from `users` inner join `likeables` "
                                                 . "on `users`.`id` = `likeables`.`user_id` "
                                                 . "where `replies`.`id` = `likeables`.`likeable_id` "
                                                 . "and `likeables`.`likeable_type` = 'App\\\Reply') "
-                                                . "as `users_likes_count`"), DB::raw("(select exists(select * from `likeables` "
+                                                . "as `users_likes_count`"), DB::raw("(exists(select * from `likeables` "
                                                 . "where `user_id` = $user_id and `likeable_id` = `replies`.`id`)) "
                                                 . "as `was_this_reply_liked_by_auth_user`"))
                                 ->join('users', 'users.id', '=', 'replies.user_id')

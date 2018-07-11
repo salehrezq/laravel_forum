@@ -56,4 +56,10 @@ class ThreadPolicy {
         }
     }
 
+    public function subscribe(User $user, Thread $thread) {
+        if ($thread->user_id !== $user->id) {
+            return true;
+        }
+    }
+
 }

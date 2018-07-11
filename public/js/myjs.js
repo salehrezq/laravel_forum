@@ -243,6 +243,26 @@ $(function () {
     });
 
     /**
+     * used in path: resources\views\threads\show.blade.php
+     */
+    $('.btn_subscribe').on('click', function () {
+
+        var threadId = $('.threadId').val();
+
+        axios.post('/subscriptions', {
+            threadId: threadId
+        }).then((response) => {
+            if(response.data.status === true){
+              $(this).text(response.data.was_it_subscribe_or_unsubscribe ? 'Unsubscribe from this thread' : 'Subscribe to this thread');
+            }else{
+             console.log('Something wrong happened at the server side');
+            }
+        }).catch((response) => {
+            console.log(response);
+        });
+    });
+
+    /**
      * used in path: resources\views\layouts\app.blade.php
      */
     $('.redirect-alert').fadeOut(5000);
