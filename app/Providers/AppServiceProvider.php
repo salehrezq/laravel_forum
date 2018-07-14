@@ -20,8 +20,6 @@ class AppServiceProvider extends ServiceProvider {
                 });
 
         view()->share('channels', $channeles);
-
-        Schema::defaultStringLength(191);
     }
 
     /**

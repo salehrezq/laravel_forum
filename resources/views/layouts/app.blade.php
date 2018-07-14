@@ -28,7 +28,7 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="{{ route('threads.index') }}">All threads</a>
                             @if(auth()->check())
-                                <a class="dropdown-item" href="{{ route('threads.index', ['user_id' => auth()->user()->id])}}">My threads</a>
+                            <a class="dropdown-item" href="{{ route('threads.index', ['user_id' => auth()->user()->id])}}">My threads</a>
                             @endif
                             <a class="dropdown-item" href="{{ route('threads.index', ['popular'])}}">Popular threads</a>
                             <a class="dropdown-item" href="{{ route('threads.index', ['unanswered'])}}">Unanswered threads</a>
@@ -41,10 +41,11 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             @foreach ($channels as $channel)
-                                <a class="dropdown-item" href="{{route('threads.channel', ['channelSlug' => $channel->slug])}}">{{$channel->slug}}</a>
+                            <a class="dropdown-item" href="{{route('threads.channel', ['channelSlug' => $channel->slug])}}">{{$channel->slug}}</a>
                             @endforeach
                         </div>
                     </div>
+                    @include('notifications.replies_notifications')
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -99,6 +100,8 @@
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}"></script>
         <script src="{{asset('js/axios.js')}}"></script>
+        <script src="{{asset('js/lodash.js')}}"></script>
+        <script src="{{asset('js/moment.js')}}"></script>
         <script src="{{asset('js/myjs.js')}}"></script>
     </body>
 </html>

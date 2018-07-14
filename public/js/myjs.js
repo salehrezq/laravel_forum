@@ -1,5 +1,179 @@
 $(function () {
 
+    (function notifications() {
+
+        var $notisList = $('.notis-list');
+        var $page = $('.page');
+        var request_in_progress = false;
+        var readScrollYPostion = true;
+        var scroll_Y_Position = 0; // Used to reset scrollbar after loading data on scroll event
+        var unreadNotificationsCount = 1;
+        var counter = 0;
+
+        var notiCount = $('.noti-count').val();
+        if (notiCount > 0) {
+            $('.noti-counter')
+                    .css({opacity: 0})
+                    .text(notiCount)
+                    .css({top: '-10px'})
+                    .animate({top: '-2px', opacity: 1}, 500);
+        }
+
+        $('.btn-notify').on('click', function () {
+            $('.notifications').fadeToggle(100, 'linear', function () {
+                if ($('.notifications').is(':hidden')) {
+                    resetAfterRelease();
+                    $('.btn-notify').addClass('btn-noti-released').removeClass('btn-noti-clicked');//("background-image", "url(../../images/bell_released.png)");
+                } else {
+                    fetchNotifications(); // intial notifications load
+                    $('.btn-notify').addClass('btn-noti-clicked').removeClass('btn-noti-released');
+                }
+            });
+
+            $('.noti-counter').fadeOut('slow'); // HIDE THE COUNTER.
+            return false;
+        });
+
+        $(document).on('click', function () {
+            $('.notifications').fadeOut(100);
+            if ($('.noti-counter').is(':hidden')) {
+                resetAfterRelease();
+                $('.btn-notify').addClass('btn-noti-released').removeClass('btn-noti-clicked');
+            }
+        });
+
+        function resetAfterRelease() {
+            $notisList.empty();
+            $page.val(0);
+            unreadNotificationsCount = 1;
+            counter = 0;
+        }
+
+        $('.notifications').on('click', function () {
+            return false;       // DO NOTHING WHEN CONTAINER IS CLICKED.
+        });
+
+        function fetchNotifications() {
+
+            if (unreadNotificationsCount <= counter) {
+                return;
+            }
+
+            if (request_in_progress === true) {
+                return;
+            }
+
+            request_in_progress = true;
+
+            var page = $page.val();
+            var next_page = parseInt(page) + 1;
+
+            axios.get(`/notifications/${next_page}`).then((response) => {
+
+                var respData = response.data;
+
+                if (respData.status === true) {
+
+                    $page.val(next_page);
+
+                    unreadNotificationsCount = respData.unreadNotificationsCount;
+                    counter += respData.unreadNotificationsIds.length;
+
+                    listNotifications(respData.unreadNotificationsIds, respData.unreadNotifications);
+
+                } else {
+
+
+                }
+
+                request_in_progress = false;
+                readScrollYPostion = true;
+
+            }).catch((response) => {
+                console.log(response);
+            });
+
+
+
+        }
+
+        function listNotifications(ids, notis) {
+
+            var length = ids.length;
+
+            if (length > 0) {
+                for (var i = length - 1; i >= 0; i--) {
+                    var notiItem = `
+            <div id="noti-f-${ids[i]}">
+                <p class='noti-item bb'>
+                    <a class='a-noti-item' href="/threads/${notis[i].slug}/${notis[i].thread_id}">
+                    <span class='noti-name'>${notis[i].name}</span> replied on <span class='noti-thread-title'>${notis[i].title}</span>
+                    <abbr class='noti-time' title='${notis[i].created_at}'>${moment(notis[i].created_at).fromNow()}</abbr>
+                    </a>
+                </p>
+             </div>`;
+
+                    $notisList.append(notiItem);
+                    $notisList.scrollTop(scroll_Y_Position);
+                }
+                // Add margin-top to the first item
+                $("[id^='noti-f-']").first().find('.noti-item').addClass('mt');
+                // Remove the border-bottom from last item
+                $("[id^='noti-f-']").last().find('.noti-item').removeClass('bb');
+            }
+        }
+
+        $('.notis-list').on('scroll', _.debounce(scrollReaction, 1000));
+
+        function scrollReaction() {
+
+            var fullScrollHeight = $notisList.prop('scrollHeight');
+            var contentHeight = $notisList.height();
+
+            if (readScrollYPostion === true) {
+                scroll_Y_Position = $notisList.scrollTop();
+            }
+
+            if ((fullScrollHeight - scroll_Y_Position) <= (contentHeight)) {
+                readScrollYPostion = false;
+                fetchNotifications();
+            }
+        }
+
+        // When a single notification item is clicked
+        $('*').on('click', "[id^='noti-f-']", function (e) {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+
+            var notificationId = $(this).attr('id').substring(7);
+
+            axios.post(`/notifications/markasread/${notificationId}`, {
+                _method: 'patch'
+            }).then((response) => {
+                if (response.data.status === true) {
+                    $link = $(this).find('a');
+                    window.location.href = $link.attr('href');
+                }
+            }).catch((response) => {
+                console.log(response);
+            });
+        });
+
+
+        $('.btn_mark_all_as_read').on('click', function () {
+
+            axios.post('/notifications/markallasread/', {
+                _method: 'patch'
+            }).then((response) => {
+                if (response.data.status === true) {
+                    resetAfterRelease();
+                }
+            }).catch((response) => {
+                console.log(response);
+            });
+        });
+    })()
+
     /**
      * used in path: resources\views\threads\show.blade.php
      */
@@ -21,7 +195,7 @@ $(function () {
             replyBody: textAreaContetn,
         }).then((response) => {
             if (response.data.state === true) {
-                success(response)
+                success(response.data)
             } else {
                 console.log(response.data.state + ' ' + response.data.message);
             }
@@ -29,14 +203,14 @@ $(function () {
             console.log(response);
         });
 
-        function success(response) {
+        function success(respData) {
             $('.replyBodyTextArea').val('');
-            var replyId = response.data.replyId;
-            var replyBody = response.data.replyBody;
-            var replyUserId = response.data.replyUserId;
-            createReplyElement(replyId, replyBody, replyUserId, response.data.username);
-            setRepliesCount(response.data.replies_count);
-            showFlashMessage(response.data.message);
+            var replyId = respData.replyId;
+            var replyBody = respData.replyBody;
+            var replyUserId = respData.replyUserId;
+            createReplyElement(replyId, replyBody, replyUserId, respData.username);
+            setRepliesCount(respData.replies_count);
+            showFlashMessage(respData.message);
         }
     });
 
@@ -83,7 +257,7 @@ $(function () {
 
     /*
      * To show a flash message from within JavaScript based on server response
-     * 
+     *
      * @param string message
      * @returns void
      */
@@ -252,10 +426,10 @@ $(function () {
         axios.post('/subscriptions', {
             threadId: threadId
         }).then((response) => {
-            if(response.data.status === true){
-              $(this).text(response.data.was_it_subscribe_or_unsubscribe ? 'Unsubscribe from this thread' : 'Subscribe to this thread');
-            }else{
-             console.log('Something wrong happened at the server side');
+            if (response.data.status === true) {
+                $(this).text(response.data.was_it_subscribe_or_unsubscribe ? 'Unsubscribe from this thread' : 'Subscribe to this thread');
+            } else {
+                console.log('Something wrong happened at the server side');
             }
         }).catch((response) => {
             console.log(response);

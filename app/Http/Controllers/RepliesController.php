@@ -56,9 +56,11 @@ class RepliesController extends Controller {
 
         if ($thread !== null) {
 
-           $reply = $thread->addReply($request->replyBody);
+            $reply = $thread->addReply($request->replyBody);
 
-                      return response()->json([
+            \App\Subscription::notifySubscribers($reply);
+
+            return response()->json([
                         'state' => true,
                         'replyId' => $reply->id,
                         'replyBody' => $reply->body,
