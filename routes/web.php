@@ -10,10 +10,19 @@
   | contains the "web" middleware group. Now create something great!
   |
  */
+auth()->loginUsingId(1);
 
 Route::get('/', function () {
-    return view('welcome');
+
+    // We insert a notification into the database:
+    // auth()->user()->notify(new App\Notifications\ThreadNotification());
+
+    return view('note');
 });
+
+//Route::get('/', function () {
+//    return view('welcome');
+//});
 
 Auth::routes();
 
@@ -39,4 +48,7 @@ Route::get('/users/{user}', 'UsersController@show')->name('users.show');
 
 Route::post('/subscriptions', 'SubscriptionsController@store')->name('subscriptions.store');
 
+Route::get('/notifications/{page}', 'NotificationsController@index')->name('notifications.index');
 
+Route::patch('/notifications/markasread/{notification}', 'NotificationsController@markAsRead')->name('notifications.markasread');
+Route::patch('/notifications/markallasread/', 'NotificationsController@markAllAsRead')->name('notifications.markallasread');

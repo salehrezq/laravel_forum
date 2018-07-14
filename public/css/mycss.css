@@ -3,7 +3,7 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
-/* 
+/*
     Created on : Jun 16, 2018, 11:18:54 PM
     Author     : Saleh
 */
@@ -30,7 +30,7 @@ and open the template in the editor.
 }
 
 .div-left {
-    text-align: left; 
+    text-align: left;
     margin: auto;
     width: 610px;
 }
@@ -105,9 +105,156 @@ span.btn-span:hover {
 }
 
 .h-44{
-   height: 44px;
+    height: 44px;
 }
 
 .disable{
     color:#d3d3d3;
 }
+
+/*
+Notifications
+*/
+
+.btn-notify {
+    background-repeat: no-repeat;
+    width: 24px;
+    height: 24px;
+    cursor:pointer;
+}
+
+.btn-noti-released{
+    background-image: url(../images/bell_released.png);
+}
+.btn-noti-clicked{
+    background-image: url(../images/bell_clicked.png);
+}
+
+.noti-counter {
+    display:block;
+    position:absolute;
+    background:#E1141E;
+    color:#FFF;
+    font-size:12px;
+    font-weight:normal;
+    padding:1px 3px;
+    margin: 6px 0px 0px 13px;
+    border-radius:2px;
+    -moz-border-radius:2px;
+    -webkit-border-radius:2px;
+    z-index:1;
+}
+
+/* The notifications window; this remains hidden when the page loads */
+.notifications {
+    display:none;
+    width:430px;
+    position:relative;
+    top: 31px;
+    left: -8px;
+    background:#FFF;
+    border:solid 1px rgba(100, 100, 100, .20);
+    -webkit-box-shadow:0 3px 8px rgba(0, 0, 0, .20);
+    z-index: 1;
+}
+
+.notis-list{
+    height: 300px;
+    overflow-y: auto;
+}
+
+/* An arrow like structure just over the notifications windows */
+.notifications:before {
+    content: '';
+    display:block;
+    width:0;
+    height:0;
+    color:transparent;
+    border:10px solid #CCC;
+    border-color:transparent transparent #42997d;
+    margin-top:-20px;
+    margin-left:10px;
+}
+
+div.noti-head {
+    border-bottom:solid 1px rgba(100, 100, 100, .30);
+    cursor: default;
+}
+
+h3.noti-head{
+    display: initial;
+    color:#333;
+    background:#FFF;
+    font-weight:bold;
+    font-size:15px;
+    padding:8px;
+    margin:0 0 0 0;
+}
+
+.padding-8{
+    padding:8px;
+}
+
+.seeAll {
+    background:#F6F7F8;
+    padding:8px;
+    font-size:12px;
+    font-weight:bold;
+    border-top:solid 1px rgba(100, 100, 100, .30);
+    text-align:center;
+}
+.seeAll a {
+    color:#3b5998;
+}
+.seeAll a:hover {
+    background:#F6F7F8;
+    color:#3b5998;
+    text-decoration:underline;
+}
+
+.noti-item{
+    width: 428px;
+    white-space: normal;
+    word-wrap: break-word;
+    padding: 7px 12px 8px 4px;
+    margin-top: -13px;
+    margin-bottom: 10px;
+}
+
+.noti-item:hover{
+    background-color: #f6f6f6;
+}
+
+.bb{
+    border-bottom: #333333 solid 1px;
+}
+
+.mt{
+    margin-top: -4px;
+}
+
+.a-noti-item:hover, .a-noti-item:visited, .a-noti-item:link, .a-noti-item:active{
+    color: #000;
+    text-decoration: none;
+
+}
+
+.noti-time{
+    border-bottom: none;
+    text-decoration: none;
+    display: block;
+    cursor:pointer !important;
+    color: #90949c;
+}
+
+.noti-name{
+    font-weight: 600;
+}
+
+.noti-thread-title{
+    background-color: #12814708;
+}
+
+/*
+End of notifications
+*/

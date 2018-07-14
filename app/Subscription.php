@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Notification;
 
 class Subscription extends Model {
 
@@ -18,7 +19,7 @@ class Subscription extends Model {
 
     /**
      * Tells whether this thread has already been subscribed to or not.
-     * 
+     *
      * @param integer $threadId
      * @return boolean
      */
@@ -49,6 +50,36 @@ class Subscription extends Model {
             }
         }
         return false;
+    }
+
+    public static function notifySubscribers($reply) {
+
+        $thread = Thread::find($reply->thread_id);
+
+        if ($thread !== null) {
+
+            $usersIds = $thread->subscribers->pluck('user_id')->toArray();
+
+            static::excludeReplyOwner($reply, $usersIds);
+
+            if (count($usersIds) > 0) {
+                $users = User::whereIn('id', $usersIds)->get();
+                Notification::send($users, new \App\Notifications\ThreadNotification($reply->id));
+            }
+        }
+    }
+
+    /**
+     * Exclude the id of the reply owner so that the owner
+     * will not receive a notification due to his own reply
+     *
+     * @param Reply $reply
+     * @param array $usersIds
+     */
+    private static function excludeReplyOwner($reply, &$usersIds) {
+        if (($key = array_search($reply->user_id, $usersIds)) !== false) {
+            unset($usersIds[$key]);
+        }
     }
 
 }

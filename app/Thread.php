@@ -72,7 +72,7 @@ class Thread extends Model {
         return $this->morphMany(Activity::class, 'subject');
     }
 
-    public function subscriptions() {
+    public function subscribers() {
         return $this->hasMany(Subscription::class);
     }
 

@@ -45,6 +45,9 @@
                             @endforeach
                         </div>
                     </div>
+                    @auth
+                        @include('notifications.replies_notifications')
+                    @endauth
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -99,6 +102,8 @@
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}"></script>
         <script src="{{asset('js/axios.js')}}"></script>
+        <script src="{{asset('js/lodash.js')}}"></script>
+        <script src="{{asset('js/moment.js')}}"></script>
         <script src="{{asset('js/myjs.js')}}"></script>
     </body>
 </html>
