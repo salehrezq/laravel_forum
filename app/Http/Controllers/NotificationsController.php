@@ -36,14 +36,13 @@ class NotificationsController extends Controller {
 
         return response()->json([
                     'status' => true,
-
                     'unreadNotifications' => $unreadNotificationsResults,
                     'unreadNotificationsCount' => $unreadNotificationsCount,
         ]);
     }
 
     public function markAsRead(DatabaseNotification $notification) {
-        
+
         if ($notification->unread()) {
             $notification->markAsRead();
             return response()->json(['status' => true]);
