@@ -63,6 +63,7 @@ class Subscription extends Model {
             static::excludeReplyOwner($reply, $usersIds);
 
             if (count($usersIds) > 0) {
+                
                 $users = User::whereIn('id', $usersIds)->get();
                 Notification::send($users, new \App\Notifications\ThreadNotification($reply->id));
             }

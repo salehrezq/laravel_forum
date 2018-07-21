@@ -35,6 +35,7 @@ $(function () {
             });
 
             $notiCountEl.fadeOut('slow'); // Hide the counter
+
             return false;
         });
 
@@ -79,11 +80,13 @@ $(function () {
                 if (respData.status === true) {
 
                     $page.val(next_page);
+
                     unreadNotificationsCount = respData.unreadNotificationsCount; // The count of all unread notifications
                     counter += respData.unreadNotifications.length; // notifications per page
                     listNotifications(respData.unreadNotifications);
                 } else {
                     $notisList.append('<h3>No new notifications yet.</h3>');
+
                 }
 
                 request_in_progress = false;

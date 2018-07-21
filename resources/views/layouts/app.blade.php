@@ -28,7 +28,7 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="{{ route('threads.index') }}">All threads</a>
                             @if(auth()->check())
-                                <a class="dropdown-item" href="{{ route('threads.index', ['user_id' => auth()->user()->id])}}">My threads</a>
+                            <a class="dropdown-item" href="{{ route('threads.index', ['user_id' => auth()->user()->id])}}">My threads</a>
                             @endif
                             <a class="dropdown-item" href="{{ route('threads.index', ['popular'])}}">Popular threads</a>
                             <a class="dropdown-item" href="{{ route('threads.index', ['unanswered'])}}">Unanswered threads</a>
@@ -41,7 +41,7 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             @foreach ($channels as $channel)
-                                <a class="dropdown-item" href="{{route('threads.channel', ['channelSlug' => $channel->slug])}}">{{$channel->slug}}</a>
+                            <a class="dropdown-item" href="{{route('threads.channel', ['channelSlug' => $channel->slug])}}">{{$channel->slug}}</a>
                             @endforeach
                         </div>
                     </div>
