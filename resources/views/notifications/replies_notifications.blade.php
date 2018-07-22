@@ -3,7 +3,7 @@
     <div class="noti-counter"></div>
     <div class="notifications">
         <div class="noti-head"><h3 class='noti-head'>Notifications</h3>
-            <button type="button" class="btn btn-link padding-8">Mark All as Read</button></div>
+            <button type="button" class="btn btn-link btn_mark_all_as_read padding-8">Mark All as Read</button></div>
         <input class="page" type="hidden" value="0">
         <div class="notis-list">
         </div>

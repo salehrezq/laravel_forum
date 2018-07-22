@@ -17,35 +17,39 @@ class DBS extends Seeder {
 
         $this->clearDatabase();
 
-        $threads = $this->threads($count = 1, $user_id = 7);
-        $this->authUser(1);  // user to subscribe to thread
+        $threads = $this->threads($count = 1, $user_id = 7, $subscribers = [1, 5]);
+        
         foreach ($threads as $key => $thread) {
-            $this->subscribeTo($thread);
-            $replies = $this->replies(3, $thread, $delay = 0);
+            $replies = $this->replies(2, $thread, $userId = 5, $delay = 0);
         }
 
-//        $threads = $this->threads($count = 1, $user_id = 9);
-//        $this->authUser(2);  // user to subscribe to thread
-//        foreach ($threads as $key => $thread) {
-//            $this->subscribeTo($thread);
-//            $replies = $this->replies(3, $thread, $delay = 0);
-//        }
+        foreach ($threads as $key => $thread) {
+            $replies = $this->replies(2, $thread, $userId = 1, $delay = 0);
+        }
     }
 
-    private function threads($count, $user_id) {
+    private function threads($count, $user_id, $subscribers = null) {
         $threads = [];
         for ($i = 0; $i < $count; $i++) {
 
             $date = Carbon\Carbon::now()->subDays(10);
 
-            $threads[] = factory('App\Thread')->create([
+            $threads[] = $thread = factory('App\Thread')->create([
                 'user_id' => $user_id,
             ]);
+
+            if (isset($subscribers) && is_array($subscribers)) {
+                $length = count($subscribers);
+                for ($j = 0; $j < $length; $j++) {
+                    $this->authUser($subscribers[$j]);
+                    $this->subscribeTo($thread);
+                }
+            }
         }
         return $threads;
     }
 
-    public function replies($count, $thread, $delay = 0) {
+    public function replies($count, $thread, $userId = null, $delay = 0) {
 
         $replyCount = 0;
 
@@ -55,7 +59,7 @@ class DBS extends Seeder {
 
             $reply = $thread->replies()->save(factory('App\Reply')->create([
                         'thread_id' => $thread->id,
-                        'user_id' => mt_rand(2, 20),
+                        'user_id' => isset($userId) ? $userId : mt_rand(1, 20),
                         'body' => 'reply ' . ++$replyCount,
             ]));
             $this->notifySubscribers($reply);
