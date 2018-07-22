@@ -18,7 +18,7 @@ class DBS extends Seeder {
         $this->clearDatabase();
 
         $threads = $this->threads($count = 1, $user_id = 7, $subscribers = [1, 5]);
-        
+
         foreach ($threads as $key => $thread) {
             $replies = $this->replies(2, $thread, $userId = 5, $delay = 0);
         }
@@ -62,7 +62,7 @@ class DBS extends Seeder {
                         'user_id' => isset($userId) ? $userId : mt_rand(1, 20),
                         'body' => 'reply ' . ++$replyCount,
             ]));
-            $this->notifySubscribers($reply);
+            $this->notifySubscribers($thread, $reply);
         }
     }
 
@@ -74,20 +74,15 @@ class DBS extends Seeder {
         auth()->loginUsingId($id);
     }
 
-    private function notifySubscribers($reply) {
+    private function notifySubscribers($thread, $reply) {
 
-        $thread = Thread::find($reply->thread_id);
+        $usersIds = $thread->subscribers->pluck('user_id')->toArray();
 
-        if ($thread !== null) {
+        $this->excludeReplyOwner($reply, $usersIds);
 
-            $usersIds = $thread->subscribers->pluck('user_id')->toArray();
-
-            $this->excludeReplyOwner($reply, $usersIds);
-
-            if (count($usersIds) > 0) {
-                $users = User::whereIn('id', $usersIds)->get();
-                Notification::send($users, new \App\Notifications\ThreadNotification($reply->id, $reply->created_at));
-            }
+        if (count($usersIds) > 0) {
+            $users = User::whereIn('id', $usersIds)->get();
+            Notification::send($users, new \App\Notifications\ThreadNotification($reply->id, $reply->created_at));
         }
     }
 

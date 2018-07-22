@@ -52,21 +52,16 @@ class Subscription extends Model {
         return false;
     }
 
-    public static function notifySubscribers($reply) {
+    public static function notifySubscribers($thread, $reply) {
 
-        $thread = Thread::find($reply->thread_id);
+        $usersIds = $thread->subscribers->pluck('user_id')->toArray();
 
-        if ($thread !== null) {
+        static::excludeReplyOwner($reply, $usersIds);
 
-            $usersIds = $thread->subscribers->pluck('user_id')->toArray();
+        if (count($usersIds) > 0) {
 
-            static::excludeReplyOwner($reply, $usersIds);
-
-            if (count($usersIds) > 0) {
-
-                $users = User::whereIn('id', $usersIds)->get();
-                Notification::send($users, new \App\Notifications\ThreadNotification($reply->id));
-            }
+            $users = User::whereIn('id', $usersIds)->get();
+            Notification::send($users, new \App\Notifications\ThreadNotification($reply->id));
         }
     }
 
