@@ -9,6 +9,9 @@ use App\Events\ModelActivityEvent;
 class Reply extends Model {
 
     protected $fillable = ['body', 'user_id'];
+    // When updating a reply or adding a new reply or deleting a reply
+    // the updated_at attribute of the corresponding thread will be updated
+    protected $touches = ['thread'];
 
     protected static function boot() {
 

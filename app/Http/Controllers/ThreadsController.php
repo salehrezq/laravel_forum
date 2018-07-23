@@ -108,6 +108,8 @@ class ThreadsController extends Controller {
                                 ->join('users', 'users.id', '=', 'replies.user_id')
                                 ->where('thread_id', '=', $thread->id)
                                 ->latest()->paginate($paginate);
+
+                auth()->user()->readThread($thread->id);
             } else {//guest:
                 $replies = Reply::select('replies.user_id', 'replies.body', 'replies.created_at', 'users.name as user_name')
                                 ->join('users', 'replies.user_id', '=', 'users.id')

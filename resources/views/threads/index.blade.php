@@ -11,7 +11,13 @@
             <div class="card">
                 <div class="card-header level">
                     <div class="flex">
-                        <a href="{{$thread->path()}}">{{$thread->title}}</a> by <a href="{{route('users.show', ['user' => $thread->user->id])}}">{{$thread->user->name}}</a>
+                        <a href="{{$thread->path()}}">
+                            @if((auth()->check()) and (auth()->user()->hasNotSeenLatestUpdatesFor($thread)))
+                                <strong>{{$thread->title}}</strong>
+                            @else
+                                {{$thread->title}}
+                            @endif
+                        </a> by <a href="{{route('users.show', ['user' => $thread->user->id])}}">{{$thread->user->name}}</a>
                     </div>
                     {{$thread->replies_count}}&nbsp;{{str_plural('comment', $thread->replies_count)}}&nbsp;&nbsp;|&nbsp;&nbsp;{{$thread->createdAtForHumans()}}
                     @can('delete', $thread)
