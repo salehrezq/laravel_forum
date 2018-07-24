@@ -7,6 +7,7 @@ use App\Reply;
 use App\Thread;
 use App\User;
 use Illuminate\Http\Request;
+use App\Inspections\Spam;
 
 class RepliesController extends Controller {
 
@@ -38,7 +39,7 @@ class RepliesController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
+    public function store(Request $request, Spam $spam) {
 
         $validator = Validator::make($request->all(), [
                     'replyBody' => 'required',
@@ -49,6 +50,14 @@ class RepliesController extends Controller {
             return response()->json([
                         'state' => false,
                         'message' => 'The reply body is required.'
+            ]);
+        }
+
+        if ($spam->detect($request->replyBody)) {
+
+            return response()->json([
+                        'state' => false,
+                        'message' => 'Spam Spam'
             ]);
         }
 
@@ -104,7 +113,7 @@ class RepliesController extends Controller {
      * @param  \App\Reply  $reply
      * @return \Illuminate\Http\Response
      */
-    public function update() {
+    public function update(Spam $spam) {
 
         $reply = Reply::find(request('replyId'));
 
@@ -114,6 +123,14 @@ class RepliesController extends Controller {
                 $newReplyBody = request('replyBody');
 
                 if (strlen($newReplyBody) != 0) {
+
+                    if ($spam->detect($newReplyBody)) {
+
+                        return response()->json([
+                                    'state' => false,
+                                    'message' => 'Spam Spam'
+                        ]);
+                    }
 
                     $reply->body = $newReplyBody;
 

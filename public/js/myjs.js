@@ -175,50 +175,53 @@ $(function () {
                 console.log(response);
             });
         });
-    })()
+    })();
 
     /**
      * used in path: resources\views\threads\show.blade.php
      */
-    $('.reply_form').on('submit', function (e) {
+    (function replySubmit() {
 
-        e.preventDefault();
-        var $form = $(this);
-        var formData = $form.serializeArray();
+        $('.reply_form').on('submit', function (e) {
 
-        var threadId = formData[1].value;
-        var textAreaContetn = formData[2].value;
+            e.preventDefault();
+            var $form = $(this);
+            var formData = $form.serializeArray();
 
-        if (textAreaContetn === '' || textAreaContetn == null) {
-            return;
-        }
+            var threadId = formData[1].value;
+            var textAreaContetn = formData[2].value;
 
-        axios.post('/replies', {
-            threadId: threadId,
-            replyBody: textAreaContetn,
-        }).then((response) => {
-            if (response.data.state === true) {
-                success(response.data)
-            } else {
-                console.log(response.data.state + ' ' + response.data.message);
+            if (textAreaContetn === '' || textAreaContetn == null) {
+                return;
             }
-        }).catch((response) => {
-            console.log(response);
+
+            axios.post('/replies', {
+                threadId: threadId,
+                replyBody: textAreaContetn,
+            }).then((response) => {
+                if (response.data.state === true) {
+                    success(response.data)
+                } else {
+                    showFlashMessage(response.data.message);
+                    console.log(response.data.state + ' ' + response.data.message);
+                }
+            }).catch((response) => {
+                console.log(response);
+            });
+
+            function success(respData) {
+                $('.replyBodyTextArea').val('');
+                var replyId = respData.replyId;
+                var replyBody = respData.replyBody;
+                var replyUserId = respData.replyUserId;
+                createReplyElement(replyId, replyBody, replyUserId, respData.username);
+                setRepliesCount(respData.replies_count);
+                showFlashMessage(respData.message);
+            }
         });
 
-        function success(respData) {
-            $('.replyBodyTextArea').val('');
-            var replyId = respData.replyId;
-            var replyBody = respData.replyBody;
-            var replyUserId = respData.replyUserId;
-            createReplyElement(replyId, replyBody, replyUserId, respData.username);
-            setRepliesCount(respData.replies_count);
-            showFlashMessage(respData.message);
-        }
-    });
-
-    function createReplyElement(replyId, replyBody, replyUserId, username) {
-        var replycomponent = `<div class="row reply">
+        function createReplyElement(replyId, replyBody, replyUserId, username) {
+            var replycomponent = `<div class="row reply">
         <div class="col-md-8" id='reply-${replyId}'>
             <div class="card">
                 <div class="card-header level">
@@ -255,9 +258,9 @@ $(function () {
         </div>
     </div>`;
 
-        $('.repliesArea').prepend(replycomponent);
-    }
-
+            $('.repliesArea').prepend(replycomponent);
+        }
+    })();
     /*
      * To show a flash message from within JavaScript based on server response
      *
@@ -349,20 +352,22 @@ $(function () {
     /**
      * used in path: resources\views\threads\show.blade.php
      */
-    $('body').on('click', '.editReplyMode .editReplyBtn', function () {
+    (function replyEdit() {
 
-        var $editBtn = $(this); // The button is actually a <span> element.
+        $('body').on('click', '.editReplyMode .editReplyBtn', function () {
 
-        // Disable the Edit button.
-        $editBtn.removeClass('editReplyBtn btn-span').addClass('disable');
-        var $editReplyModeArea = $editBtn.parent();
-        var id = $editReplyModeArea.find('.replyId').val();
-        var $replyArea = $('#reply-body-' + id);
-        var oldReplyBody = $replyArea.text().replace(/^\s+|\s+$/g, '');
-        var replyContainer = $('#reply-container-' + id);
+            var $editBtn = $(this); // The button is actually a <span> element.
 
-        var editingReplyAreaHtml =
-                `<div>
+            // Disable the Edit button.
+            $editBtn.removeClass('editReplyBtn btn-span').addClass('disable');
+            var $editReplyModeArea = $editBtn.parent();
+            var id = $editReplyModeArea.find('.replyId').val();
+            var $replyArea = $('#reply-body-' + id);
+            var oldReplyBody = $replyArea.text().replace(/^\s+|\s+$/g, '');
+            var replyContainer = $('#reply-container-' + id);
+
+            var editingReplyAreaHtml =
+                    `<div>
                     <div class="form-group ma-5">
                         <textarea rows="3" name="replyBody" id="edit-reply-${id}" class="form-control">${oldReplyBody}</textarea>
                     </div>
@@ -380,44 +385,46 @@ $(function () {
                     </div>
                 </div>`;
 
-        replyContainer.html(editingReplyAreaHtml);
+            replyContainer.html(editingReplyAreaHtml);
 
-        replyContainer.on('click', '.submitReplyBtn', function () {
+            replyContainer.off('click').on('click', '.submitReplyBtn', function () {
 
-            var editedReply = $(`#edit-reply-${id}`).val() || ''; // if undefined then empty string will be assigned
-            editedReply = editedReply.trim();
+                var editedReply = $(`#edit-reply-${id}`).val() || ''; // if undefined then empty string will be assigned
+                editedReply = editedReply.trim();
 
-            if (editedReply === oldReplyBody || editedReply === '' || editedReply == null) {
-                endEditingMode(oldReplyBody);
-                return;
-            }
-
-            axios.post('/replies/edit', {
-                _method: 'patch',
-                replyId: id,
-                replyBody: editedReply
-            }).then((response) => {
-                if (response.data.state === true) {
-                    endEditingMode(editedReply);
-                } else {
+                if (editedReply === oldReplyBody || editedReply === '' || editedReply == null) {
                     endEditingMode(oldReplyBody);
-                    console.log('reply cannot be updated due to server issue.');
+                    return;
                 }
-            }).catch((error) => {
-                console.log(error);
+
+                axios.post('/replies/edit', {
+                    _method: 'patch',
+                    replyId: id,
+                    replyBody: editedReply
+                }).then((response) => {
+                    if (response.data.state === true) {
+                        endEditingMode(editedReply);
+                    } else {
+                        endEditingMode(oldReplyBody);
+                        showFlashMessage(response.data.message);
+                        console.log('reply cannot be updated due to server issue.');
+                    }
+                }).catch((error) => {
+                    console.log(error);
+                });
             });
-        });
 
-        replyContainer.on('click', '.btnCancelEditMode', function () {
-            endEditingMode(oldReplyBody)
-        });
+            replyContainer.on('click', '.btnCancelEditMode', function () {
+                endEditingMode(oldReplyBody);
+            });
 
-        function endEditingMode(editedReply) {
-            var replyBodySubmittedTemplate = `<div class="card-body" id="reply-body-${id}">${editedReply}</div>`;
-            replyContainer.html(replyBodySubmittedTemplate);
-            $editBtn.addClass('editReplyBtn btn-span').remove('disable')
-        }
-    });
+            function endEditingMode(editedReply) {
+                var replyBodySubmittedTemplate = `<div class="card-body" id="reply-body-${id}">${editedReply}</div>`;
+                replyContainer.html(replyBodySubmittedTemplate);
+                $editBtn.addClass('editReplyBtn btn-span').remove('disable')
+            }
+        });
+    })();
 
     /**
      * used in path: resources\views\threads\show.blade.php

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Helpers\ThreadsFilters;
+use App\Inspections\Spam;
 use App\Thread;
 use App\Reply;
 use App\Channel;
@@ -54,7 +55,7 @@ class ThreadsController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
+    public function store(Request $request, Spam $spam) {
 
         $validator = Validator::make($request->all(), [
                     'threadTitle' => 'required',
@@ -64,6 +65,10 @@ class ThreadsController extends Controller {
 
         if ($validator->fails()) {
             return back()->withInput()->withErrors($validator);
+        }
+
+        if ($spam->detect(request('threadBody')) || $spam->detect(request('threadTitle'))) {
+            return back()->with('flash', 'Spam Spam');
         }
 
         $savedThread = Thread::create([
