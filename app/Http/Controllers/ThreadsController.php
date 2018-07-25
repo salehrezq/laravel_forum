@@ -55,20 +55,16 @@ class ThreadsController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Spam $spam) {
+    public function store(Request $request) {
 
         $validator = Validator::make($request->all(), [
-                    'threadTitle' => 'required',
-                    'threadBody' => 'required',
+                    'threadTitle' => ['required', new \App\Rules\SpamFree()],
+                    'threadBody' => ['required', new \App\Rules\SpamFree()],
                     'channelId' => 'required|exists:channels,id'
         ]);
 
         if ($validator->fails()) {
             return back()->withInput()->withErrors($validator);
-        }
-
-        if ($spam->detect(request('threadBody')) || $spam->detect(request('threadTitle'))) {
-            return back()->with('flash', 'Spam Spam');
         }
 
         $savedThread = Thread::create([

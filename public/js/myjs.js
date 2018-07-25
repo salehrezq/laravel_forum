@@ -202,7 +202,7 @@ $(function () {
                 if (response.data.state === true) {
                     success(response.data)
                 } else {
-                    showFlashMessage(response.data.message);
+                    showFlashMessage(response.data.message, 'warning');
                     console.log(response.data.state + ' ' + response.data.message);
                 }
             }).catch((response) => {
@@ -267,8 +267,8 @@ $(function () {
      * @param string message
      * @returns void
      */
-    function showFlashMessage(message) {
-        var flashElement = `<div class="alert alert-success redirect-alert" role="alert">${message}</div>`;
+    function showFlashMessage(message, level = 'success') {
+        var flashElement = `<div class="alert alert-${level} redirect-alert" role="alert">${message}</div>`;
         $('.flashDiv').append(flashElement);
         $('.redirect-alert').fadeOut(5000, function () {
             $(this).remove();
@@ -402,12 +402,17 @@ $(function () {
                     replyId: id,
                     replyBody: editedReply
                 }).then((response) => {
-                    if (response.data.state === true) {
+                    var respData = response.data;
+
+                    if (respData.state === true) {
                         endEditingMode(editedReply);
                     } else {
-                        endEditingMode(oldReplyBody);
-                        showFlashMessage(response.data.message);
-                        console.log('reply cannot be updated due to server issue.');
+                        if (respData.cause === 'spam') {
+                            showFlashMessage(respData.message, 'warning');
+                        } else {
+                            showFlashMessage(respData.message, 'warning');
+                            console.log('reply cannot be updated due to server issue.');
+                        }
                     }
                 }).catch((error) => {
                     console.log(error);

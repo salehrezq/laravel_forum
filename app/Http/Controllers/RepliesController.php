@@ -39,25 +39,28 @@ class RepliesController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Spam $spam) {
+    public function store(Request $request) {
 
         $validator = Validator::make($request->all(), [
-                    'replyBody' => 'required',
+                    'replyBody' => 'required|spamfree',
                     'threadId' => 'required',
         ]);
 
         if ($validator->fails()) {
+
+            $failedRules = $validator->failed();
+
+            if (isset($failedRules['replyBody']['Required'])) {
+                $message = 'The reply body is required.';
+            } else if (isset($failedRules['replyBody']['Spamfree'])) {
+                $message = 'The reply contains spam!.';
+            } else {
+                $message = 'Unknown error detected at the server.';
+            }
+
             return response()->json([
                         'state' => false,
-                        'message' => 'The reply body is required.'
-            ]);
-        }
-
-        if ($spam->detect($request->replyBody)) {
-
-            return response()->json([
-                        'state' => false,
-                        'message' => 'Spam Spam'
+                        'message' => $message
             ]);
         }
 
@@ -128,7 +131,8 @@ class RepliesController extends Controller {
 
                         return response()->json([
                                     'state' => false,
-                                    'message' => 'Spam Spam'
+                                    'cause' => 'spam',
+                                    'message' => 'The reply contains spam!.'
                         ]);
                     }
 

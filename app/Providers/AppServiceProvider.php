@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 
 class AppServiceProvider extends ServiceProvider {
 
@@ -20,6 +21,8 @@ class AppServiceProvider extends ServiceProvider {
                 });
 
         view()->share('channels', $channeles);
+
+        Validator::extend('spamfree', 'App\Rules\SpamFree@passes');
     }
 
     /**
