@@ -107,4 +107,16 @@ class User extends Authenticatable {
         return $thread->updated_at > $latestReadTimestamp;
     }
 
+    /**
+     * Get the latest reply of this user.
+     * 
+     * @return Reply|Model
+     */
+    public function latestReply() {
+
+        return Reply::where('user_id', $this->id)
+                        ->orderBy('created_at', 'desc')
+                        ->first();
+    }
+
 }

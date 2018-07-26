@@ -66,26 +66,32 @@ class RepliesController extends Controller {
 
         $thread = Thread::find($request->threadId);
 
-        if ($thread !== null) {
-
-            $reply = $thread->addReply($request->replyBody);
-
-            \App\Subscription::notifySubscribers($thread, $reply);
-
+        if ($thread === null) {
             return response()->json([
-                        'state' => true,
-                        'replyId' => $reply->id,
-                        'replyBody' => $reply->body,
-                        'replyUserId' => $reply->user_id,
-                        'username' => $reply->user->name,
-                        'replies_count' => $this->getRepliesCount($thread->id),
-                        'message' => 'Your reply has been published successfully.'
+                        'state' => false,
+                        'message' => 'The thread you are replying to has been deleted.'
             ]);
         }
 
+        if (!auth()->user()->can('createFrequent', new Reply())) {
+            return response()->json([
+                        'state' => false,
+                        'message' => 'You are posting too frequently. Please take a break. :)'
+            ]);
+        }
+
+        $reply = $thread->addReply($request->replyBody);
+
+        \App\Subscription::notifySubscribers($thread, $reply);
+
         return response()->json([
-                    'state' => false,
-                    'message' => 'The thread you are replying has been deleted.'
+                    'state' => true,
+                    'replyId' => $reply->id,
+                    'replyBody' => $reply->body,
+                    'replyUserId' => $reply->user_id,
+                    'username' => $reply->user->name,
+                    'replies_count' => $this->getRepliesCount($thread->id),
+                    'message' => 'Your reply has been published successfully.'
         ]);
     }
 
@@ -131,7 +137,6 @@ class RepliesController extends Controller {
 
                         return response()->json([
                                     'state' => false,
-                                    'cause' => 'spam',
                                     'message' => 'The reply contains spam!.'
                         ]);
                     }

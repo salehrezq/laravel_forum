@@ -71,4 +71,14 @@ class Reply extends Model {
         return $this->created_at->diffForHumans();
     }
 
+    /**
+     * Tell if one minute has passed since this reply has been created.
+     * Returns true if that is the case, false otherwise.
+     * 
+     * @return boolean
+     */
+    public function wasJustPublished() {
+        return $this->created_at->gt(\Carbon\Carbon::now()->subMinute());
+    }
+
 }

@@ -199,11 +199,14 @@ $(function () {
                 threadId: threadId,
                 replyBody: textAreaContetn,
             }).then((response) => {
-                if (response.data.state === true) {
-                    success(response.data)
+
+                var respData = response.data;
+
+                if (respData.state === true) {
+                    success(respData);
                 } else {
-                    showFlashMessage(response.data.message, 'warning');
-                    console.log(response.data.state + ' ' + response.data.message);
+                    showFlashMessage(respData.message, 'warning');
+                    console.log(respData.state + ' ' + respData.message);
                 }
             }).catch((response) => {
                 console.log(response);
@@ -402,17 +405,14 @@ $(function () {
                     replyId: id,
                     replyBody: editedReply
                 }).then((response) => {
+
                     var respData = response.data;
 
                     if (respData.state === true) {
                         endEditingMode(editedReply);
                     } else {
-                        if (respData.cause === 'spam') {
-                            showFlashMessage(respData.message, 'warning');
-                        } else {
-                            showFlashMessage(respData.message, 'warning');
-                            console.log('reply cannot be updated due to server issue.');
-                        }
+                        showFlashMessage(respData.message, 'warning');
+                        console.log('reply cannot be updated due to server issue.');
                     }
                 }).catch((error) => {
                     console.log(error);

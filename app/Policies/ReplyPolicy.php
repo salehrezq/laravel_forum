@@ -32,6 +32,24 @@ class ReplyPolicy {
     }
 
     /**
+     * Allow the user to create a new reply only if one minute has passed since
+     * his latest/previous reply. If no previous reply exist allow him anyway.
+     * 
+     * @param User $user
+     * @return boolean
+     */
+    public function createFrequent(User $user) {
+
+        $lastReply = $user->latestReply();
+
+        if ($lastReply !== null) {
+            return !$lastReply->wasJustPublished();
+        }
+
+        return true;
+    }
+
+    /**
      * Determine whether the user can update the reply.
      *
      * @param  \App\User  $user
