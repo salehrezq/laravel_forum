@@ -86,7 +86,6 @@ $(function () {
                     listNotifications(respData.unreadNotifications);
                 } else {
                     $notisList.append('<h3>No new notifications yet.</h3>');
-
                 }
 
                 request_in_progress = false;
@@ -176,7 +175,7 @@ $(function () {
                 _method: 'patch'
             }).then((response) => {
                 if (response.data.status === true) {
-                    $link = $(this).find('a');
+                    var $link = $(this).find('a');
                     window.location.href = $link.attr('href');
                 }
             }).catch((response) => {
@@ -204,16 +203,14 @@ $(function () {
      */
     (function replySubmit() {
 
-        $('.reply_form').on('submit', function (e) {
+        $('.btnReply').on('click', function (e) {
 
-            e.preventDefault();
-            var $form = $(this);
-            var formData = $form.serializeArray();
+            var $form = $('.replyPublishArea');
 
-            var threadId = formData[1].value;
-            var textAreaContetn = formData[2].value;
+            var threadId = $form.find('.threadId').val();
+            var textAreaContetn = $form.find('.replyBodyTextArea').val();
 
-            if (textAreaContetn === '' || textAreaContetn == null) {
+            if (textAreaContetn === null || textAreaContetn === '') {
                 return;
             }
 
@@ -286,6 +283,7 @@ $(function () {
             $('.repliesArea').prepend(replycomponent);
         }
     })();
+
     /*
      * To show a flash message from within JavaScript based on server response
      *
@@ -305,7 +303,7 @@ $(function () {
      */
     $('body').on('click', '.likeArea .likeReplyBtnToggle', function () {
 
-        $likeArea = $(this).parent();
+        var $likeArea = $(this).parent();
         $id = $likeArea.find('.replyId').val();
 
         axios.post('/users/likereply', {
@@ -325,7 +323,7 @@ $(function () {
 
         var $deleteThreadArea = $(this).parent();
         var $threadBox = $deleteThreadArea.closest('.thread');
-        $id = $deleteThreadArea.find('.threadId').val();
+        var $id = $deleteThreadArea.find('.threadId').val();
 
         axios.post('/threads/delete', {
             _method: 'delete',
@@ -348,7 +346,7 @@ $(function () {
 
         var $deleteReplyArea = $(this).parent();
         var $replyBox = $deleteReplyArea.closest('.reply');
-        $id = $deleteReplyArea.find('.replyId').val();
+        var $id = $deleteReplyArea.find('.replyId').val();
 
         axios.post('/replies/delete', {
             _method: 'delete',

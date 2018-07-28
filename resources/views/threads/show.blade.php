@@ -35,16 +35,15 @@
         <div class="col-md-8">
             <div class="card padding10">
                 <!-- Sent by xmlhttprequest instead -->
-                <form class="reply_form" method="POST" action="{{route('replies.store')}}">
-                    @csrf
-                    <input type="hidden" name="threadId" value="{{$thread->id}}">
+                <div class="replyPublishArea">
+                    <input type="hidden" name="threadId" class="threadId" value="{{$thread->id}}">
                     <div class="form-group">
                         <textarea rows="3" required name="replyBody" class="replyBodyTextArea form-control" placeholder="write a reply..."></textarea>
                     </div>
                     <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Reply</button>
+                        <button type="button" class="btn btn-primary btnReply">Reply</button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
