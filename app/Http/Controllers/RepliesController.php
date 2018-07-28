@@ -6,6 +6,7 @@ use Validator;
 use App\Reply;
 use App\Thread;
 use App\User;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Http\Request;
 use App\Inspections\Spam;
 
@@ -84,15 +85,50 @@ class RepliesController extends Controller {
 
         \App\Subscription::notifySubscribers($thread, $reply);
 
+        $this->metionUsers($reply);
+
         return response()->json([
                     'state' => true,
                     'replyId' => $reply->id,
                     'replyBody' => $reply->body,
                     'replyUserId' => $reply->user_id,
-                    'username' => $reply->user->name,
+                    'username' => $reply->user->username,
                     'replies_count' => $this->getRepliesCount($thread->id),
                     'message' => 'Your reply has been published successfully.'
         ]);
+    }
+
+    protected function metionUsers($reply) {
+
+        preg_match_all("/(?<=[^\w.-]|^)@([A-Za-z_\d]+(?:\.\w+)*)/", $reply->body, $matches);
+
+        $usernames = $this->getUsernames($matches);
+
+        if (count($usernames) > 0) {
+            $usersIds = User::whereIn('username', $usernames)->get(['id']);
+            $users = User::whereIn('id', $usersIds)->get();
+            Notification::send($users, new \App\Notifications\UserMentionNotification($reply->id));
+        }
+    }
+
+    private function getUsernames($matches) {
+
+        $length = count($matches[1]);
+
+        $usernames = [];
+
+        for ($i = 0; $i < $length; $i++) {
+
+            $username = $matches[1][$i];
+
+            if ($username === auth()->user()->username) {
+                continue;
+            }
+
+            $usernames[] = $username;
+        }
+
+        return $usernames;
     }
 
     /**

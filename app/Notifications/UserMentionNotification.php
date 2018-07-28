@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\DB;
 
-class ThreadNotification extends Notification {
+class UserMentionNotification extends Notification {
 
     use Queueable;
 
@@ -53,13 +53,6 @@ class ThreadNotification extends Notification {
      * @param  mixed  $notifiable
      * @return array
      */
-//    public function toArray($notifiable)
-//    {
-//        return [
-//            'replyId' => $this->replyId,
-//        ];
-//    }
-
     public function toDatabase($notifiable) {
 
         $notifiData = $this->extractData($this->replyId);

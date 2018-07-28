@@ -106,15 +106,13 @@ $(function () {
 
                     var data = notis[i].data;
 
-                    var notiItem = `
-            <div id="noti-f-${notis[i].id}">
-                <p class='noti-item bb'>
-                    <a class='a-noti-item' href="/threads/${data.thread_channel_slug}/${data.thread_id}">
-                    <span class='noti-name'>${data.author}</span> replied on <span class='noti-thread-title'>${data.thread_title}</span>
-                    <abbr class='noti-time' title='${notis[i].created_at}'>${moment(notis[i].created_at).fromNow()}</abbr>
-                    </a>
-                </p>
-            </div>`;
+                    var notiItem = '';
+                    if (notis[i].type === 'App\\Notifications\\ThreadNotification') {
+                        notiItem = repliedOnNotificationTemplate(notis, data, i);
+                    } else if (notis[i].type === 'App\\Notifications\\UserMentionNotification') {
+                        console.log('UserMentionNotification');
+                        notiItem = metionedNotificationTemplate(notis, data, i);
+                    }
 
                     $notisList.append(notiItem);
                     $notisList.scrollTop(scroll_Y_Position);
@@ -124,6 +122,30 @@ $(function () {
                 // Remove the border-bottom from last item
                 $("[id^='noti-f-']").last().find('.noti-item').removeClass('bb');
             }
+        }
+
+        function repliedOnNotificationTemplate(notis, data, i) {
+
+            return `<div id="noti-f-${notis[i].id}">
+                <p class='noti-item bb'>
+                    <a class='a-noti-item' href="/threads/${data.thread_channel_slug}/${data.thread_id}">
+                    <span class='noti-name'>${data.author}</span> replied on <span class='noti-thread-title'>${data.thread_title}</span>
+                    <abbr class='noti-time' title='${notis[i].created_at}'>${moment(notis[i].created_at).fromNow()}</abbr>
+                    </a>
+                </p>
+            </div>`;
+        }
+
+        function metionedNotificationTemplate(notis, data, i) {
+
+            return `<div id="noti-f-${notis[i].id}">
+                <p class='noti-item bb'>
+                    <a class='a-noti-item' href="/threads/${data.thread_channel_slug}/${data.thread_id}">
+                    <span class='noti-name'>${data.author}</span> mentioned you in a comment on <span class='noti-thread-title'>${data.thread_title}</span>
+                    <abbr class='noti-time' title='${notis[i].created_at}'>${moment(notis[i].created_at).fromNow()}</abbr>
+                    </a>
+                </p>
+            </div>`;
         }
 
         $('.notis-list').on('scroll', _.debounce(scrollReaction, 1000));

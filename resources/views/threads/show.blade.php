@@ -15,7 +15,7 @@
     <div class="row">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header thread">{{$thread->title}}&nbsp;&nbsp;<span class="threadby">by</span>&nbsp;&nbsp;<a href="{{route('users.show', ['user' => $thread->user->id])}}">{{$thread->user->name}}</a></div>
+                <div class="card-header thread">{{$thread->title}}&nbsp;&nbsp;<span class="threadby">by</span>&nbsp;&nbsp;<a href="{{route('users.show', ['user' => $thread->user->id])}}">{{$thread->user->username}}</a></div>
                 <div class="card-body">
                     {{$thread->body}}
                 </div>
@@ -25,7 +25,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <p>This thread was created {{$thread->createdAtForHumans()}} by <a href="#">{{$thread->user->name}}</a>. It has <span id="replies_count">{{$thread->replies_count}}</span> <span id="replies_name">{{str_plural('reply', $thread->replies_count)}}</span></p>
+                    <p>This thread was created {{$thread->createdAtForHumans()}} by <a href="#">{{$thread->user->username}}</a>. It has <span id="replies_count">{{$thread->replies_count}}</span> <span id="replies_name">{{str_plural('reply', $thread->replies_count)}}</span></p>
                 </div>
             </div>
         </div>

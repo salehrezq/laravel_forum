@@ -17,7 +17,7 @@
                             @else
                                 {{$thread->title}}
                             @endif
-                        </a> by <a href="{{route('users.show', ['user' => $thread->user->id])}}">{{$thread->user->name}}</a>
+                        </a> by <a href="{{route('users.show', ['user' => $thread->user->id])}}">{{$thread->user->username}}</a>
                     </div>
                     {{$thread->replies_count}}&nbsp;{{str_plural('comment', $thread->replies_count)}}&nbsp;&nbsp;|&nbsp;&nbsp;{{$thread->createdAtForHumans()}}
                     @can('delete', $thread)

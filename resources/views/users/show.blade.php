@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="page-header">
-        <h1>{{$user_profile->name}}</h1>
+        <h1>{{$user_profile->username}}</h1>
     </div>
     @forelse ($activitiesDays as $dayActivity => $activities)
     <h2>{{$dayActivity}}</h2>

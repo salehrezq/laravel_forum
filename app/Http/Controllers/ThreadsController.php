@@ -98,7 +98,7 @@ class ThreadsController extends Controller {
                         ->where('id', $thread->id)
                         ->first();
 
-                $replies = Reply::select('replies.*', 'users.name as user_name', 'users.id as user_id', DB::raw("(select count(*) "
+                $replies = Reply::select('replies.*', 'users.username as user_name', 'users.id as user_id', DB::raw("(select count(*) "
                                                 . "from `users` inner join `likeables` "
                                                 . "on `users`.`id` = `likeables`.`user_id` "
                                                 . "where `replies`.`id` = `likeables`.`likeable_id` "
@@ -112,7 +112,7 @@ class ThreadsController extends Controller {
 
                 auth()->user()->readThread($thread->id);
             } else {//guest:
-                $replies = Reply::select('replies.user_id', 'replies.body', 'replies.created_at', 'users.name as user_name')
+                $replies = Reply::select('replies.user_id', 'replies.body', 'replies.created_at', 'users.username as user_name')
                                 ->join('users', 'replies.user_id', '=', 'users.id')
                                 ->where('replies.thread_id', $thread->id)
                                 ->latest()->paginate($paginate);

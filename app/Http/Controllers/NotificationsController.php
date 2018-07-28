@@ -32,7 +32,7 @@ class NotificationsController extends Controller {
         $unreadNotificationsResults = $user->unreadNotifications()
                 ->limit($per_page)
                 ->offset(($page - 1) * $per_page)
-                ->get(['id', 'data', 'created_at']);
+                ->get(['id', 'data', 'type', 'created_at']);
 
         return response()->json([
                     'status' => true,
