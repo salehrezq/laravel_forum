@@ -204,16 +204,14 @@ $(function () {
      */
     (function replySubmit() {
 
-        $('.reply_form').on('submit', function (e) {
+        $('.btnReply').on('click', function (e) {
 
-            e.preventDefault();
-            var $form = $(this);
-            var formData = $form.serializeArray();
+            var $form = $('.replyPublishArea');
 
-            var threadId = formData[1].value;
-            var textAreaContetn = formData[2].value;
+            var threadId = $form.find('.threadId').val();
+            var textAreaContetn = $form.find('.replyBodyTextArea').val();
 
-            if (textAreaContetn === '' || textAreaContetn == null) {
+            if (textAreaContetn === null || textAreaContetn === '') {
                 return;
             }
 
@@ -286,6 +284,7 @@ $(function () {
             $('.repliesArea').prepend(replycomponent);
         }
     })();
+
     /*
      * To show a flash message from within JavaScript based on server response
      *
