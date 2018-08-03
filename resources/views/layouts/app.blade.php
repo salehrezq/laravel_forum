@@ -12,7 +12,8 @@
 
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-        <link rel="stylesheet" href="{{asset('css/mycss.css')}}"/>
+        <link rel="stylesheet" href="{{asset('css/jquery.atwho.css')}}">
+        <link rel="stylesheet" href="{{asset('css/mycss.css')}}">
     </head>
     <body>
         <div id="app">
@@ -104,6 +105,8 @@
         <script src="{{asset('js/axios.js')}}"></script>
         <script src="{{asset('js/lodash.js')}}"></script>
         <script src="{{asset('js/moment.js')}}"></script>
+        <script src="{{asset('js/jquery.caret.js')}}"></script>
+        <script src="{{asset('js/jquery.atwho.js')}}"></script>
         <script src="{{asset('js/myjs.js')}}"></script>
     </body>
 </html>

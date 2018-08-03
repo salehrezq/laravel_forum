@@ -100,9 +100,9 @@ class RepliesController extends Controller {
 
     protected function metionUsers($reply) {
 
-        preg_match_all("/(?<=[^\w.-]|^)@([A-Za-z_\d]+(?:\.\w+)*)/", $reply->body, $matches);
+        preg_match_all($reply->regexUsernameMention, $reply->body, $matches);
 
-        $usernames = $this->getUsernames($matches);
+        $usernames = $this->getUsernames(array_unique($matches[1]));
 
         if (count($usernames) > 0) {
             $usersIds = User::whereIn('username', $usernames)->get(['id']);
@@ -113,13 +113,13 @@ class RepliesController extends Controller {
 
     private function getUsernames($matches) {
 
-        $length = count($matches[1]);
+        $length = count($matches);
 
         $usernames = [];
 
         for ($i = 0; $i < $length; $i++) {
 
-            $username = $matches[1][$i];
+            $username = $matches[$i];
 
             if ($username === auth()->user()->username) {
                 continue;
