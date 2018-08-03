@@ -12,6 +12,7 @@ class Reply extends Model {
     // When updating a reply or adding a new reply or deleting a reply
     // the updated_at attribute of the corresponding thread will be updated
     protected $touches = ['thread'];
+    public $regexUsernameMention = '/(?<=[^\w.-]|^)@([A-Za-z_\d]+(?:\.\w+)*)/';
 
     protected static function boot() {
 

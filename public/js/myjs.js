@@ -86,7 +86,6 @@ $(function () {
                     listNotifications(respData.unreadNotifications);
                 } else {
                     $notisList.append('<h3>No new notifications yet.</h3>');
-
                 }
 
                 request_in_progress = false;
@@ -176,7 +175,7 @@ $(function () {
                 _method: 'patch'
             }).then((response) => {
                 if (response.data.status === true) {
-                    $link = $(this).find('a');
+                    var $link = $(this).find('a');
                     window.location.href = $link.attr('href');
                 }
             }).catch((response) => {
@@ -214,6 +213,8 @@ $(function () {
             if (textAreaContetn === null || textAreaContetn === '') {
                 return;
             }
+
+            textAreaContetn = getReplyWithMentions(textAreaContetn);
 
             axios.post('/replies', {
                 threadId: threadId,
@@ -274,7 +275,6 @@ $(function () {
                 </div>
                 <div id="reply-container-${replyId}">
                     <div class="card-body" id="reply-body-${replyId}">
-                        ${replyBody}
                     </div>
                 </div>
             </div>
@@ -282,8 +282,77 @@ $(function () {
     </div>`;
 
             $('.repliesArea').prepend(replycomponent);
+            // Append because it contains controlled HTML tags
+            $(`#reply-body-${replyId}`).append(replyBody);
         }
     })();
+
+    { // Prepare Reply with mentions
+
+        function getReplyWithMentions(str) {
+
+            str = escapeHtml(str); // escape unwanted HTML tags
+
+            var regex = /(?<=[^\w.-]|^)@([A-Za-z_\d]+(?:\.\w+)*)/g;
+
+            var matches = str.match(regex);
+
+            if (matches !== null && matches.length > 0) {
+
+                var matches = uniq(matches); // remove duplicates from matches.
+
+                var length = matches.length;
+                for (var i = 0; i < length; i++) {
+                    str = str.replaceAll(matches[i], `<a href='/users/${matches[i].replace('@', '')}' class='at'>${matches[i]}</a>`);
+                }
+            }
+            return str;
+        }
+
+        function escapeHtml(unsafe) {
+
+            return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+        }
+
+        String.prototype.replaceAll = function (search, replacement) {
+            var target = this;
+            search = escapeRegExp(search);
+            return target.replace(new RegExp(search, 'g'), replacement);
+        };
+
+        function escapeRegExp(str) {
+            return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
+        }
+
+        function uniq(a) {
+            var seen = {};
+            return a.filter(function (item) {
+                return seen.hasOwnProperty(item) ? false : (seen[item] = true);
+            });
+        }
+    }
+
+    {
+        /*
+         * To search and fetch usernames from the database when user types @
+         */
+        $('.replyBodyTextArea').atwho({
+            at: "@",
+            delay: 750,
+            callbacks: {
+                remoteFilter: function (query, callback) {
+                    $.getJSON("/api/users", {uname: query}, function (usernames) {
+                        callback(usernames);
+                    });
+                }
+            }
+        });
+    }
 
     /*
      * To show a flash message from within JavaScript based on server response
@@ -304,7 +373,7 @@ $(function () {
      */
     $('body').on('click', '.likeArea .likeReplyBtnToggle', function () {
 
-        $likeArea = $(this).parent();
+        var $likeArea = $(this).parent();
         $id = $likeArea.find('.replyId').val();
 
         axios.post('/users/likereply', {
@@ -324,7 +393,7 @@ $(function () {
 
         var $deleteThreadArea = $(this).parent();
         var $threadBox = $deleteThreadArea.closest('.thread');
-        $id = $deleteThreadArea.find('.threadId').val();
+        var $id = $deleteThreadArea.find('.threadId').val();
 
         axios.post('/threads/delete', {
             _method: 'delete',
@@ -347,7 +416,7 @@ $(function () {
 
         var $deleteReplyArea = $(this).parent();
         var $replyBox = $deleteReplyArea.closest('.reply');
-        $id = $deleteReplyArea.find('.replyId').val();
+        var $id = $deleteReplyArea.find('.replyId').val();
 
         axios.post('/replies/delete', {
             _method: 'delete',

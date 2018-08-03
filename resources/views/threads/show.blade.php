@@ -15,7 +15,7 @@
     <div class="row">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header thread">{{$thread->title}}&nbsp;&nbsp;<span class="threadby">by</span>&nbsp;&nbsp;<a href="{{route('users.show', ['user' => $thread->user->id])}}">{{$thread->user->username}}</a></div>
+                <div class="card-header thread">{{$thread->title}}&nbsp;&nbsp;<span class="threadby">by</span>&nbsp;&nbsp;<a href="{{route('users.show', ['user' => $thread->user->username])}}">{{$thread->user->username}}</a></div>
                 <div class="card-body">
                     {{$thread->body}}
                 </div>
@@ -59,7 +59,7 @@
                 <div class="card">
                     <div class="card-header level">
                         <div class="flex">
-                            By:&nbsp;<a href="{{route('users.show', ['user' => $reply->user_id])}}">{{$reply->user_name}}</a>&nbsp;&nbsp;|&nbsp;&nbsp;{{$reply->createdAtForHumans()}}
+                            By:&nbsp;<a href="{{route('users.show', ['user' => $reply->user_name])}}">{{$reply->user_name}}</a>&nbsp;&nbsp;|&nbsp;&nbsp;{{$reply->createdAtForHumans()}}
                             @can('delete', $reply)
                                 <div class='deleteReplyArea inline'>
                                 <input type="hidden" class='replyId' value="{{$reply->id}}">
@@ -84,7 +84,7 @@
                     </div>
                     <div id="reply-container-{{$reply->id}}">
                         <div class="card-body" id="reply-body-{{$reply->id}}">
-                            {{$reply->body}}
+                            {!! $reply->body !!}
                         </div>
                     </div>
                 </div>
