@@ -111,6 +111,13 @@ class RepliesController extends Controller {
         }
     }
 
+    /**
+     * The purpose of this method is to exclude the owner
+     * of the reply from receiving a mention from himself
+     *
+     * @param $matches
+     * @return array
+     */
     private function getUsernames($matches) {
 
         $length = count($matches);
@@ -178,6 +185,7 @@ class RepliesController extends Controller {
                     }
 
                     $reply->body = $newReplyBody;
+
 
                     if ($reply->save() !== null) {
                         $state = true;
