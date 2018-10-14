@@ -341,17 +341,21 @@ $(function () {
         /*
          * To search and fetch usernames from the database when user types @
          */
-        $('.replyBodyTextArea').atwho({
-            at: "@",
-            delay: 750,
-            callbacks: {
-                remoteFilter: function (query, callback) {
-                    $.getJSON("/api/users", {uname: query}, function (usernames) {
-                        callback(usernames);
-                    });
+        function atwho(selector){
+            $(selector).atwho({
+                at: "@",
+                delay: 750,
+                callbacks: {
+                    remoteFilter: function (query, callback) {
+                        $.getJSON("/api/users", {uname: query}, function (usernames) {
+                            callback(usernames);
+                        });
+                    }
                 }
-            }
-        });
+            });
+        }
+
+        atwho('.replyBodyTextArea');
     }
 
     /*
@@ -462,7 +466,7 @@ $(function () {
             var editingReplyAreaHtml =
                     `<div>
                     <div class="form-group ma-5">
-                        <textarea rows="3" name="replyBody" id="edit-reply-${id}" class="form-control">${oldReplyBody}</textarea>
+                        <textarea rows="3" name="replyBody" id="edit-reply-${id}" class="replyEditBodyTextArea form-control">${oldReplyBody}</textarea>
                     </div>
                     <div class="row ml-10 h-44">
                         <div class='col-xs-6'>
@@ -480,9 +484,13 @@ $(function () {
 
             replyContainer.html(editingReplyAreaHtml);
 
+            atwho('.replyEditBodyTextArea');
+
             replyContainer.off('click').on('click', '.submitReplyBtn', function () {
 
-                var editedReply = $(`#edit-reply-${id}`).val() || ''; // if undefined then empty string will be assigned
+                var replyWithoutMentions = $(`#edit-reply-${id}`).val() || ''; // if undefined then empty string will be assigned
+                var editedReply = getReplyWithMentions(replyWithoutMentions);
+
                 editedReply = editedReply.trim();
 
                 if (editedReply === oldReplyBody || editedReply === '' || editedReply == null) {
@@ -510,7 +518,7 @@ $(function () {
             });
 
             replyContainer.on('click', '.btnCancelEditMode', function () {
-                endEditingMode(oldReplyBody);
+                endEditingMode(getReplyWithMentions(oldReplyBody));
             });
 
             function endEditingMode(editedReply) {
