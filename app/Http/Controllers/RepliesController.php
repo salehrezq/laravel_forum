@@ -186,12 +186,13 @@ class RepliesController extends Controller {
 
                     $reply->body = $newReplyBody;
 
-
                     if ($reply->save() !== null) {
                         $state = true;
+                        $this->metionUsers($reply);
                     } else {
                         $state = false;
                     }
+
                     return response()->json(['state' => $state]);
                 }
             }

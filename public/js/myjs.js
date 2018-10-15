@@ -344,7 +344,7 @@ $(function () {
         function atwho(selector){
             $(selector).atwho({
                 at: "@",
-                delay: 750,
+                delay: 500,
                 callbacks: {
                     remoteFilter: function (query, callback) {
                         $.getJSON("/api/users", {uname: query}, function (usernames) {
@@ -462,7 +462,7 @@ $(function () {
             var $replyArea = $('#reply-body-' + id);
             var oldReplyBody = $replyArea.text().replace(/^\s+|\s+$/g, '');
             var replyContainer = $('#reply-container-' + id);
-
+            var oldReplyBodyForComparison =  getReplyWithMentions(oldReplyBody);
             var editingReplyAreaHtml =
                     `<div>
                     <div class="form-group ma-5">
@@ -493,8 +493,8 @@ $(function () {
 
                 editedReply = editedReply.trim();
 
-                if (editedReply === oldReplyBody || editedReply === '' || editedReply == null) {
-                    endEditingMode(oldReplyBody);
+                if ((editedReply === oldReplyBodyForComparison) || (editedReply === '') || (editedReply == null)) {
+                    endEditingMode(oldReplyBodyForComparison);
                     return;
                 }
 
