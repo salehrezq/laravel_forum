@@ -16,6 +16,9 @@ class EventServiceProvider extends ServiceProvider {
         'App\Events\ModelActivityEvent' => [
             'App\Listeners\ModelActivityEventListener@registerModelActivity',
         ],
+        'App\Events\ReplyEvent' => [
+            'App\Listeners\ReplyEventListener',
+        ],
     ];
 
     /**

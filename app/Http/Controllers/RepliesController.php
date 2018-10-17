@@ -83,9 +83,7 @@ class RepliesController extends Controller {
 
         $reply = $thread->addReply($request->replyBody);
 
-        \App\Subscription::notifySubscribers($thread, $reply);
-
-        $this->metionUsers($reply);
+        event(new \App\Events\ReplyEvent($reply, $thread, 'store'));
 
         return response()->json([
                     'state' => true,
@@ -96,46 +94,6 @@ class RepliesController extends Controller {
                     'replies_count' => $this->getRepliesCount($thread->id),
                     'message' => 'Your reply has been published successfully.'
         ]);
-    }
-
-    protected function metionUsers($reply) {
-
-        preg_match_all($reply->regexUsernameMention, $reply->body, $matches);
-
-        $usernames = $this->getUsernames(array_unique($matches[1]));
-
-        if (count($usernames) > 0) {
-            $usersIds = User::whereIn('username', $usernames)->get(['id']);
-            $users = User::whereIn('id', $usersIds)->get();
-            Notification::send($users, new \App\Notifications\UserMentionNotification($reply->id));
-        }
-    }
-
-    /**
-     * The purpose of this method is to exclude the owner
-     * of the reply from receiving a mention from himself
-     *
-     * @param $matches
-     * @return array
-     */
-    private function getUsernames($matches) {
-
-        $length = count($matches);
-
-        $usernames = [];
-
-        for ($i = 0; $i < $length; $i++) {
-
-            $username = $matches[$i];
-
-            if ($username === auth()->user()->username) {
-                continue;
-            }
-
-            $usernames[] = $username;
-        }
-
-        return $usernames;
     }
 
     /**
@@ -188,7 +146,7 @@ class RepliesController extends Controller {
 
                     if ($reply->save() !== null) {
                         $state = true;
-                        $this->metionUsers($reply);
+                        event(new \App\Events\ReplyEvent($reply, null, 'update'));
                     } else {
                         $state = false;
                     }
