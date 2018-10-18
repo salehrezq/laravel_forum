@@ -36,5 +36,6 @@
     @empty
     <p>There are no threads for the time being.</p>
     @endforelse
+    {{ $threads->links() }}
 </div>
 @endsection
