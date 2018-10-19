@@ -16,6 +16,7 @@ class CreateUsersTable extends Migration {
             $table->increments('id');
             $table->string('username', 20)->unique()->index();
             $table->string('email')->unique()->index();
+            $table->string('avatar_path')->unique()->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
