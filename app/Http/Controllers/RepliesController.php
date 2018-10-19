@@ -89,7 +89,6 @@ class RepliesController extends Controller {
                     'state' => true,
                     'replyId' => $reply->id,
                     'replyBody' => $reply->body,
-                    'replyUserId' => $reply->user_id,
                     'username' => $reply->user->username,
                     'replies_count' => $this->getRepliesCount($thread->id),
                     'message' => 'Your reply has been published successfully.'

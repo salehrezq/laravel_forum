@@ -237,20 +237,19 @@ $(function () {
                 $('.replyBodyTextArea').val('');
                 var replyId = respData.replyId;
                 var replyBody = respData.replyBody;
-                var replyUserId = respData.replyUserId;
-                createReplyElement(replyId, replyBody, replyUserId, respData.username);
+                createReplyElement(replyId, replyBody, respData.username);
                 setRepliesCount(respData.replies_count);
                 showFlashMessage(respData.message);
             }
         });
 
-        function createReplyElement(replyId, replyBody, replyUserId, username) {
+        function createReplyElement(replyId, replyBody, username) {
             var replycomponent = `<div class="row reply">
         <div class="col-md-8" id='reply-${replyId}'>
             <div class="card">
                 <div class="card-header level">
                     <div class="flex">
-                        By:&nbsp;<a href="/users/${replyUserId}">${username}</a>&nbsp;&nbsp;|&nbsp;&nbsp;Just now
+                        By:&nbsp;<a href="/users/${username}">${username}</a>&nbsp;&nbsp;|&nbsp;&nbsp;Just now
                       <!--  @can('delete', $reply) -->
                             <div class='deleteReplyArea inline'>
                             <input type="hidden" class='replyId' value="${replyId}">
