@@ -15,7 +15,11 @@
     <div class="row">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header thread">{{$thread->title}}&nbsp;&nbsp;<span class="threadby">by</span>&nbsp;&nbsp;<a href="{{route('users.show', ['user' => $thread->user->username])}}">{{$thread->user->username}}</a></div>
+                <div class="card-header thread">{{$thread->title}}
+                    &nbsp;<span class="threadby">by</span>
+                    <a href="{{route('users.show', ['user' => $thread->user->username])}}">{{$thread->user->username}}</a>
+                    <img class="float-right" height="42" width="42" src="{{ asset('storage/avatars/'. $avatar_path) }}" alt="">
+                </div>
                 <div class="card-body">
                     {{$thread->body}}
                 </div>

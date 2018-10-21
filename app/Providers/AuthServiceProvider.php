@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use App\Thread;
 use App\Reply;
+use App\User;
 
 class AuthServiceProvider extends ServiceProvider {
 
@@ -18,6 +19,7 @@ class AuthServiceProvider extends ServiceProvider {
         'App\Model' => 'App\Policies\ModelPolicy',
         Thread::class => 'App\Policies\ThreadPolicy',
         Reply::class => 'App\Policies\ReplyPolicy',
+        User::class => 'App\Policies\UserPolicy',
     ];
 
     /**

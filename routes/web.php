@@ -45,6 +45,8 @@ Route::patch('/replies/edit', 'RepliesController@update')->name('replies.update'
 
 Route::post('/users/likereply', 'UsersController@storeLikeReplyToggle')->name('user.like.reply.toggle');
 Route::get('/users/{user}', 'UsersController@show')->name('users.show');
+Route::get('/users/{user}/settings', 'SettingsController@index')->name('users.settings.get');
+Route::post('/users/{user}/settings', 'SettingsController@update')->name('users.settings.post');
 
 Route::post('/subscriptions', 'SubscriptionsController@store')->name('subscriptions.store');
 
@@ -54,3 +56,4 @@ Route::patch('/notifications/markasread/{notification}', 'NotificationsControlle
 Route::patch('/notifications/markallasread/', 'NotificationsController@markAllAsRead')->name('notifications.markallasread');
 
 Route::get('api/users', 'Api\UsersController@index');
+

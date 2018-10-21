@@ -94,9 +94,12 @@ class ThreadsController extends Controller {
 
                 $thread = Thread::select('threads.*', DB::raw("(exists(select * from subscriptions "
                                         . "where user_id = $user_id "
-                                        . "and thread_id = $thread->id)) as was_this_thread_subscribed_to_by_auth_user"))
+                                        . "and thread_id = $thread->id)) as was_this_thread_subscribed_to_by_auth_user"),
+                                       DB::raw("(SELECT avatar_path FROM users INNER JOIN threads ON threads.user_id = users.id WHERE users.id = $user_id) AS avatar_path"))
                         ->where('id', $thread->id)
                         ->first();
+
+                $avatar_path = is_null($thread->avatar_path)? 'default-avatar.jpg' : basename($thread->avatar_path);
 
                 $replies = Reply::select('replies.*', 'users.username as user_name', 'users.id as user_id', DB::raw("(select count(*) "
                                                 . "from `users` inner join `likeables` "
@@ -118,7 +121,7 @@ class ThreadsController extends Controller {
                                 ->latest()->paginate($paginate);
             }
 
-            return view('threads.show', compact('thread', 'replies', 'channelSlug'));
+            return view('threads.show', compact('thread', 'replies', 'channelSlug', 'avatar_path'));
         }
     }
 
