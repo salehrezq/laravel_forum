@@ -2,7 +2,6 @@
 
 @section('content')
    <div class="container">
-       <h>{{ $publicpath }}</h>
        <div class="card" style="width: 18rem;">
            <img class="card-img-top" src="{{ asset('storage/avatars/'.$avatar_path) }}" alt="">
            <div class="card-body">
