@@ -9,7 +9,8 @@ use Illuminate\Support\Str;
 class SettingsController extends Controller
 {
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('auth')->except('index', 'show');
     }
 
@@ -20,19 +21,18 @@ class SettingsController extends Controller
      */
     public function index(User $user)
     {
-        if (auth()->user()->can('view', $user))
-        {
+        if (auth()->user()->can('view', $user)) {
             $avatar_path = $user->avatar_path;
 
             if (isset($avatar_path) && !is_null($avatar_path)) {
                 $avatar_path = basename($avatar_path);
-            }else{
+            } else {
                 $avatar_path = 'default-avatar.jpg';
             }
             return view('settings.show', [
                 'username' => $user->username,
                 'avatar_path' => $avatar_path]);
-        }else{
+        } else {
             return redirect()->route('users.settings.get', auth()->user()->username);
         }
     }
@@ -50,7 +50,7 @@ class SettingsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -61,7 +61,7 @@ class SettingsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -72,7 +72,7 @@ class SettingsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -83,8 +83,8 @@ class SettingsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -92,12 +92,23 @@ class SettingsController extends Controller
         $file = $request->file('user_avatar');
         $user = auth()->user();
 
-        $name =  Str::random(5).'_'.$user->username.'_'.$user->id.'.'.$file->guessClientExtension();
+        $old_avatar_path = $user->avatar_path;
+
+        $name = Str::random(5) . '_' . $user->username . '_' . $user->id . '.' . $file->guessClientExtension();
 
         $path = $file->storeAs('public/avatars', $name);
 
         $user->avatar_path = $path;
-        $user->save();
+
+        $saved = $user->save();
+
+        if ($saved) {
+            // remove the old avatar after saving the new one.
+            if (isset($old_avatar_path) && !is_null($old_avatar_path)) {
+                $old_avatar_path = basename($old_avatar_path);
+                unlink('storage/avatars/' . $old_avatar_path);
+            }
+        }
 
         return back();
     }
@@ -105,7 +116,7 @@ class SettingsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
