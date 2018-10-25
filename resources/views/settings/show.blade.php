@@ -8,7 +8,7 @@
                <p class="card-text">Current profile picture</p>
            </div>
        </div>
-    <form action="/users/{{ $username }}/settings" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('users.settings.post', $username) }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="form-group">
             <label for="exampleFormControlFile1">Upload your avatar</label>
