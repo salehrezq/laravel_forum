@@ -89,6 +89,10 @@ class SettingsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validatedData = $request->validate([
+            'user_avatar' => ['required', 'image', 'max:500']
+        ]);
+
         $file = $request->file('user_avatar');
         $user = auth()->user();
 
