@@ -15,10 +15,11 @@
     <div class="row">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header thread">{{$thread->title}}
+                <div class="card-header thread">
+                    <img class="" height="42" width="42" src="{{ asset('storage/avatars/'. $avatar_path) }}" alt="">
+                    {{$thread->title}}
                     &nbsp;<span class="threadby">by</span>
                     <a href="{{route('users.show', ['user' => $thread->user->username])}}">{{$thread->user->username}}</a>
-                    <img class="float-right" height="42" width="42" src="{{ asset('storage/avatars/'. $avatar_path) }}" alt="">
                 </div>
                 <div class="card-body">
                     {{$thread->body}}
