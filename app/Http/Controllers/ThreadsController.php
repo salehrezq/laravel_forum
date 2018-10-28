@@ -95,7 +95,7 @@ class ThreadsController extends Controller {
                 $thread = Thread::select('threads.*', DB::raw("(exists(select * from subscriptions "
                                         . "where user_id = $user_id "
                                         . "and thread_id = $thread->id)) as was_this_thread_subscribed_to_by_auth_user"),
-                                       DB::raw("(SELECT avatar_path FROM users INNER JOIN threads ON threads.user_id = users.id WHERE users.id = $user_id) AS avatar_path"))
+                                       DB::raw("(SELECT avatar_path FROM users INNER JOIN threads ON threads.user_id = users.id WHERE users.id = $thread->user_id limit 1) AS avatar_path"))
                         ->where('id', $thread->id)
                         ->first();
 
