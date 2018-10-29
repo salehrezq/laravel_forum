@@ -11,10 +11,13 @@ use App\Inspections\Spam;
 use App\Thread;
 use App\Reply;
 use App\Channel;
+use App\Helpers\Trending;
 
-class ThreadsController extends Controller {
+class ThreadsController extends Controller
+{
 
-    public function __construct() {
+    public function __construct()
+    {
         return $this->middleware('auth')->except('index', 'show');
     }
 
@@ -23,7 +26,8 @@ class ThreadsController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Channel $channelSlug = null) {
+    public function index(Channel $channelSlug = null)
+    {
 
         $threadsFilters = new ThreadsFilters(request());
 
@@ -45,22 +49,24 @@ class ThreadsController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function create() {
+    public function create()
+    {
         return view('threads.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
-                    'threadTitle' => ['required', new \App\Rules\SpamFree()],
-                    'threadBody' => ['required', new \App\Rules\SpamFree()],
-                    'channelId' => 'required|exists:channels,id'
+            'threadTitle' => ['required', new \App\Rules\SpamFree()],
+            'threadBody' => ['required', new \App\Rules\SpamFree()],
+            'channelId' => 'required|exists:channels,id'
         ]);
 
         if ($validator->fails()) {
@@ -68,10 +74,10 @@ class ThreadsController extends Controller {
         }
 
         $savedThread = Thread::create([
-                    'user_id' => auth()->id(),
-                    'channel_id' => $request->channelId,
-                    'title' => $request->threadTitle,
-                    'body' => $request->threadBody
+            'user_id' => auth()->id(),
+            'channel_id' => $request->channelId,
+            'title' => $request->threadTitle,
+            'body' => $request->threadBody
         ]);
 
         return redirect($savedThread->path())->with('flash', 'Your thread has been published successfully.');
@@ -80,10 +86,13 @@ class ThreadsController extends Controller {
     /**
      * Display the specified resource.
      *
-     * @param  \App\Thread  $thread
+     * @param  \App\Thread $thread
      * @return \Illuminate\Http\Response
      */
-    public function show(Channel $channelSlug, Thread $thread) {
+    public function show(Channel $channelSlug, Thread $thread, Trending $trending)
+    {
+
+        $trending->incrementViews($thread->id);
 
         if ($thread->channel_id === $channelSlug->id) {
 
@@ -93,32 +102,32 @@ class ThreadsController extends Controller {
                 $user_id = auth()->id();
 
                 $thread = Thread::select('threads.*', DB::raw("(exists(select * from subscriptions "
-                                        . "where user_id = $user_id "
-                                        . "and thread_id = $thread->id)) as was_this_thread_subscribed_to_by_auth_user"),
-                                       DB::raw("(SELECT avatar_path FROM users INNER JOIN threads ON threads.user_id = users.id WHERE users.id = $thread->user_id limit 1) AS avatar_path"))
-                        ->where('id', $thread->id)
-                        ->first();
+                    . "where user_id = $user_id "
+                    . "and thread_id = $thread->id)) as was_this_thread_subscribed_to_by_auth_user"),
+                    DB::raw("(SELECT avatar_path FROM users INNER JOIN threads ON threads.user_id = users.id WHERE users.id = $thread->user_id limit 1) AS avatar_path"))
+                    ->where('id', $thread->id)
+                    ->first();
 
-                $avatar_path = is_null($thread->avatar_path)? 'default-avatar.jpg' : basename($thread->avatar_path);
+                $avatar_path = is_null($thread->avatar_path) ? 'default-avatar.jpg' : basename($thread->avatar_path);
 
                 $replies = Reply::select('replies.*', 'users.username as user_name', 'users.id as user_id', DB::raw("(select count(*) "
-                                                . "from `users` inner join `likeables` "
-                                                . "on `users`.`id` = `likeables`.`user_id` "
-                                                . "where `replies`.`id` = `likeables`.`likeable_id` "
-                                                . "and `likeables`.`likeable_type` = 'App\\\Reply') "
-                                                . "as `users_likes_count`"), DB::raw("(exists(select * from `likeables` "
-                                                . "where `user_id` = $user_id and `likeable_id` = `replies`.`id`)) "
-                                                . "as `was_this_reply_liked_by_auth_user`"))
-                                ->join('users', 'users.id', '=', 'replies.user_id')
-                                ->where('thread_id', '=', $thread->id)
-                                ->latest()->paginate($paginate);
+                    . "from `users` inner join `likeables` "
+                    . "on `users`.`id` = `likeables`.`user_id` "
+                    . "where `replies`.`id` = `likeables`.`likeable_id` "
+                    . "and `likeables`.`likeable_type` = 'App\\\Reply') "
+                    . "as `users_likes_count`"), DB::raw("(exists(select * from `likeables` "
+                    . "where `user_id` = $user_id and `likeable_id` = `replies`.`id`)) "
+                    . "as `was_this_reply_liked_by_auth_user`"))
+                    ->join('users', 'users.id', '=', 'replies.user_id')
+                    ->where('thread_id', '=', $thread->id)
+                    ->latest()->paginate($paginate);
 
                 auth()->user()->readThread($thread->id);
             } else {//guest:
                 $replies = Reply::select('replies.user_id', 'replies.body', 'replies.created_at', 'users.username as user_name')
-                                ->join('users', 'replies.user_id', '=', 'users.id')
-                                ->where('replies.thread_id', $thread->id)
-                                ->latest()->paginate($paginate);
+                    ->join('users', 'replies.user_id', '=', 'users.id')
+                    ->where('replies.thread_id', $thread->id)
+                    ->latest()->paginate($paginate);
             }
 
             return view('threads.show', compact('thread', 'replies', 'channelSlug', 'avatar_path'));
@@ -128,31 +137,34 @@ class ThreadsController extends Controller {
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Thread  $thread
+     * @param  \App\Thread $thread
      * @return \Illuminate\Http\Response
      */
-    public function edit(Thread $thread) {
+    public function edit(Thread $thread)
+    {
         //
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Thread  $thread
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Thread $thread
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Thread $thread) {
+    public function update(Request $request, Thread $thread)
+    {
         //
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Thread  $thread
+     * @param  \App\Thread $thread
      * @return \Illuminate\Http\Response
      */
-    public function destroy() {
+    public function destroy()
+    {
 
         $thread = Thread::find(request('thread_id'));
 
@@ -176,7 +188,8 @@ class ThreadsController extends Controller {
         }
     }
 
-    private function isFiltered($queryFilters) {
+    private function isFiltered($queryFilters)
+    {
 
         $requestQueryFilters = request()->all();
 
