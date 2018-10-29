@@ -35,6 +35,9 @@
                                 <div class="card-body">
                                     {{$thread->body}}
                                 </div>
+                                <div class="card-footer text-muted">
+                                    views: {{ $thread->views }}
+                                </div>
                             </div>
                         </div>
                     </div>
