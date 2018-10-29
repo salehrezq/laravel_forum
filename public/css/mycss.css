@@ -7,25 +7,25 @@ and open the template in the editor.
     Created on : Jun 16, 2018, 11:18:54 PM
     Author     : Saleh
 */
-.card{
+.card {
     margin-top: 10px;
 }
 
-.card-header{
+.card-header {
     padding: 0.3rem 1.25rem;
 }
 
-.card-header.thread{
+.card-header.thread {
     padding: 0.3rem .5rem;
     background-color: rgba(187, 156, 81, 0.41);
     font-weight: bold;
 }
 
-.threadby{
+.threadby {
     color: #6633ff;
 }
 
-.padding10{
+.padding10 {
     padding: 10px;
 }
 
@@ -36,42 +36,42 @@ and open the template in the editor.
 }
 
 @media only screen and (max-width: 960px) {
-    .div-left{
+    .div-left {
         with: 445px;
     }
 }
 
-.menu-channels-link{
+.menu-channels-link {
     padding: .3rem .9rem .3rem .0rem;
     color: #191919;
     font-size: 1rem;
 }
 
-.navbar-brand{
+.navbar-brand {
     font-size: 1rem;
 }
 
-.errors-create-thread{
+.errors-create-thread {
     margin-top: 15px;
 }
 
-.pagination{
+.pagination {
     margin: 0 auto;
     width: 50%;
 }
 
-.level{
+.level {
     display: flex;
     align-items: center;
 }
 
-.flex{
+.flex {
     flex: 1;
 }
 
-span.btn-span{
+span.btn-span {
     color: #007bff;
-    cursor:pointer;
+    cursor: pointer;
     text-decoration: none;
     background-color: transparent;
     -webkit-text-decoration-skip: objects;
@@ -86,30 +86,30 @@ span.btn-span:hover {
     text-decoration: underline;
 }
 
-.redirect-alert{
+.redirect-alert {
     position: fixed;
     right: 35px;
     bottom: 57px;
 }
 
-.inline{
+.inline {
     display: inline;
 }
 
-.ml-10{
+.ml-10 {
     margin-left: 10px;
 }
 
-.ma-5{
+.ma-5 {
     margin: 5px;
 }
 
-.h-44{
+.h-44 {
     height: 44px;
 }
 
-.disable{
-    color:#d3d3d3;
+.disable {
+    color: #d3d3d3;
 }
 
 /*
@@ -120,45 +120,46 @@ Notifications
     background-repeat: no-repeat;
     width: 24px;
     height: 24px;
-    cursor:pointer;
+    cursor: pointer;
 }
 
-.btn-noti-released{
+.btn-noti-released {
     background-image: url(../images/bell_released.png);
 }
-.btn-noti-clicked{
+
+.btn-noti-clicked {
     background-image: url(../images/bell_clicked.png);
 }
 
 .noti-counter {
-    display:block;
-    position:absolute;
-    background:#E1141E;
-    color:#FFF;
-    font-size:12px;
-    font-weight:normal;
-    padding:1px 3px;
+    display: block;
+    position: absolute;
+    background: #E1141E;
+    color: #FFF;
+    font-size: 12px;
+    font-weight: normal;
+    padding: 1px 3px;
     margin: 6px 0px 0px 13px;
-    border-radius:2px;
-    -moz-border-radius:2px;
-    -webkit-border-radius:2px;
-    z-index:1;
+    border-radius: 2px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    z-index: 1;
 }
 
 /* The notifications window; this remains hidden when the page loads */
 .notifications {
-    display:none;
-    width:430px;
-    position:relative;
+    display: none;
+    width: 430px;
+    position: relative;
     top: 31px;
     left: -8px;
-    background:#FFF;
-    border:solid 1px rgba(100, 100, 100, .20);
-    -webkit-box-shadow:0 3px 8px rgba(0, 0, 0, .20);
+    background: #FFF;
+    border: solid 1px rgba(100, 100, 100, .20);
+    -webkit-box-shadow: 0 3px 8px rgba(0, 0, 0, .20);
     z-index: 1;
 }
 
-.notis-list{
+.notis-list {
     height: 300px;
     overflow-y: auto;
 }
@@ -166,53 +167,55 @@ Notifications
 /* An arrow like structure just over the notifications windows */
 .notifications:before {
     content: '';
-    display:block;
-    width:0;
-    height:0;
-    color:transparent;
-    border:10px solid #CCC;
-    border-color:transparent transparent #42997d;
-    margin-top:-20px;
-    margin-left:10px;
+    display: block;
+    width: 0;
+    height: 0;
+    color: transparent;
+    border: 10px solid #CCC;
+    border-color: transparent transparent #42997d;
+    margin-top: -20px;
+    margin-left: 10px;
 }
 
 div.noti-head {
-    border-bottom:solid 1px rgba(100, 100, 100, .30);
+    border-bottom: solid 1px rgba(100, 100, 100, .30);
     cursor: default;
 }
 
-h3.noti-head{
+h3.noti-head {
     display: initial;
-    color:#333;
-    background:#FFF;
-    font-weight:bold;
-    font-size:15px;
-    padding:8px;
-    margin:0 0 0 0;
+    color: #333;
+    background: #FFF;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 8px;
+    margin: 0 0 0 0;
 }
 
-.padding-8{
-    padding:8px;
+.padding-8 {
+    padding: 8px;
 }
 
 .seeAll {
-    background:#F6F7F8;
-    padding:8px;
-    font-size:12px;
-    font-weight:bold;
-    border-top:solid 1px rgba(100, 100, 100, .30);
-    text-align:center;
-}
-.seeAll a {
-    color:#3b5998;
-}
-.seeAll a:hover {
-    background:#F6F7F8;
-    color:#3b5998;
-    text-decoration:underline;
+    background: #F6F7F8;
+    padding: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    border-top: solid 1px rgba(100, 100, 100, .30);
+    text-align: center;
 }
 
-.noti-item{
+.seeAll a {
+    color: #3b5998;
+}
+
+.seeAll a:hover {
+    background: #F6F7F8;
+    color: #3b5998;
+    text-decoration: underline;
+}
+
+.noti-item {
     width: 428px;
     white-space: normal;
     word-wrap: break-word;
@@ -221,37 +224,37 @@ h3.noti-head{
     margin-bottom: 10px;
 }
 
-.noti-item:hover{
+.noti-item:hover {
     background-color: #f6f6f6;
 }
 
-.bb{
+.bb {
     border-bottom: #333333 solid 1px;
 }
 
-.mt{
+.mt {
     margin-top: -4px;
 }
 
-.a-noti-item:hover, .a-noti-item:visited, .a-noti-item:link, .a-noti-item:active{
+.a-noti-item:hover, .a-noti-item:visited, .a-noti-item:link, .a-noti-item:active {
     color: #000;
     text-decoration: none;
 
 }
 
-.noti-time{
+.noti-time {
     border-bottom: none;
     text-decoration: none;
     display: block;
-    cursor:pointer !important;
+    cursor: pointer !important;
     color: #90949c;
 }
 
-.noti-name{
+.noti-name {
     font-weight: 600;
 }
 
-.noti-thread-title{
+.noti-thread-title {
     background-color: #12814708;
 }
 

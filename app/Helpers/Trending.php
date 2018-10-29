@@ -22,8 +22,9 @@ class Trending
     public function getTrendingThreads()
     {
         return Thread::where('views', '>', 0)
+            ->with('channel')
             ->orderBy('views', 'desc')
-            ->take(10)
+            ->take(5)
             ->get();
     }
 

@@ -41,7 +41,10 @@ class ThreadsController extends Controller
 
         $threads = $threads->with('user')->with('channel')->paginate(25);
 
-        return view('threads.index', compact('threads'));
+        $trending = new Trending();
+        $trendingThreads = $trending->getTrendingThreads();
+
+        return view('threads.index', compact('threads', 'trendingThreads'));
     }
 
     /**
