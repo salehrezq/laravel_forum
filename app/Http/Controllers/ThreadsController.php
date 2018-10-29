@@ -11,7 +11,6 @@ use App\Inspections\Spam;
 use App\Thread;
 use App\Reply;
 use App\Channel;
-use App\Helpers\Trending;
 
 class ThreadsController extends Controller
 {
@@ -41,8 +40,7 @@ class ThreadsController extends Controller
 
         $threads = $threads->with('user')->with('channel')->paginate(25);
 
-        $trending = new Trending();
-        $trendingThreads = $trending->getTrendingThreads();
+        $trendingThreads = $this->getTrendingThreads();
 
         return view('threads.index', compact('threads', 'trendingThreads'));
     }
@@ -92,10 +90,10 @@ class ThreadsController extends Controller
      * @param  \App\Thread $thread
      * @return \Illuminate\Http\Response
      */
-    public function show(Channel $channelSlug, Thread $thread, Trending $trending)
+    public function show(Channel $channelSlug, Thread $thread)
     {
 
-        $trending->incrementViews($thread->id);
+        $thread->increment('views');
 
         if ($thread->channel_id === $channelSlug->id) {
 
@@ -202,6 +200,15 @@ class ThreadsController extends Controller
             }
         }
         return false;
+    }
+
+    private function getTrendingThreads()
+    {
+        return Thread::where('views', '>', 0)
+            ->with('channel')
+            ->orderBy('views', 'desc')
+            ->take(5)
+            ->get();
     }
 
 }
