@@ -5,7 +5,8 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable {
+class User extends Authenticatable
+{
 
     use Notifiable;
 
@@ -15,7 +16,7 @@ class User extends Authenticatable {
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'avatar_path'
+        'username', 'email', 'password', 'avatar_path'
     ];
 
     /**
@@ -27,55 +28,64 @@ class User extends Authenticatable {
         'password', 'remember_token',
     ];
 
-    public function getRouteKeyName() {
+    public function getRouteKeyName()
+    {
         return 'username';
     }
 
-    public function threads() {
+    public function threads()
+    {
         return $this->hasMany(Thread::class);
     }
 
-    public function replies() {
+    public function replies()
+    {
         return $this->hasMany(Reply::class);
     }
 
-    public function likedReplies() {
+    public function likedReplies()
+    {
         return $this->morphedByMany(Reply::class, 'likeable');
     }
 
-    public function likeReplyToggle($reply) {
+    public function likeReplyToggle($reply)
+    {
         return $this->likedReplies()->toggle($reply);
     }
 
-    public function activities() {
+    public function activities()
+    {
         return $this->hasMany(Activity::class);
     }
 
-    public function subscribedThreads() {
+    public function subscribedThreads()
+    {
         return $this->hasMany(Subscription::class);
     }
 
     /**
      * Creates a formatted key to be used in the cache
-     * 
+     *
      * user.user_id.visited.thread_id
-     * 
+     *
      * Example: user.7.visited.35
-     * 
+     *
      * @param integer $threadId
      * @return string
      */
-    public function visitedThreadCacheKey($threadId) {
+    public function visitedThreadCacheKey($threadId)
+    {
         return sprintf("user.%s.visited.%s", auth()->id(), $threadId);
     }
 
     /**
      * Stores the timestamp in the cache; The timestamp of
      * when the user has recently visited the thread of $threadId
-     * 
+     *
      * @param integer $threadId
      */
-    public function readThread($threadId) {
+    public function readThread($threadId)
+    {
 
         $key = $this->visitedThreadCacheKey($threadId);
         cache()->forever($key, \Carbon\Carbon::now());
@@ -83,18 +93,19 @@ class User extends Authenticatable {
 
     /**
      * Checks if user has seen latest updates of a thread
-     * 
+     *
      * What considered as updated thread is any of these four things:
-     * 
+     *
      * - Updating any of the thread attributes.
      * - Updating a reply that belongs to the thread.
      * - Adding new reply to the thread.
      * - Deleting a reply from the thread
-     * 
+     *
      * @param Thread|Model $thread
      * @return boolean
      */
-    public function hasNotSeenLatestUpdatesFor($thread) {
+    public function hasNotSeenLatestUpdatesFor($thread)
+    {
 
         if (auth()->guest()) {
             return false;
@@ -113,14 +124,15 @@ class User extends Authenticatable {
 
     /**
      * Get the latest reply of this user.
-     * 
+     *
      * @return Reply|Model
      */
-    public function latestReply() {
+    public function latestReply()
+    {
 
         return Reply::where('user_id', $this->id)
-                        ->orderBy('created_at', 'desc')
-                        ->first();
+            ->orderBy('created_at', 'desc')
+            ->first();
     }
 
 }
