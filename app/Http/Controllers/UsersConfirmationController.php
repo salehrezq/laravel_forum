@@ -54,8 +54,9 @@ class UsersConfirmationController extends Controller
     {
         $user = User::find(auth()->id());
 
-        if ($user->confirmation_hash === $hash) {
-            $user->confirmed = 1;
+        if (auth()->user()->confirmation_hash === $hash) {
+            $user->confirmed = true;
+            $user->save();
         }
     }
 

@@ -7,5 +7,6 @@
 <body>
 <h>Thanks for registering to our service</h>
 <p>You have registered with username <strong>{{$user->name}}</strong> and email <strong>{{$user->email}}</strong></p>
+<p>You hash is {{ $user->confirmation_hash }}</p>
 </body>
 </html>
