@@ -55,5 +55,7 @@ Route::get('/notifications/{page}', 'NotificationsController@index')->name('noti
 Route::patch('/notifications/markasread/{notification}', 'NotificationsController@markAsRead')->name('notifications.markasread');
 Route::patch('/notifications/markallasread/', 'NotificationsController@markAllAsRead')->name('notifications.markallasread');
 
+Route::get('/confirmationurl/{hash}', 'UsersConfirmationController@show');
+
 Route::get('api/users', 'Api\UsersController@index');
 
