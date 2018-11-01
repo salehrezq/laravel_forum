@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use App\Mail\ConfirmationEmail;
 
-class UsersConfirmationController extends Controller
+class UsersEmailConfirmationController extends Controller
 {
 
     public function __construct()
@@ -45,19 +46,36 @@ class UsersConfirmationController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Confirm the authenticated user's email
      *
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($hash)
+    public function confirmEmail($hash)
     {
         $user = User::find(auth()->id());
 
         if (auth()->user()->confirmation_hash === $hash) {
             $user->confirmed = true;
             $user->save();
+            return back();
+        } else {
+            return view('auth.confirm-email.resend-conf-mail');
         }
+    }
+
+    /**
+     * Resend the confirmation link to the authenticated user's email
+     */
+    public function confirmEmailResend()
+    {
+        $user = User::find(auth()->id());
+
+        $user->confirmation_hash = str_random(60);
+        $user->save();
+
+        \Mail::to($user)->send(new ConfirmationEmail($user));
+        return back();
     }
 
     /**

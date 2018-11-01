@@ -30,6 +30,7 @@ class ConfirmationEmail extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.confirmationemail');
+        return $this->view('emails.confirmationemail')
+            ->subject('Forum Confirmation Link');
     }
 }
