@@ -53,9 +53,13 @@ class UsersEmailConfirmationController extends Controller
      */
     public function confirmEmail($hash)
     {
-        $user = User::find(auth()->id());
+        $user = auth()->user();
 
-        if (auth()->user()->confirmation_hash === $hash) {
+        if ($user->email_confirmed) {
+            return view('auth.confirm-email.email-confirmed');
+        }
+
+        if ($user->confirmation_hash === $hash) {
             $user->email_confirmed = true;
             $user->save();
             return back();
@@ -69,13 +73,17 @@ class UsersEmailConfirmationController extends Controller
      */
     public function confirmEmailResend()
     {
-        $user = User::find(auth()->id());
+        $user = auth()->user();
+
+        if ($user->email_confirmed) {
+            return view('auth.confirm-email.email-confirmed');
+        }
 
         $user->confirmation_hash = str_random(60);
         $user->save();
 
         \Mail::to($user)->send(new ConfirmationEmail($user));
-        return back();
+        return back()->with('confirm-email-sent-flash', 'A new confirmation link has been sent; check your email.');
     }
 
     /**

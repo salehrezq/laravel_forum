@@ -16,10 +16,10 @@ $(function () {
         var notiCount = $('.noti-count').val();
         if (notiCount > 0) {
             $notiCountEl
-                    .css({opacity: 0})
-                    .text(notiCount)
-                    .css({top: '-10px'})
-                    .animate({top: '-2px', opacity: 1}, 500);
+                .css({opacity: 0})
+                .text(notiCount)
+                .css({top: '-10px'})
+                .animate({top: '-2px', opacity: 1}, 500);
         }
 
         $('.btn-notify').on('click', function () {
@@ -311,11 +311,11 @@ $(function () {
         function escapeHtml(unsafe) {
 
             return unsafe
-                    .replace(/&/g, "&amp;")
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;")
-                    .replace(/"/g, "&quot;")
-                    .replace(/'/g, "&#039;");
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
         }
 
         String.prototype.replaceAll = function (search, replacement) {
@@ -340,7 +340,7 @@ $(function () {
         /*
          * To search and fetch usernames from the database when user types @
          */
-        function atwho(selector){
+        function atwho(selector) {
             $(selector).atwho({
                 at: "@",
                 delay: 500,
@@ -360,6 +360,8 @@ $(function () {
     /*
      * To show a flash message from within JavaScript based on server response
      *
+     * used in path: resources\views\layouts\app.blade.php
+     *
      * @param string message
      * @returns void
      */
@@ -370,6 +372,15 @@ $(function () {
             $(this).remove();
         });
     }
+
+    /**
+     * used in path: resources\views\layouts\app.blade.php
+     */
+    $('body').on('click', '.email-confirm-flash-close', function () {
+        $(this).closest('.container').fadeOut(700, function () {
+            $(this).remove();
+        });
+    });
 
     /**
      * used in path: resources\views\threads\show.blade.php
@@ -461,9 +472,9 @@ $(function () {
             var $replyArea = $('#reply-body-' + id);
             var oldReplyBody = $replyArea.text().replace(/^\s+|\s+$/g, '');
             var replyContainer = $('#reply-container-' + id);
-            var oldReplyBodyForComparison =  getReplyWithMentions(oldReplyBody);
+            var oldReplyBodyForComparison = getReplyWithMentions(oldReplyBody);
             var editingReplyAreaHtml =
-                    `<div>
+                `<div>
                     <div class="form-group ma-5">
                         <textarea rows="3" name="replyBody" id="edit-reply-${id}" class="replyEditBodyTextArea form-control">${oldReplyBody}</textarea>
                     </div>

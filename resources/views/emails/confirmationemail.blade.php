@@ -5,7 +5,7 @@
     <title>Welcome</title>
 </head>
 <body>
-<h>Thanks for registering to our service</h>
+<h>Thanks for registering to our forum</h>
 <p>You have registered with username <strong>{{$user->username}}</strong> and email <strong>{{$user->email}}</strong>
 </p>
 <p>You must be logged in before clicking on the confirmation link</p>
