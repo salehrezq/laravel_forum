@@ -62,7 +62,7 @@ class UsersEmailConfirmationController extends Controller
         if ($user->confirmation_hash === $hash) {
             $user->email_confirmed = true;
             $user->save();
-            return back();
+            return view('auth.confirm-email.email-confirmed');
         } else {
             return view('auth.confirm-email.resend-conf-mail');
         }
@@ -71,7 +71,21 @@ class UsersEmailConfirmationController extends Controller
     /**
      * Resend the confirmation link to the authenticated user's email
      */
-    public function confirmEmailResend()
+    public function createConfirmEmailResend()
+    {
+        $user = auth()->user();
+
+        if ($user->email_confirmed) {
+            return view('auth.confirm-email.email-confirmed');
+        }
+
+        return view('auth.confirm-email.resend-conf-mail');
+    }
+
+    /**
+     * Resend the confirmation link to the authenticated user's email
+     */
+    public function storeConfirmEmailResend()
     {
         $user = auth()->user();
 

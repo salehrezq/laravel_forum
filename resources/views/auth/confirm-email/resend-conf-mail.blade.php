@@ -18,7 +18,7 @@
                             </p>
                             <p>Check your email after you click the resend button</p>
                         </div>
-                        <form action="{{ route('confirm.user.email.resend') }}" method="GET">
+                        <form action="{{ route('confirm.user.email.resend.post') }}" method="POST">
                             @csrf
                             <div class="form-group row mb-0">
                                 <div class="col offset-5">

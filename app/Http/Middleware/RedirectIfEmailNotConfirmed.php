@@ -16,7 +16,7 @@ class RedirectIfEmailNotConfirmed
     public function handle($request, Closure $next)
     {
         if (!$request->user()->email_confirmed) {
-            return redirect()->route('confirm.user.email.resend');
+            return redirect()->route('confirm.user.email.resend.get');
         }
 
         return $next($request);
