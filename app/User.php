@@ -140,4 +140,10 @@ class User extends Authenticatable
             ->first();
     }
 
+    public function confirmEmail()
+    {
+        $this->email_confirmed = true;
+        $this->save();
+    }
+
 }
