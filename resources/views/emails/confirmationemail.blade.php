@@ -1,16 +1,17 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <title>Welcome</title>
-</head>
-<body>
-<h>Thanks for registering to our forum</h>
+@component('mail::message')
+# Confirmation Email
+
+Thanks for registering to our forum
+
 <p>You have registered with username <strong>{{$user->username}}</strong> and email <strong>{{$user->email}}</strong>
 </p>
-<p>You must be logged in before clicking on the confirmation link</p>
-<p>Your confirmation link is: <a href="{{ route('confirm.user.email', $user->confirmation_hash) }}">Link</a></p>
-<p>Or copy the following link and paste it into the address bar of your browser</p>
-<p>{{ route('confirm.user.email', $user->confirmation_hash) }}</p>
-</body>
-</html>
+<p>Click on the following link to confirm your email. You must be logged in before clicking on the confirmation link:</p>
+@component('mail::button', ['url' => route('confirm.user.email', $user->confirmation_hash)])
+    confirmation link
+@endcomponent
+<p>Or copy the following link and paste it into the address bar of your browser:</p>
+<p><strong>{{ route('confirm.user.email', $user->confirmation_hash) }}</strong></p>
+
+Thanks,<br>
+{{ config('app.name') }} Team
+@endcomponent
