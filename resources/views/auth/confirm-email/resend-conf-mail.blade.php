@@ -12,11 +12,12 @@
                                 email and open the message named "Forum Confirmation Link" from us and follow the
                                 instruction in the message.
                             </p>
-                            <p>If you have already followed the instructions but still redirected to this page, then
+                            <p>If you don't find the email message or you have already followed the instructions but
+                                still redirected to this page, then
                                 click on the resend button below to resend a new confirmation link message to your
                                 email.
                             </p>
-                            <p>Check your email after you click the resend button</p>
+                            <p>Check your email after clicking the resend button</p>
                         </div>
                         <form action="{{ route('confirm.user.email.resend.post') }}" method="POST">
                             @csrf
