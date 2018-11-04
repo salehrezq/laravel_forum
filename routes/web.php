@@ -55,9 +55,9 @@ Route::get('/notifications/{page}', 'NotificationsController@index')->name('noti
 Route::patch('/notifications/markasread/{notification}', 'NotificationsController@markAsRead')->name('notifications.markasread');
 Route::patch('/notifications/markallasread/', 'NotificationsController@markAllAsRead')->name('notifications.markallasread');
 
-Route::get('/confirmationurl/{hash}', 'UsersEmailConfirmationController@confirmEmail')->name('confirm.user.email');
-Route::get('/confirmationurl/mail/resend', 'UsersEmailConfirmationController@createConfirmEmailResend')->name('confirm.user.email.resend.get');
-Route::post('/confirmationurl/mail/resend', 'UsersEmailConfirmationController@storeConfirmEmailResend')->name('confirm.user.email.resend.post');
+Route::get('/confirmationurl/{hash}', 'Auth\EmailConfirmationController@confirmEmail')->name('confirm.user.email');
+Route::get('/confirmationurl/mail/resend', 'Auth\EmailConfirmationController@createConfirmEmailResend')->name('confirm.user.email.resend.get');
+Route::post('/confirmationurl/mail/resend', 'Auth\EmailConfirmationController@storeConfirmEmailResend')->name('confirm.user.email.resend.post');
 
 Route::get('api/users', 'Api\UsersController@index');
 
