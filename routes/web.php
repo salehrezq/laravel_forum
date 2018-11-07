@@ -20,9 +20,9 @@ Route::get('/', function () {
     return view('note');
 });
 
-//Route::get('/', function () {
-//    return view('welcome');
-//});
+Route::get('/', function () {
+    return redirect(route('threads.index'));
+});
 
 Auth::routes();
 
