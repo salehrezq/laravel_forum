@@ -32,10 +32,14 @@ $factory->define(App\Channel::class, function (Faker $faker) {
 });
 
 $factory->define(App\Thread::class, function (Faker $faker) {
+
+    $title = $faker->sentence;
+
     return [
         'user_id' => mt_rand(1, 20),
-        'title' => $faker->sentence,
+        'title' => $title,
         'body' => $faker->paragraph,
+        'title_slug' => $title,
         'channel_id' => mt_rand(1, 10),
     ];
 });

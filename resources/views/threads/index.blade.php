@@ -51,7 +51,7 @@
                         <ul class="list-group">
                             @foreach($trendingThreads as $thread)
                                 <li class="list-group-item"><a
-                                            href="{{ 'threads/' . $thread->channel->slug . '/' . $thread->id}}">{{ $thread->title }}</a>
+                                            href="{{ $thread->path() }}">{{ $thread->title }}</a>
                                 </li>
                             @endforeach
                         </ul>
