@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Http\Controllers\Helpers\QueryFilters;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Event;
 use App\Events\ModelActivityEvent;
@@ -104,14 +105,21 @@ class Thread extends Model
         return $this->created_at->diffForHumans();
     }
 
-    public function setTitleSlugAttribute($title)
-    {
-        $this->attributes['title_slug'] = str_slug($title);
-    }
-
     public function getRouteKeyName()
     {
         return 'title_slug';
+    }
+
+    public function setTitleSlugAttribute($title)
+    {
+        $title_slug = str_slug($title);
+
+        if (static::where('title_slug', $title_slug)->exists()) {
+            do {
+                $title_slug = "{$title_slug}-" . time() . strtolower(str_random(5));
+            } while (static::where('title_slug', $title_slug)->exists());
+        }
+        $this->attributes['title_slug'] = $title_slug;
     }
 
 }
