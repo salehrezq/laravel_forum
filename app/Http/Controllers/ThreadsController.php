@@ -130,6 +130,9 @@ class ThreadsController extends Controller
                     ->join('users', 'replies.user_id', '=', 'users.id')
                     ->where('replies.thread_id', $thread->id)
                     ->latest()->paginate($paginate);
+
+                $avatar_path = $thread->user->avatar_path;
+                $avatar_path = is_null($avatar_path) ? 'default-avatar.jpg' : basename($avatar_path);
             }
 
             return view('threads.show', compact('thread', 'replies', 'channelSlug', 'avatar_path'));
