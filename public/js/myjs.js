@@ -266,11 +266,16 @@ $(function () {
                     </div>
                   <!--  @if(auth()->check()) -->
                     <div class='likeArea'>
+                    <span>Likes:&nbsp;</span>
                         <span class="likesCounter">0</span>
                         <input type="hidden" class='replyId' value="${replyId}">
                         <span class='btn-span likeReplyBtnToggle'>Like</span>
                     </div>
                  <!--   @endif -->
+                 <!--@can('setBestReply', $thread)-->
+                     <i title="Mark as best reply"
+                     class="fas fa-check best-reply-icon best-reply-icon-unselected"></i>
+                 <!--@endcan-->
                 </div>
                 <div id="reply-container-${replyId}">
                     <div class="card-body" id="reply-body-${replyId}">
@@ -537,6 +542,49 @@ $(function () {
                 $editBtn.addClass('editReplyBtn btn-span').remove('disable')
             }
         });
+    })();
+
+
+    (function setBestReply() {
+
+        $('body').on('click', '.best-reply-icon.enabled', function () {
+
+            var $button = $(this);
+            enableButton($button, false);
+
+            var $setBestReplyArea = $button.parent();
+            var replyId = $setBestReplyArea.find('.replyId').val();
+
+            axios.post('/best-replies/store/', {
+                replyId: replyId
+            }).then((response) => {
+                if (response.data.state === true) {
+                    // Ensure no button has the selected color:
+                    $('.best-reply-icon').removeClass('best-reply-icon-selected');
+                    // Target only the clicked one now:
+                    $button.addClass('best-reply-icon-selected');
+                    console.log('best reply set successfully');
+                } else {
+                    console.log('Something wrong happened at the server side');
+                }
+                enableButton($button, true);
+            }).catch((response) => {
+                console.log(response);
+                enableButton($button, true);
+            });
+        });
+
+        function enableButton(button, enable) {
+            if (enable === true) {
+                // console.log('enabled');
+                button.addClass('enabled');
+            } else {
+                // console.log('disabled');
+                button.removeClass('enabled');
+            }
+        }
+
+
     })();
 
     /**

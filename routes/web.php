@@ -43,6 +43,9 @@ Route::delete('/replies/delete', 'RepliesController@destroy')->name('replies.des
 // Called by XMLHttpRequest in JS file
 Route::patch('/replies/edit', 'RepliesController@update')->name('replies.update');
 
+// Called by XMLHttpRequest in JS file
+Route::post('/best-replies/store', 'BestRepliesController@store')->name('best-replies.store');
+
 Route::post('/users/likereply', 'UsersController@storeLikeReplyToggle')->name('user.like.reply.toggle');
 Route::get('/users/{user}', 'UsersController@show')->name('users.show');
 Route::get('/users/{user}/settings', 'SettingsController@index')->name('users.settings.get');

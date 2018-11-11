@@ -254,10 +254,34 @@ h3.noti-head {
     font-weight: 600;
 }
 
+/**************************
+ End of: notifications
+***************************/
+
 .noti-thread-title {
     background-color: #12814708;
 }
 
-/*
-End of notifications
-*/
+/*******************************
+  selecting reply as best reply
+ *******************************/
+.best-reply-icon {
+    font-size: 2em;
+    cursor: pointer;
+    padding-left: 8px;
+    margin-left: 8px;
+    border-left: 2px solid rgb(122, 122, 122);
+}
+
+.best-reply-icon-unselected {
+    color: #c9cbcf;
+}
+
+.best-reply-icon-selected {
+    color: #5eba7d;
+}
+
+/**************************
+ End of: selecting reply as best reply
+***************************/
+
