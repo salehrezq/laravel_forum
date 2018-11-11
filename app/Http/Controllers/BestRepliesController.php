@@ -36,12 +36,23 @@ class BestRepliesController extends Controller
      */
     public function store(Request $request)
     {
-        $reply = Reply::find(request('replyId'));
+        $replyId = intval(request('replyId'));
+
+        $reply = Reply::find($replyId);
         $thread = Thread::find($reply->thread_id);
 
-        $thread->best_reply = $reply->id;
+        if ($thread->best_reply === $replyId) {
+            $thread->best_reply = null;
+            $mark = false;
+        } else {
+            $thread->best_reply = $replyId;
+            $mark = true;
+        }
 
-        return response()->json(['state' => $thread->save()]);
+        return response()->json([
+            'state' => $thread->save(),
+            'mark' => $mark,
+        ]);
     }
 
     /**

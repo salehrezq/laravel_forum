@@ -559,11 +559,7 @@ $(function () {
                 replyId: replyId
             }).then((response) => {
                 if (response.data.state === true) {
-                    // Ensure no button has the selected color:
-                    $('.best-reply-icon').removeClass('best-reply-icon-selected');
-                    // Target only the clicked one now:
-                    $button.addClass('best-reply-icon-selected');
-                    console.log('best reply set successfully');
+                    success(response.data.mark, $button);
                 } else {
                     console.log('Something wrong happened at the server side');
                 }
@@ -573,6 +569,16 @@ $(function () {
                 enableButton($button, true);
             });
         });
+
+        function success(mark, button) {
+            // Ensure no button has the selected color:
+            $('.best-reply-icon').removeClass('best-reply-icon-selected');
+            if (mark) {
+                // Target only the clicked one now:
+                button.addClass('best-reply-icon-selected');
+                console.log('best reply set successfully');
+            }
+        }
 
         function enableButton(button, enable) {
             if (enable === true) {
