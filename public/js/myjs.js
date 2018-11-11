@@ -274,7 +274,7 @@ $(function () {
                  <!--   @endif -->
                  <!--@can('setBestReply', $thread)-->
                      <i title="Mark as best reply"
-                     class="fas fa-check best-reply-icon best-reply-icon-unselected"></i>
+                     class="fas fa-check best-reply-icon enabled"></i>
                  <!--@endcan-->
                 </div>
                 <div id="reply-container-${replyId}">

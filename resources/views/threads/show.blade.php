@@ -98,7 +98,7 @@
                                     <div class="set-best-reply-area">
                                         <input type="hidden" class='replyId' value="{{$reply->id}}">
                                         <i title="Mark as best reply"
-                                           class="fas fa-check best-reply-icon best-reply-icon-unselected enabled"></i>
+                                           class="fas fa-check best-reply-icon enabled"></i>
                                     </div>
                                 @endcan
                             </div>
