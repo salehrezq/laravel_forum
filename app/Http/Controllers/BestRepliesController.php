@@ -49,10 +49,19 @@ class BestRepliesController extends Controller
             $mark = true;
         }
 
-        return response()->json([
-            'state' => $thread->save(),
-            'mark' => $mark,
-        ]);
+        $state = $thread->save();
+
+        if ($state) {
+            return response()->json([
+                'state' => $state,
+                'mark' => $mark,
+            ]);
+        } else {
+            return response()->json([
+                'state' => $state,
+                'errorMessage' => 'Some error happens at the server, please try again.'
+            ]);
+        }
     }
 
     /**

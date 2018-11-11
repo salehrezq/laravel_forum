@@ -370,10 +370,10 @@ $(function () {
      * @param string message
      * @returns void
      */
-    function showFlashMessage(message, level = 'success') {
+    function showFlashMessage(message, level = 'success', duration = 5000) {
         var flashElement = `<div class="alert alert-${level} redirect-alert" role="alert">${message}</div>`;
         $('.flashDiv').append(flashElement);
-        $('.redirect-alert').fadeOut(5000, function () {
+        $('.redirect-alert').fadeOut(duration, function () {
             $(this).remove();
         });
     }
@@ -558,9 +558,11 @@ $(function () {
             axios.post('/best-replies/store/', {
                 replyId: replyId
             }).then((response) => {
-                if (response.data.state === true) {
-                    success(response.data.mark, $button);
+                var result = response.data;
+                if (result.state === true) {
+                    success(result.mark, $button);
                 } else {
+                    showFlashMessage(result.errorMessage, 'danger', 7000);
                     console.log('Something wrong happened at the server side');
                 }
                 enableButton($button, true);
