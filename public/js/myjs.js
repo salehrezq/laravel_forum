@@ -549,10 +549,10 @@ $(function () {
 
         $('body').on('click', '.best-reply-icon.enabled', function () {
 
-            var $button = $(this);
-            enableButton($button, false);
+            var $mark = $(this);
+            enableButton($mark, false);
 
-            var $setBestReplyArea = $button.parent();
+            var $setBestReplyArea = $mark.parent();
             var replyId = $setBestReplyArea.find('.replyId').val();
 
             axios.post('/best-replies/store/', {
@@ -560,24 +560,27 @@ $(function () {
             }).then((response) => {
                 var result = response.data;
                 if (result.state === true) {
-                    success(result.mark, $button);
+                    success(result.markState, $mark);
                 } else {
                     showFlashMessage(result.errorMessage, 'danger', 7000);
                     console.log('Something wrong happened at the server side');
                 }
-                enableButton($button, true);
+                enabled
+                enableButton($mark, true);
             }).catch((response) => {
                 console.log(response);
-                enableButton($button, true);
+                enableButton($mark, true);
             });
         });
 
-        function success(mark, button) {
+        function success(markState, mark) {
             // Ensure no button has the selected color:
             $('.best-reply-icon').removeClass('best-reply-icon-selected');
-            if (mark) {
+            $('.best-reply-icon').attr("title", "Mark as the best reply");
+            if (markState) {
                 // Target only the clicked one now:
-                button.addClass('best-reply-icon-selected');
+                mark.addClass('best-reply-icon-selected');
+                mark.attr("title", "Was marked as the best reply");
                 console.log('best reply set successfully');
             }
         }

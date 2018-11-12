@@ -73,4 +73,18 @@ class ThreadPolicy
         return $thread->user_id === $user->id;
     }
 
+    /**
+     * @param User $user
+     * @param Thread $thread
+     * @return bool
+     *
+     * Rule for showing the best reply for other authenticated users,
+     * other than the writer of this $thread.
+     *
+     */
+    public function viewBestReply(User $user, Thread $thread)
+    {
+        return ($thread->user_id !== $user->id);
+    }
+
 }

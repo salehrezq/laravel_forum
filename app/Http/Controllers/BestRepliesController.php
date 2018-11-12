@@ -54,12 +54,12 @@ class BestRepliesController extends Controller
         if ($state) {
             return response()->json([
                 'state' => $state,
-                'mark' => $mark,
+                'markState' => $mark,
             ]);
         } else {
             return response()->json([
                 'state' => $state,
-                'errorMessage' => 'Some error happens at the server, please try again.'
+                'errorMessage' => 'Some error happens at the server side, please try again.'
             ]);
         }
     }

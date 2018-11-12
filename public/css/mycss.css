@@ -268,10 +268,13 @@ h3.noti-head {
 .best-reply-icon {
     font-size: 2em;
     color: #c9cbcf;
-    cursor: pointer;
     padding-left: 8px;
     margin-left: 8px;
     border-left: 2px solid rgb(122, 122, 122);
+}
+
+.clickable {
+    cursor: pointer;
 }
 
 .best-reply-icon-selected {
