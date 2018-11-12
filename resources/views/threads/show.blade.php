@@ -110,6 +110,15 @@
                                         </div>
                                     @endif
                                 @endcan
+                                @guest
+                                    @if($reply->id === $thread->best_reply)
+                                        <div class="set-best-reply-area">
+                                            <input type="hidden" class='replyId' value="{{$reply->id}}">
+                                            <i title="This reply was set as the best reply by the writer of this thread"
+                                               class="fas fa-check best-reply-icon best-reply-icon-selected"></i>
+                                        </div>
+                                    @endif
+                                @endguest
                             </div>
                             <div id="reply-container-{{$reply->id}}">
                                 <div class="card-body" id="reply-body-{{$reply->id}}">
