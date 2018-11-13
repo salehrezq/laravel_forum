@@ -272,10 +272,13 @@ $(function () {
                         <span class='btn-span likeReplyBtnToggle'>Like</span>
                     </div>
                  <!--   @endif -->
-                 <!--@can('setBestReply', $thread)-->
-                     <i title="Mark as best reply"
-                     class="fas fa-check best-reply-icon enabled"></i>
-                 <!--@endcan-->
+                    <!--@can('setBestReply', $thread)-->
+                        <div class="set-best-reply-area">
+                            <input type="hidden" class='replyId' value="${replyId}">
+                            <i title="Mark as the best reply"
+                               class="fas fa-check best-reply-icon enabled clickable"></i>
+                        </div>
+                    <!--@endcan-->
                 </div>
                 <div id="reply-container-${replyId}">
                     <div class="card-body" id="reply-body-${replyId}">
