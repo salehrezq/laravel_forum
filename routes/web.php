@@ -11,6 +11,7 @@
   |
  */
 auth()->loginUsingId(9);
+//auth()->logout();
 
 Route::get('/', function () {
 

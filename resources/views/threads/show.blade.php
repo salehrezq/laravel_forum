@@ -94,31 +94,7 @@
                                         <span class='btn-span likeReplyBtnToggle'>{{ $reply->was_this_reply_liked_by_auth_user? 'Unlike' : 'Like' }}</span>
                                     </div>
                                 @endif
-                                @can('setBestReply', $thread)
-                                    <div class="set-best-reply-area">
-                                        <input type="hidden" class='replyId' value="{{$reply->id}}">
-                                        <i title="{{ $thread->best_reply === $reply->id? 'Was marked as the best reply': 'Mark as the best reply' }}"
-                                           class="fas fa-check best-reply-icon enabled clickable {{ $thread->best_reply === $reply->id? 'best-reply-icon-selected': '' }}"></i>
-                                    </div>
-                                @endcan
-                                @can('viewBestReply', $thread)
-                                    @if($reply->id === $thread->best_reply)
-                                        <div class="set-best-reply-area">
-                                            <input type="hidden" class='replyId' value="{{$reply->id}}">
-                                            <i title="This reply was set as the best reply by the writer of this thread"
-                                               class="fas fa-check best-reply-icon {{ $thread->best_reply === $reply->id? 'best-reply-icon-selected': '' }}"></i>
-                                        </div>
-                                    @endif
-                                @endcan
-                                @guest
-                                    @if($reply->id === $thread->best_reply)
-                                        <div class="set-best-reply-area">
-                                            <input type="hidden" class='replyId' value="{{$reply->id}}">
-                                            <i title="This reply was set as the best reply by the writer of this thread"
-                                               class="fas fa-check best-reply-icon best-reply-icon-selected"></i>
-                                        </div>
-                                    @endif
-                                @endguest
+                                @include('threads.templates.show-best-reply-mark')
                             </div>
                             <div id="reply-container-{{$reply->id}}">
                                 <div class="card-body" id="reply-body-{{$reply->id}}">
