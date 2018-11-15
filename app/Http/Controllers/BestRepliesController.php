@@ -41,26 +41,33 @@ class BestRepliesController extends Controller
         $reply = Reply::find($replyId);
         $thread = Thread::find($reply->thread_id);
 
-        if ($thread->best_reply === $replyId) {
-            $thread->best_reply = null;
-            $mark = false;
-        } else {
-            $thread->best_reply = $replyId;
-            $mark = true;
-        }
+        if (auth()->user()->can('setBestReply', $thread)) {
 
-        $state = $thread->save();
+            if ($thread->best_reply === $replyId) {
+                $thread->best_reply = null;
+                $mark = false;
+            } else {
+                $thread->best_reply = $replyId;
+                $mark = true;
+            }
 
-        if ($state) {
-            return response()->json([
-                'state' => $state,
-                'markState' => $mark,
-            ]);
+            $state = $thread->save();
+
+            if ($state) {
+                return response()->json([
+                    'state' => $state,
+                    'markState' => $mark,
+                ]);
+            } else {
+                return response()->json([
+                    'state' => $state,
+                    'errorMessage' => 'Some error happens at the server side, please try again.'
+                ]);
+            }
         } else {
             return response()->json([
-                'state' => $state,
-                'errorMessage' => 'Some error happens at the server side, please try again.'
-            ]);
+                'state' => false,
+                'errorMessage' => 'You are not authorized to do this action.']);
         }
     }
 
