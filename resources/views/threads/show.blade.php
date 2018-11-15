@@ -94,6 +94,12 @@
                                         <span class='btn-span likeReplyBtnToggle'>{{ $reply->was_this_reply_liked_by_auth_user? 'Unlike' : 'Like' }}</span>
                                     </div>
                                 @endif
+                                @guest
+                                    <div class='likeArea'>
+                                        <span>Likes:&nbsp;</span><span
+                                                class="likesCounter">{{ $reply->users_likes_count }}</span>
+                                    </div>
+                                @endguest
                                 @include('threads.templates.show-best-reply-mark')
                             </div>
                             <div id="reply-container-{{$reply->id}}">

@@ -112,21 +112,34 @@ class ThreadsController extends Controller
 
                 $avatar_path = is_null($thread->avatar_path) ? 'default-avatar.jpg' : basename($thread->avatar_path);
 
-                $replies = Reply::select('replies.*', 'users.username as user_name', 'users.id as user_id', DB::raw("(select count(*) "
-                    . "from `users` inner join `likeables` "
-                    . "on `users`.`id` = `likeables`.`user_id` "
-                    . "where `replies`.`id` = `likeables`.`likeable_id` "
-                    . "and `likeables`.`likeable_type` = 'App\\\Reply') "
-                    . "as `users_likes_count`"), DB::raw("(exists(select * from `likeables` "
-                    . "where `user_id` = $user_id and `likeable_id` = `replies`.`id`)) "
-                    . "as `was_this_reply_liked_by_auth_user`"))
+                $replies = Reply::select('replies.*',
+                    'users.username as user_name',
+                    'users.id as user_id',
+                    DB::raw("(select count(*) "
+                        . "from `users` inner join `likeables` "
+                        . "on `users`.`id` = `likeables`.`user_id` "
+                        . "where `replies`.`id` = `likeables`.`likeable_id` "
+                        . "and `likeables`.`likeable_type` = 'App\\\Reply') "
+                        . "as `users_likes_count`"), DB::raw("(exists(select * from `likeables` "
+                        . "where `user_id` = $user_id and `likeable_id` = `replies`.`id`)) "
+                        . "as `was_this_reply_liked_by_auth_user`"))
                     ->join('users', 'users.id', '=', 'replies.user_id')
                     ->where('thread_id', '=', $thread->id)
                     ->latest()->paginate($paginate);
 
                 auth()->user()->readThread($thread->id);
             } else {//guest:
-                $replies = Reply::select('replies.id', 'replies.user_id', 'replies.body', 'replies.created_at', 'users.username as user_name')
+                $replies = Reply::select('replies.id',
+                    'replies.user_id',
+                    'replies.body',
+                    'replies.created_at',
+                    'users.username as user_name',
+                    DB::raw("(select count(*) "
+                        . "from `users` inner join `likeables` "
+                        . "on `users`.`id` = `likeables`.`user_id` "
+                        . "where `replies`.`id` = `likeables`.`likeable_id` "
+                        . "and `likeables`.`likeable_type` = 'App\\\Reply') "
+                        . "as `users_likes_count`"))
                     ->join('users', 'replies.user_id', '=', 'users.id')
                     ->where('replies.thread_id', $thread->id)
                     ->latest()->paginate($paginate);
