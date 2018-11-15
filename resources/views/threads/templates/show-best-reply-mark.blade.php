@@ -1,5 +1,5 @@
 {{-- This is how the best reply tick is shown to the writer of the thread --}}
-@can('setBestReply', $thread)
+@can('markBestReply', $thread)
     <div class="set-best-reply-area">
         <input type="hidden" class='replyId' value="{{$reply->id}}">
         <i title="{{ $thread->best_reply === $reply->id? 'Was marked as the best reply': 'Mark as the best reply' }}"

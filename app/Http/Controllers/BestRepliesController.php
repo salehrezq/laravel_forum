@@ -41,7 +41,7 @@ class BestRepliesController extends Controller
         $reply = Reply::find($replyId);
         $thread = Thread::find($reply->thread_id);
 
-        if (auth()->user()->can('setBestReply', $thread)) {
+        if (auth()->user()->can('markBestReply', $thread)) {
 
             if ($thread->best_reply === $replyId) {
                 $thread->best_reply = null;

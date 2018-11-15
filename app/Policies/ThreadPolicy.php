@@ -68,7 +68,7 @@ class ThreadPolicy
         }
     }
 
-    public function setBestReply(User $user, Thread $thread)
+    public function markBestReply(User $user, Thread $thread)
     {
         return $thread->user_id === $user->id;
     }
