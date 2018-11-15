@@ -10,9 +10,11 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Http\Request;
 use App\Inspections\Spam;
 
-class RepliesController extends Controller {
+class RepliesController extends Controller
+{
 
-    public function __construct() {
+    public function __construct()
+    {
         return $this->middleware('auth')->except('index', 'show');
     }
 
@@ -21,7 +23,8 @@ class RepliesController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
+    public function index()
+    {
         //
     }
 
@@ -30,21 +33,23 @@ class RepliesController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function create() {
+    public function create()
+    {
         //
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
-                    'replyBody' => 'required|spamfree',
-                    'threadId' => 'required',
+            'replyBody' => 'required|spamfree',
+            'threadId' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -60,8 +65,8 @@ class RepliesController extends Controller {
             }
 
             return response()->json([
-                        'state' => false,
-                        'message' => $message
+                'state' => false,
+                'message' => $message
             ]);
         }
 
@@ -69,15 +74,15 @@ class RepliesController extends Controller {
 
         if ($thread === null) {
             return response()->json([
-                        'state' => false,
-                        'message' => 'The thread you are replying to has been deleted.'
+                'state' => false,
+                'message' => 'The thread you are replying to has been deleted.'
             ]);
         }
 
         if (!auth()->user()->can('createFrequent', new Reply())) {
             return response()->json([
-                        'state' => false,
-                        'message' => 'You are posting too frequently. Please take a break. :)'
+                'state' => false,
+                'message' => 'You are posting too frequently. Please take a break. :)'
             ]);
         }
 
@@ -85,44 +90,55 @@ class RepliesController extends Controller {
 
         event(new \App\Events\ReplyEvent($reply, $thread, 'store'));
 
+        /**
+         * Tell if the writer of the reply is also the writer of the thread.
+         * This condition will be used at client side to decide the right template
+         * for the reply to be shown.
+         */
+        $isWriterOfThread = $reply->user_id === $thread->user_id;
+
         return response()->json([
-                    'state' => true,
-                    'replyId' => $reply->id,
-                    'replyBody' => $reply->body,
-                    'username' => $reply->user->username,
-                    'replies_count' => $this->getRepliesCount($thread->id),
-                    'message' => 'Your reply has been published successfully.'
+            'state' => true,
+            'replyId' => $reply->id,
+            'replyBody' => $reply->body,
+            'username' => $reply->user->username,
+            'isWriterOfThread' => $isWriterOfThread,
+            'replies_count' => $this->getRepliesCount($thread->id),
+            'message' => 'Your reply has been published successfully.'
         ]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Reply  $reply
+     * @param  \App\Reply $reply
      * @return \Illuminate\Http\Response
      */
-    public function show(Reply $reply) {
+    public function show(Reply $reply)
+    {
         //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Reply  $reply
+     * @param  \App\Reply $reply
      * @return \Illuminate\Http\Response
      */
-    public function edit(Reply $reply) {
+    public function edit(Reply $reply)
+    {
         //
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Reply  $reply
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Reply $reply
      * @return \Illuminate\Http\Response
      */
-    public function update(Spam $spam) {
+    public function update(Spam $spam)
+    {
 
         $reply = Reply::find(request('replyId'));
 
@@ -136,8 +152,8 @@ class RepliesController extends Controller {
                     if ($spam->detect($newReplyBody)) {
 
                         return response()->json([
-                                    'state' => false,
-                                    'message' => 'The reply contains spam!.'
+                            'state' => false,
+                            'message' => 'The reply contains spam!.'
                         ]);
                     }
 
@@ -160,10 +176,11 @@ class RepliesController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Reply  $reply
+     * @param  \App\Reply $reply
      * @return \Illuminate\Http\Response
      */
-    public function destroy() {
+    public function destroy()
+    {
 
         $reply = Reply::find(request('reply_id'));
 
@@ -179,14 +196,15 @@ class RepliesController extends Controller {
                     $state = false;
                 }
                 return response()->json([
-                            'state' => $state,
-                            'replies_count' => $this->getRepliesCount($reply->thread_id)
+                    'state' => $state,
+                    'replies_count' => $this->getRepliesCount($reply->thread_id)
                 ]);
             }
         }
     }
 
-    private function getRepliesCount($threadId) {
+    private function getRepliesCount($threadId)
+    {
 
         return Thread::find($threadId)->replies()->count();
     }

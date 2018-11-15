@@ -237,14 +237,16 @@ $(function () {
                 $('.replyBodyTextArea').val('');
                 var replyId = respData.replyId;
                 var replyBody = respData.replyBody;
-                createReplyElement(replyId, replyBody, respData.username);
+                var username = respData.username;
+                var isWriterOfThread = respData.isWriterOfThread;
+                createReplyElement(replyId, replyBody, username, isWriterOfThread);
                 setRepliesCount(respData.replies_count);
                 showFlashMessage(respData.message);
             }
         });
 
-        function createReplyElement(replyId, replyBody, username) {
-            var replycomponent = `<div class="row reply">
+        function createReplyElement(replyId, replyBody, username, isWriterOfThread) {
+            var part_1 = `<div class="row reply">
         <div class="col-md-8" id='reply-${replyId}'>
             <div class="card">
                 <div class="card-header level">
@@ -271,15 +273,20 @@ $(function () {
                         <input type="hidden" class='replyId' value="${replyId}">
                         <span class='btn-span likeReplyBtnToggle'>Like</span>
                     </div>
-                 <!--   @endif -->
+                 <!--   @endif -->`;
+
+            var bestReplyTick = '';
+            if (isWriterOfThread) {
+                bestReplyTick = `
                     <!--@can('setBestReply', $thread)-->
                         <div class="set-best-reply-area">
                             <input type="hidden" class='replyId' value="${replyId}">
                             <i title="Mark as the best reply"
                                class="fas fa-check best-reply-icon enabled clickable"></i>
                         </div>
-                    <!--@endcan-->
-                </div>
+                    <!--@endcan-->`;
+            }
+            var part_3 = `</div>
                 <div id="reply-container-${replyId}">
                     <div class="card-body" id="reply-body-${replyId}">
                     </div>
@@ -287,6 +294,8 @@ $(function () {
             </div>
         </div>
     </div>`;
+
+            var replycomponent = part_1 + bestReplyTick + part_3;
 
             $('.repliesArea').prepend(replycomponent);
             // Append because it contains controlled HTML tags
