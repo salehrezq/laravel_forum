@@ -14,7 +14,7 @@ class Thread extends Model
 
     use Filterable;
 
-    protected $fillable = ['user_id', 'channel_id', 'title', 'title_slug', 'body'];
+    protected $fillable = ['user_id', 'channel_id', 'title', 'title_slug', 'body', 'best_reply'];
 
     protected static function boot()
     {
@@ -122,4 +122,13 @@ class Thread extends Model
         $this->attributes['title_slug'] = $title_slug;
     }
 
+    public function markBestReply($replyId)
+    {
+        return $this->update(['best_reply' => $replyId]);
+    }
+
+    public function unmarkBestReply()
+    {
+        return $this->update(['best_reply' => null]);
+    }
 }

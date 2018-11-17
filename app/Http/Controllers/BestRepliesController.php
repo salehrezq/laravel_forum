@@ -44,14 +44,12 @@ class BestRepliesController extends Controller
         if (auth()->user()->can('markBestReply', $thread)) {
 
             if ($thread->best_reply === $replyId) {
-                $thread->best_reply = null;
+                $state = $thread->unmarkBestReply();
                 $mark = false;
             } else {
-                $thread->best_reply = $replyId;
+                $state = $thread->markBestReply($replyId);
                 $mark = true;
             }
-
-            $state = $thread->save();
 
             if ($state) {
                 return response()->json([
