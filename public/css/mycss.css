@@ -254,6 +254,10 @@ h3.noti-head {
     font-weight: 600;
 }
 
+.btn_subscribe {
+    background-color: #c4e7b6;
+}
+
 /**************************
  End of: notifications
 ***************************/

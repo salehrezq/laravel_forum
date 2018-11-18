@@ -34,6 +34,9 @@ Route::get('/threads/create', 'ThreadsController@create')->name('threads.create'
 Route::get('/threads/{channelSlug}', 'ThreadsController@index')->name('threads.channel');
 Route::post('/threads', 'ThreadsController@store')->name('threads.store');
 Route::get('/threads/{channelSlug}/{thread}', 'ThreadsController@show')->name('threads.show');
+
+Route::post('/locked-thread', 'LockedThreadsController@store')->name('locked-thread.store');
+
 // Called by XMLHttpRequest in JS file
 Route::delete('/threads/delete', 'ThreadsController@destroy')->name('threads.destroy');
 

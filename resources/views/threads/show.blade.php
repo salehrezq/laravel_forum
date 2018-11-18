@@ -6,9 +6,20 @@
             @can('subscribe', $thread)
                 <input class='threadId' type="hidden" value="{{$thread->id}}">
                 <div class="row">
-                    <div class="col-md-1">
+                    <div class="col-md-6">
                         <button type="button"
-                                class="btn btn-link btn_subscribe">{{$thread->was_this_thread_subscribed_to_by_auth_user? 'Unsubscribe from this thread' : 'Subscribe to this thread'}}</button>
+                                class="btn btn_subscribe">{{$thread->was_this_thread_subscribed_to_by_auth_user? 'Unsubscribe from this thread' : 'Subscribe to this thread'}}
+                        </button>
+                        @if(auth()->user()->isAdmin())
+                            <form class="inline" action="{{ route("locked-thread.store") }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="threadId" value="{{ $thread->id }}">
+                                <button type="submit"
+                                        name="lock_thread"
+                                        class="btn">{{ $thread->locked? 'Unlock' : 'Lock' }}
+                                </button>
+                            </form>
+                        @endif
                     </div>
                 </div>
             @endcan

@@ -69,6 +69,15 @@ class User extends Authenticatable
     }
 
     /**
+     * Authorize actions for the admin.
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return in_array($this->username, ['admin']);
+    }
+
+    /**
      * Creates a formatted key to be used in the cache
      *
      * user.user_id.visited.thread_id
