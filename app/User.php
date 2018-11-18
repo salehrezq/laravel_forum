@@ -77,6 +77,11 @@ class User extends Authenticatable
         return in_array($this->username, ['admin']);
     }
 
+    public function isNotAdmin()
+    {
+        return !$this->isAdmin();
+    }
+
     /**
      * Creates a formatted key to be used in the cache
      *

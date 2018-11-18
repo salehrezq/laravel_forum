@@ -20,6 +20,9 @@
                                 </button>
                             </form>
                         @endif
+                        @if(auth()->user()->isNotAdmin() and $thread->locked)
+                            <h3 class="inline"><span class="locked-thread-label">Locked thread</span></h3>
+                        @endif
                     </div>
                 </div>
             @endcan
