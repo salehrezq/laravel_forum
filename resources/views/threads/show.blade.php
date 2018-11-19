@@ -3,29 +3,30 @@
 @section('content')
     <div class="container">
         @auth
-            @can('subscribe', $thread)
-                <input class='threadId' type="hidden" value="{{$thread->id}}">
-                <div class="row">
-                    <div class="col-md-6">
+            <input class='threadId' type="hidden" value="{{$thread->id}}">
+            <div class="row">
+                <div class="col-md-6">
+                    @can('subscribe', $thread)
                         <button type="button"
                                 class="btn btn_subscribe">{{$thread->was_this_thread_subscribed_to_by_auth_user? 'Unsubscribe from this thread' : 'Subscribe to this thread'}}
                         </button>
-                        @if(auth()->user()->isAdmin())
-                            <form class="inline" action="{{ route("locked-thread.store") }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="threadId" value="{{ $thread->id }}">
-                                <button type="submit"
-                                        name="lock_thread"
-                                        class="btn">{{ $thread->locked? 'Unlock' : 'Lock' }}
-                                </button>
-                            </form>
-                        @endif
-                        @if(auth()->user()->isNotAdmin() and $thread->locked)
-                            <h3 class="inline"><span class="locked-thread-label">Locked thread</span></h3>
-                        @endif
-                    </div>
+                    @endcan
+                    @if(auth()->user()->isAdmin())
+                        <form class="inline" action="{{ route("locked-thread.store") }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="threadId" value="{{ $thread->id }}">
+                            <button type="submit"
+                                    name="lock_thread"
+                                    class="btn">{{ $thread->locked? 'Unlock' : 'Lock' }}
+                            </button>
+                        </form>
+                    @endif
+                    @if(auth()->user()->isNotAdmin() and $thread->locked)
+                        <h3 class="inline"><span class="locked-thread-label">Locked thread</span></h3>
+                    @endif
                 </div>
-            @endcan
+            </div>
+
         @endauth
         <div class="row">
             <div class="col-md-8">
