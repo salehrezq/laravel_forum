@@ -15,7 +15,7 @@ class RepliesController extends Controller
 
     public function __construct()
     {
-        return $this->middleware('auth')->except('index', 'show');
+        return $this->middleware(['auth', 'email-must-be-confirmed'])->except('index', 'show');
     }
 
     /**
@@ -46,6 +46,11 @@ class RepliesController extends Controller
      */
     public function store(Request $request)
     {
+        $thread = Thread::find($request->threadId);
+
+        if ($thread->locked) {
+            return response("This thread has been locked", 423);
+        }
 
         $validator = Validator::make($request->all(), [
             'replyBody' => 'required|spamfree',
@@ -69,8 +74,6 @@ class RepliesController extends Controller
                 'message' => $message
             ]);
         }
-
-        $thread = Thread::find($request->threadId);
 
         if ($thread === null) {
             return response()->json([

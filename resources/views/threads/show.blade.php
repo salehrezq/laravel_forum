@@ -54,26 +54,43 @@
             </div>
         </div>
         @if(auth()->check())
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="card padding10">
-                        <!-- Sent by xmlhttprequest instead -->
-                        <div class="replyPublishArea">
-                            <input type="hidden" name="threadId" class="threadId" value="{{$thread->id}}">
-                            <div class="form-group">
+            @if(auth()->user()->email_confirmed)
+                @if(!$thread->locked)
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card padding10">
+                                <!-- Sent by xmlhttprequest instead -->
+                                <div class="replyPublishArea">
+                                    <input type="hidden" name="threadId" class="threadId" value="{{$thread->id}}">
+                                    <div class="form-group">
                                 <textarea rows="3" required name="replyBody" class="replyBodyTextArea form-control"
                                           placeholder="write a reply..."></textarea>
-                            </div>
-                            <div class="form-group">
-                                <button type="button" class="btn btn-primary btnReply">Reply</button>
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-primary btnReply">Reply</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                @endif {{-- end if thread locked --}}
+            @else {{-- else of if email confirmed--}}
+            <div class="row">
+                <div class="col-8">
+                    <p class="text-center">To be able to comment on threads, go to your email and click on the
+                        confirmation link from us to confirm your email, or resend a new email from <a
+                                href="{{route('confirm.user.email.resend.get')}}">here</a>.</p>
                 </div>
             </div>
+            @endif {{-- end if email confirmed --}}
         @else
-            <p class="text-center">Please&nbsp;<a href="{{route('login')}}">sign in</a>&nbsp;to participate in this
-                thread.</p>
+            <div class="row">
+                <div class="col-8">
+                    <p class="text-center">Please&nbsp;<a href="{{route('login')}}">sign in</a>&nbsp;to participate in
+                        this
+                        thread.</p>
+                </div>
+            </div>
         @endif
         <div class="repliesArea">
         @foreach ($replies as $reply)

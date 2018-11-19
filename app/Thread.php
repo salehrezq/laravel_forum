@@ -16,6 +16,10 @@ class Thread extends Model
 
     protected $fillable = ['user_id', 'channel_id', 'title', 'title_slug', 'body', 'best_reply'];
 
+    protected $casts = [
+        'locked' => 'boolean'
+    ];
+
     protected static function boot()
     {
 
