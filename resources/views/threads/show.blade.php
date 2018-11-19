@@ -73,24 +73,27 @@
                             </div>
                         </div>
                     </div>
-                @endif {{-- end if thread locked --}}
+                @endif {{-- end if thread is not locked --}}
             @else {{-- else of if email confirmed--}}
-            <div class="row">
-                <div class="col-8">
-                    <p class="text-center">To be able to comment on threads, go to your email and click on the
-                        confirmation link from us to confirm your email, or resend a new email from <a
-                                href="{{route('confirm.user.email.resend.get')}}">here</a>.</p>
+            @if(!$thread->locked)
+                <div class="row">
+                    <div class="col-8">
+                        <p class="text-center">To be able to comment on threads, go to your email and click on the
+                            confirmation link from us to confirm your email, or resend a new email with new confirmation
+                            link from <a
+                                    href="{{route('confirm.user.email.resend.get')}}">here</a>.</p>
+                    </div>
                 </div>
-            </div>
+            @endif {{-- end if thread is not locked --}}
             @endif {{-- end if email confirmed --}}
-        @else
-            <div class="row">
-                <div class="col-8">
-                    <p class="text-center">Please&nbsp;<a href="{{route('login')}}">sign in</a>&nbsp;to participate in
-                        this
-                        thread.</p>
-                </div>
+        @else {{-- else if(auth()->check()) --}}
+        <div class="row">
+            <div class="col-8">
+                <p class="text-center">Please&nbsp;<a href="{{route('login')}}">sign in</a>&nbsp;to participate in
+                    this
+                    thread.</p>
             </div>
+        </div>
         @endif
         <div class="repliesArea">
         @foreach ($replies as $reply)
