@@ -20,6 +20,10 @@ class User extends Authenticatable
         'username', 'email', 'password', 'avatar_path', 'confirmation_hash'
     ];
 
+    protected $casts = [
+        'email_confirmed' => 'boolean'
+    ];
+
     /**
      * The attributes that should be hidden for arrays.
      *
