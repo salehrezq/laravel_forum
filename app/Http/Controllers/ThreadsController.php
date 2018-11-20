@@ -11,6 +11,7 @@ use App\Inspections\Spam;
 use App\Thread;
 use App\Reply;
 use App\Channel;
+use Zttp\Zttp;
 
 class ThreadsController extends Controller
 {
@@ -63,6 +64,15 @@ class ThreadsController extends Controller
      */
     public function store(Request $request)
     {
+        $recaptchaResponse =  Zttp::asFormParams()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => config('services.recaptcha.secret'),
+            'response' => request('g-recaptcha-response'),
+            'remoteip' => $_SERVER['REMOTE_ADDR'],
+        ]);
+
+        if($recaptchaResponse->json()['success'] === false){
+            throw new \Exception('Recaptcha failed');
+        }
 
         $validator = Validator::make($request->all(), [
             'threadTitle' => ['required', new \App\Rules\SpamFree()],

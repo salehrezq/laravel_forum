@@ -16,6 +16,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{asset('css/jquery.atwho.css')}}">
     <link rel="stylesheet" href="{{asset('css/mycss.css')}}">
+    @yield('head')
 </head>
 <body>
 <div id="app">
