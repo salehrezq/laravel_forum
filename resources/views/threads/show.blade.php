@@ -24,9 +24,13 @@
                     @if(auth()->user()->isNotAdmin() and $thread->locked)
                         <h3 class="inline"><span class="locked-thread-label">Locked thread</span></h3>
                     @endif
+                    @can('update', $thread)
+                        <button type="button"
+                                class="btn btn-edit-thread">Edit
+                        </button>
+                    @endcan
                 </div>
             </div>
-
         @endauth
         <div class="row">
             <div class="col-md-8">

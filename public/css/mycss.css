@@ -258,6 +258,10 @@ h3.noti-head {
     background-color: #c4e7b6;
 }
 
+.btn-edit-thread {
+    background-color: #bae7db;
+}
+
 .locked-thread-label {
 
     color: #fff;
