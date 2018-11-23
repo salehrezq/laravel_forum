@@ -577,7 +577,6 @@ $(function () {
                     showFlashMessage(result.errorMessage, 'danger', 7000);
                     console.log('Something wrong happened at the server side');
                 }
-                enabled
                 enableButton($mark, true);
             }).catch((response) => {
                 console.log(response);
