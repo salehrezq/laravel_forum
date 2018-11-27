@@ -170,9 +170,41 @@ class ThreadsController extends Controller
      * @param  \App\Thread $thread
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Thread $thread)
+    public function update()
     {
-        //
+        $patchData = json_decode(request('patchData'));
+
+        $thread = Thread::find($patchData->threadId);
+
+        if ($thread !== null) {
+
+            if (auth()->user()->can('update', $thread)) {
+
+                if (!empty($patchData->threadTitle)) {
+                    $thread->title = $patchData->threadTitle;
+                }
+
+                if (!empty($patchData->threadBody)) {
+                    $thread->body = $patchData->threadBody;
+                }
+                if ($thread->save()) {
+                    return response()->json([
+                        'state' => true,
+                        'message' => 'The thread has been updated.'
+                    ]);
+                } else {
+                    return response()->json([
+                        'state' => false,
+                        'message' => 'The thread has NOT been updated due to some server issue. Try again.'
+                    ]);
+                }
+            } else {
+                return response()->json([
+                    'state' => false,
+                    'message' => 'You are not authorized to edit this thread.'
+                ]);
+            }
+        }
     }
 
     /**

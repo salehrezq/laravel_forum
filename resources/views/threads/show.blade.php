@@ -33,15 +33,18 @@
             </div>
         @endauth
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-8 thread-container">
                 <div class="card">
-                    <div class="card-header thread">
-                        <img class="" height="42" width="42" src="{{ asset('storage/avatars/'. $avatar_path) }}" alt="">
-                        {{$thread->title}}
-                        &nbsp;<span class="threadby">by</span>
-                        <a href="{{route('users.show', ['user' => $thread->user->username])}}">{{$thread->user->username}}</a>
+                    <div class="card-header thread-header">
+                        <div class="header-content">
+                            <img class="" height="42" width="42" src="{{ asset('storage/avatars/'. $avatar_path) }}"
+                                 alt="">
+                            <span class="thread-title">{{$thread->title}}</span>
+                            &nbsp;<span class="threadby">by</span>
+                            <a href="{{route('users.show', ['user' => $thread->user->username])}}">{{$thread->user->username}}</a>
+                        </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body thread-body">
                         {{$thread->body}}
                     </div>
                 </div>

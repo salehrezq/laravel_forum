@@ -15,7 +15,7 @@ and open the template in the editor.
     padding: 0.3rem 1.25rem;
 }
 
-.card-header.thread {
+.card-header.thread-header {
     padding: 0.3rem .5rem;
     background-color: rgba(187, 156, 81, 0.41);
     font-weight: bold;

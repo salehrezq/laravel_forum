@@ -34,6 +34,7 @@ Route::get('/threads/create', 'ThreadsController@create')->name('threads.create'
 Route::get('/threads/{channelSlug}', 'ThreadsController@index')->name('threads.channel');
 Route::post('/threads', 'ThreadsController@store')->name('threads.store');
 Route::get('/threads/{channelSlug}/{thread}', 'ThreadsController@show')->name('threads.show');
+Route::patch('/threads/update', 'ThreadsController@update')->name('threads.update');
 
 Route::post('/locked-thread', 'LockedThreadsController@store')->name('locked-thread.store');
 

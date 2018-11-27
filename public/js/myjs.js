@@ -418,6 +418,155 @@ $(function () {
     });
 
     /**
+     * used in path: resources\views\threads\show.blade.php
+     */
+    (function threadEdit() {
+
+        $('body').on('click', '.btn-edit-thread', function () {
+
+            var $editBtn = $(this);
+
+            enableEditButton(false);
+
+            var $threadHeader = $('.thread-header');
+            // clone the thread header
+            var $threadHeaderContentOriginal = $threadHeader.find('.header-content').clone();
+            // empty the thread header on the page
+            $threadHeader.html('Editing');
+
+            var $threadTitleContainer = $threadHeaderContentOriginal.find('.thread-title');
+            var oldThreadTitle = $threadTitleContainer.text().replace(/^\s+|\s+$/g, '');
+            var oldThreadTitleForComparison = oldThreadTitle;
+
+            var $threadBodyContainer = $('.thread-body');
+            var oldThreadBody = $threadBodyContainer.text().replace(/^\s+|\s+$/g, '');
+            var oldThreadBodyForComparison = oldThreadBody;
+
+            var editingThreadAreaHtml =
+                `<div>
+                    <div class="form-group">
+                        <input type="text" name="threadTitle" value="${oldThreadTitle}" id="edit-thread-title" class="form-control" placeholder="Title...">
+                    </div>
+                    <div class="form-group">
+                        <textarea rows="5" name="threadBody" id="edit-thread-body" class="form-control">${oldThreadBody}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary btn-sm submit-edits-thread">Save Edits</button>
+                    </div>
+                     <div class="form-group">
+                        <button class="btn btn-primary btn-sm cancel-edits-thread">Cancel</button>
+                    </div>
+                </div>`;
+
+            $threadBodyContainer.html(editingThreadAreaHtml);
+
+            $threadBodyContainer.off('click').on('click', '.submit-edits-thread', function () {
+
+                var editedThreadTitle = $('#edit-thread-title').val().trim() || ''; // if undefined then empty string will be assigned
+                var editedThreadBody = $('#edit-thread-body').val().trim() || ''; // if undefined then empty string will be assigned
+
+                var editedThreadTitleTrimmed = editedThreadTitle.trim();
+                var editedThreadBodyTrimmed = editedThreadBody.trim();
+
+                var editedParts = [];
+
+                var hasTitleEdited = !((editedThreadTitleTrimmed === oldThreadTitleForComparison)
+                    || (editedThreadTitleTrimmed === '')
+                    || (editedThreadTitleTrimmed == null));
+
+                var hasThreadEdited = !((editedThreadBodyTrimmed === oldThreadBodyForComparison)
+                    || (editedThreadBodyTrimmed === '')
+                    || (editedThreadBodyTrimmed == null));
+
+                if (hasTitleEdited) {
+                    editedParts.push('threadTitleEdited');
+                }
+                if (hasThreadEdited) {
+                    editedParts.push('threadBodyEdited');
+                }
+
+                var areThereEdits = editedParts.length > 0;
+
+                var patchData = null;
+
+                if (areThereEdits) {
+                    patchData = {
+                        threadId: $('.threadId').val()
+                    }
+                    if (jQuery.inArray('threadTitleEdited', editedParts) > -1) {
+                        patchData.threadTitle = editedThreadTitleTrimmed;
+                    }
+                    if (jQuery.inArray('threadBodyEdited', editedParts) > -1) {
+                        patchData.threadBody = editedThreadBodyTrimmed;
+                    }
+                } else {
+                    console.log('else areThereEdits');
+                    endEditingMode(
+                        oldThreadTitleForComparison,
+                        oldThreadBodyForComparison
+                    );
+                    enableEditButton(true);
+                    return;
+                }
+
+                if (areThereEdits) {
+
+                    console.log(patchData);
+
+                    axios.post("/threads/update", {
+                        _method: 'patch',
+                        patchData: JSON.stringify(patchData)
+                    }).then((response) => {
+                        var respData = response.data;
+                        console.log(respData);
+                        if (respData.state === true) {
+                            endEditingMode(
+                                editedThreadTitleTrimmed,
+                                editedThreadBodyTrimmed
+                            );
+                            enableEditButton(true);
+                        } else {
+                            showFlashMessage(respData.message, 'warning');
+                            enableEditButton(true);
+                            console.log('thread cannot be updated due to server issue.');
+                        }
+                    }).catch((error) => {
+                        enableEditButton(true);
+                        console.log(error);
+                    });
+                } else {
+                    console.log('detected no edits.');
+                }
+            });
+
+            $threadBodyContainer.on('click', '.cancel-edits-thread', function () {
+                endEditingMode(
+                    oldThreadTitleForComparison,
+                    oldThreadBodyForComparison
+                );
+                enableEditButton(true);
+            });
+
+            function endEditingMode(threadTitle, threadBody) {
+                // end thread title editing mode:
+                $threadTitleContainer.text(threadTitle);
+                $threadHeader.html($threadHeaderContentOriginal);
+
+                // end thread body editing mode:
+                $threadBodyContainer.html(threadBody);
+            }
+
+            function enableEditButton(enable) {
+                if (enable) {
+                    $editBtn.addClass('btn-edit-thread').removeClass('disable');
+                } else {
+                    $editBtn.removeClass('btn-edit-thread').addClass('disable');
+                }
+            }
+        });
+    })();
+
+    /**
      * used in path: resources\views\threads\index.blade.php
      */
     $('.deleteThreadArea').on('click', '.deleteThreadBtn', function () {
