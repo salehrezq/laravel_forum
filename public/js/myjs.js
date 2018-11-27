@@ -468,50 +468,39 @@ $(function () {
                 var editedThreadTitleTrimmed = editedThreadTitle.trim();
                 var editedThreadBodyTrimmed = editedThreadBody.trim();
 
-                var editedParts = [];
-
-                var hasTitleEdited = !((editedThreadTitleTrimmed === oldThreadTitleForComparison)
+                var hasThreadTitleEdited = !((editedThreadTitleTrimmed === oldThreadTitleForComparison)
                     || (editedThreadTitleTrimmed === '')
                     || (editedThreadTitleTrimmed == null));
 
-                var hasThreadEdited = !((editedThreadBodyTrimmed === oldThreadBodyForComparison)
+                var hasThreadBodyEdited = !((editedThreadBodyTrimmed === oldThreadBodyForComparison)
                     || (editedThreadBodyTrimmed === '')
                     || (editedThreadBodyTrimmed == null));
 
-                if (hasTitleEdited) {
-                    editedParts.push('threadTitleEdited');
-                }
-                if (hasThreadEdited) {
-                    editedParts.push('threadBodyEdited');
-                }
-
-                var areThereEdits = editedParts.length > 0;
+                var areThereEdits = hasThreadTitleEdited || hasThreadBodyEdited;
 
                 var patchData = null;
 
                 if (areThereEdits) {
+
                     patchData = {
                         threadId: $('.threadId').val()
                     }
-                    if (jQuery.inArray('threadTitleEdited', editedParts) > -1) {
+                    if (hasThreadTitleEdited) {
                         patchData.threadTitle = editedThreadTitleTrimmed;
                     }
-                    if (jQuery.inArray('threadBodyEdited', editedParts) > -1) {
+                    if (hasThreadBodyEdited) {
                         patchData.threadBody = editedThreadBodyTrimmed;
                     }
+
+                    postEdits(patchData);
+
                 } else {
-                    console.log('else areThereEdits');
-                    endEditingMode(
-                        oldThreadTitleForComparison,
-                        oldThreadBodyForComparison
-                    );
+                    withdrawEdits();
                     enableEditButton(true);
                     return;
                 }
 
-                if (areThereEdits) {
-
-                    console.log(patchData);
+                function postEdits(patchData) {
 
                     axios.post("/threads/update", {
                         _method: 'patch',
@@ -524,26 +513,24 @@ $(function () {
                                 editedThreadTitleTrimmed,
                                 editedThreadBodyTrimmed
                             );
+                            showFlashMessage(respData.message);
                             enableEditButton(true);
                         } else {
+                            withdrawEdits();
                             showFlashMessage(respData.message, 'warning');
                             enableEditButton(true);
-                            console.log('thread cannot be updated due to server issue.');
                         }
                     }).catch((error) => {
+                        withdrawEdits();
+                        showFlashMessage(error.message, 'warning');
                         enableEditButton(true);
                         console.log(error);
                     });
-                } else {
-                    console.log('detected no edits.');
                 }
             });
 
             $threadBodyContainer.on('click', '.cancel-edits-thread', function () {
-                endEditingMode(
-                    oldThreadTitleForComparison,
-                    oldThreadBodyForComparison
-                );
+                withdrawEdits();
                 enableEditButton(true);
             });
 
@@ -554,6 +541,13 @@ $(function () {
 
                 // end thread body editing mode:
                 $threadBodyContainer.html(threadBody);
+            }
+
+            function withdrawEdits() {
+                endEditingMode(
+                    oldThreadTitleForComparison,
+                    oldThreadBodyForComparison
+                );
             }
 
             function enableEditButton(enable) {
