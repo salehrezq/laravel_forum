@@ -174,6 +174,20 @@ class ThreadsController extends Controller
     {
         $patchData = json_decode(request('patchData'));
 
+        $validator = Validator::make((array)$patchData, [
+            'threadId' => ['required', 'integer'],
+            'threadTitle' => [new \App\Rules\SpamFree()],
+            'threadBody' => [new \App\Rules\SpamFree()],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'state' => false,
+                'status' => 432, // invented status code indicates validation errors
+                'message' => $validator->messages()
+            ]);
+        }
+
         $thread = Thread::find($patchData->threadId);
 
         if ($thread !== null) {

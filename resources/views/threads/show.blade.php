@@ -47,6 +47,7 @@
                     <div class="card-body thread-body">
                         {{$thread->body}}
                     </div>
+                    <div id="form-errors" class="px-1"></div>
                 </div>
                 <hr>
             </div>

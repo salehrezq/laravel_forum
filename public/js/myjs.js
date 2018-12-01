@@ -452,8 +452,6 @@ $(function () {
                     </div>
                     <div class="form-group">
                         <button class="btn btn-primary btn-sm submit-edits-thread">Save Edits</button>
-                    </div>
-                     <div class="form-group">
                         <button class="btn btn-primary btn-sm cancel-edits-thread">Cancel</button>
                     </div>
                 </div>`;
@@ -461,6 +459,8 @@ $(function () {
             $threadBodyContainer.html(editingThreadAreaHtml);
 
             $threadBodyContainer.off('click').on('click', '.submit-edits-thread', function () {
+
+                $('#form-errors').html('');
 
                 var editedThreadTitle = $('#edit-thread-title').val().trim() || ''; // if undefined then empty string will be assigned
                 var editedThreadBody = $('#edit-thread-body').val().trim() || ''; // if undefined then empty string will be assigned
@@ -507,7 +507,6 @@ $(function () {
                         patchData: JSON.stringify(patchData)
                     }).then((response) => {
                         var respData = response.data;
-                        console.log(respData);
                         if (respData.state === true) {
                             endEditingMode(
                                 editedThreadTitleTrimmed,
@@ -515,6 +514,8 @@ $(function () {
                             );
                             showFlashMessage(respData.message);
                             enableEditButton(true);
+                        } else if (respData.state === false && respData.status === 432) {
+                            showValidationErrors(respData.message);
                         } else {
                             withdrawEdits();
                             showFlashMessage(respData.message, 'warning');
@@ -529,9 +530,27 @@ $(function () {
                 }
             });
 
+            function showValidationErrors(errors) {
+                // Bootstrap alert scafolding for error
+                var errorsHtml = `<div class="alert alert-danger alert-dismissible">
+                                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                                    <h4></i>Validation errors:</h4>
+                                    <ul>`;
+                // The root nodes are field names, with an array of error messages
+                $.each(errors, function (key, value) {
+                    // We loop through the error to see if there are multiple error associated with the field
+                    $.each(value, function (key2, error) {
+                        errorsHtml += '<li>' + error + '</li>';
+                    });
+                });
+                errorsHtml += '</ul></div>';
+                $('#form-errors').html(errorsHtml);
+            }
+
             $threadBodyContainer.on('click', '.cancel-edits-thread', function () {
                 withdrawEdits();
                 enableEditButton(true);
+                $('#form-errors').html('');
             });
 
             function endEditingMode(threadTitle, threadBody) {
