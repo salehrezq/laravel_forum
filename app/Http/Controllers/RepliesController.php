@@ -48,8 +48,22 @@ class RepliesController extends Controller
     {
         $thread = Thread::find($request->threadId);
 
+        if ($thread === null) {
+            return response()->json([
+                'state' => false,
+                'message' => 'The thread you are replying to has been deleted.'
+            ]);
+        }
+
         if ($thread->locked) {
             return response("This thread has been locked", 423);
+        }
+
+        if (auth()->user()->can('createFrequent', new Reply()) === false) {
+            return response()->json([
+                'state' => false,
+                'message' => 'You are posting too frequently. Please take a break. :)'
+            ]);
         }
 
         $validator = Validator::make($request->all(), [
@@ -72,20 +86,6 @@ class RepliesController extends Controller
             return response()->json([
                 'state' => false,
                 'message' => $message
-            ]);
-        }
-
-        if ($thread === null) {
-            return response()->json([
-                'state' => false,
-                'message' => 'The thread you are replying to has been deleted.'
-            ]);
-        }
-
-        if (!auth()->user()->can('createFrequent', new Reply())) {
-            return response()->json([
-                'state' => false,
-                'message' => 'You are posting too frequently. Please take a break. :)'
             ]);
         }
 
@@ -142,52 +142,54 @@ class RepliesController extends Controller
      */
     public function update(Spam $spam)
     {
-
         $reply = Reply::find(request('replyId'));
 
-        if ($reply !== null) {
-            if (auth()->user()->can('update', $reply)) {
-
-                $newReplyBody = request('replyBody');
-
-                if (strlen($newReplyBody) != 0) {
-
-                    if ($spam->detect($newReplyBody)) {
-
-                        return response()->json([
-                            'state' => false,
-                            'message' => 'The reply contains spam!.'
-                        ]);
-                    }
-
-                    $reply->body = $newReplyBody;
-
-                    if ($reply->save() !== null) {
-                        event(new \App\Events\ReplyEvent($reply, null, 'update'));
-                        return response()->json([
-                            'state' => true,
-                            'message' => 'The edits of the reply have been saved.'
-                        ]);
-                    } else {
-                        return response()->json([
-                            'state' => false,
-                            'message' => 'Some issue at the server prevents saving the new edits.'
-                        ]);
-                    }
-                }
-            } else {
-                return response()->json([
-                    'state' => false,
-                    'message' => 'You are not authorized to edit this reply.'
-                ]);
-            }
-        } else {
+        if ($reply === null) {
             return response()->json([
                 'state' => false,
                 'message' => 'The reply you are editing is not exist anymore.'
             ]);
         }
 
+        if (auth()->user()->can('update', $reply) === false) {
+            return response()->json([
+                'state' => false,
+                'message' => 'You are not authorized to edit this reply.'
+            ]);
+        }
+
+        $newReplyBody = request('replyBody');
+
+        if (strlen($newReplyBody) == 0) {
+
+            return response()->json([
+                'state' => false,
+                'message' => 'Reply body has no content!.'
+            ]);
+        }
+
+        if ($spam->detect($newReplyBody)) {
+
+            return response()->json([
+                'state' => false,
+                'message' => 'The reply contains spam!.'
+            ]);
+        }
+
+        $reply->body = $newReplyBody;
+
+        if ($reply->save()) {
+            event(new \App\Events\ReplyEvent($reply, null, 'update'));
+            return response()->json([
+                'state' => true,
+                'message' => 'The edits of the reply have been saved.'
+            ]);
+        } else {
+            return response()->json([
+                'state' => false,
+                'message' => 'Some issue at the server prevents saving the new edits.'
+            ]);
+        }
     }
 
     /**
@@ -198,38 +200,35 @@ class RepliesController extends Controller
      */
     public function destroy()
     {
-
         $reply = Reply::find(request('reply_id'));
 
         // $this->authorize('delete', $reply);
 
-        if ($reply !== null) {
+        if ($reply === null) {
+            return response()->json([
+                'state' => false,
+                'message' => 'The reply you are deleting is not exist anymore.'
+            ]);
+        }
 
-            if (auth()->user()->can('delete', $reply)) {
+        if (auth()->user()->can('delete', $reply) === false) {
+            return response()->json([
+                'state' => false,
+                'message' => 'You are not authorized to delete this reply.'
+            ]);
+        }
 
-                if ($reply->delete() === true) {
-                    return response()->json([
-                        'state' => true,
-                        'message' => 'The reply has been deleted.',
-                        'replies_count' => $this->getRepliesCount($reply->thread_id)
-                    ]);
-                } else {
-                    return response()->json([
-                        'state' => false,
-                        'message' => 'Some server issue prevents the deletion of this reply.',
-                        'replies_count' => $this->getRepliesCount($reply->thread_id)
-                    ]);
-                }
-            } else {
-                return response()->json([
-                    'state' => false,
-                    'message' => 'You are not authorized to delete this reply.'
-                ]);
-            }
+        if ($reply->delete()) {
+            return response()->json([
+                'state' => true,
+                'message' => 'The reply has been deleted.',
+                'replies_count' => $this->getRepliesCount($reply->thread_id)
+            ]);
         } else {
             return response()->json([
                 'state' => false,
-                'message' => 'The reply you are deleting is not exist at the database.'
+                'message' => 'Some server issue prevents the deletion of this reply.',
+                'replies_count' => $this->getRepliesCount($reply->thread_id)
             ]);
         }
     }

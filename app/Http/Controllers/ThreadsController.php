@@ -174,8 +174,23 @@ class ThreadsController extends Controller
     {
         $patchData = json_decode(request('patchData'));
 
+        $thread = Thread::find($patchData->threadId);
+
+        if ($thread === null) {
+            return response()->json([
+                'state' => false,
+                'message' => 'The thread you are editing is not exist anymore.'
+            ]);
+        }
+
+        if (auth()->user()->can('update', $thread) === false) {
+            return response()->json([
+                'state' => false,
+                'message' => 'You are not authorized to edit this thread.'
+            ]);
+        }
+
         $validator = Validator::make((array)$patchData, [
-            'threadId' => ['required', 'integer'],
             'threadTitle' => [new \App\Rules\SpamFree()],
             'threadBody' => [new \App\Rules\SpamFree()],
         ]);
@@ -188,36 +203,24 @@ class ThreadsController extends Controller
             ]);
         }
 
-        $thread = Thread::find($patchData->threadId);
+        if (!empty($patchData->threadTitle)) {
+            $thread->title = $patchData->threadTitle;
+        }
 
-        if ($thread !== null) {
+        if (!empty($patchData->threadBody)) {
+            $thread->body = $patchData->threadBody;
+        }
 
-            if (auth()->user()->can('update', $thread)) {
-
-                if (!empty($patchData->threadTitle)) {
-                    $thread->title = $patchData->threadTitle;
-                }
-
-                if (!empty($patchData->threadBody)) {
-                    $thread->body = $patchData->threadBody;
-                }
-                if ($thread->save()) {
-                    return response()->json([
-                        'state' => true,
-                        'message' => 'The thread has been updated.'
-                    ]);
-                } else {
-                    return response()->json([
-                        'state' => false,
-                        'message' => 'The thread has NOT been updated due to some server issue. Try again.'
-                    ]);
-                }
-            } else {
-                return response()->json([
-                    'state' => false,
-                    'message' => 'You are not authorized to edit this thread.'
-                ]);
-            }
+        if ($thread->save()) {
+            return response()->json([
+                'state' => true,
+                'message' => 'The thread has been updated.'
+            ]);
+        } else {
+            return response()->json([
+                'state' => false,
+                'message' => 'The thread has NOT been updated due to some server issue. Try again.'
+            ]);
         }
     }
 
@@ -229,32 +232,39 @@ class ThreadsController extends Controller
      */
     public function destroy()
     {
-
         $thread = Thread::find(request('thread_id'));
-
         // $this->authorize('delete', $thread);
+        if ($thread === null) {
+            return response()->json([
+                'state' => false,
+                'message' => 'The thread you are deleting is not exist anymore.'
+            ]);
+        }
 
-        if ($thread !== null) {
+        if (auth()->user()->can('delete', $thread) === false) {
+            return response()->json([
+                'state' => false,
+                'message' => 'You are not authorized to delete this thread'
+            ]);
+        }
 
-            if (auth()->user()->can('delete', $thread)) {
-
-                // Deletion of this thread also causes the database to delete
-                // its associated replies using a database cascade delete constraint
-                $is_deleted = $thread->delete();
-
-                if ($is_deleted === true) {
-                    $state = true;
-                } else {
-                    $state = false;
-                }
-                return response()->json(['state' => $state]);
-            }
+        // Deletion of this thread also causes the database to delete
+        // its associated replies using a database cascade delete constraint
+        if ($thread->delete() === true) {
+            return response()->json([
+                'state' => true,
+                'message' => 'Thread has been deleted successfully.'
+            ]);
+        } else {
+            return response()->json([
+                'state' => false,
+                'message' => 'Some server issue prevents the deletion of this thread.'
+            ]);
         }
     }
 
     private function isFiltered($queryFilters)
     {
-
         $requestQueryFilters = request()->all();
 
         foreach ($queryFilters as $queryFilter) {
