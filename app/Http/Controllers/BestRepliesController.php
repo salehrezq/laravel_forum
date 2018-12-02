@@ -59,13 +59,13 @@ class BestRepliesController extends Controller
             } else {
                 return response()->json([
                     'state' => $state,
-                    'errorMessage' => 'Some error happens at the server side, please try again.'
+                    'message' => 'Some error happens at the server side, please try again.'
                 ]);
             }
         } else {
             return response()->json([
                 'state' => false,
-                'errorMessage' => 'You are not authorized to do this action.']);
+                'message' => 'You are not authorized to do this action.']);
         }
     }
 

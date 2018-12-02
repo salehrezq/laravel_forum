@@ -163,17 +163,31 @@ class RepliesController extends Controller
                     $reply->body = $newReplyBody;
 
                     if ($reply->save() !== null) {
-                        $state = true;
                         event(new \App\Events\ReplyEvent($reply, null, 'update'));
+                        return response()->json([
+                            'state' => true,
+                            'message' => 'The edits of the reply have been saved.'
+                        ]);
                     } else {
-                        $state = false;
+                        return response()->json([
+                            'state' => false,
+                            'message' => 'Some issue at the server prevents saving the new edits.'
+                        ]);
                     }
-
-                    return response()->json(['state' => $state]);
                 }
+            } else {
+                return response()->json([
+                    'state' => false,
+                    'message' => 'You are not authorized to edit this reply.'
+                ]);
             }
+        } else {
+            return response()->json([
+                'state' => false,
+                'message' => 'The reply you are editing is not exist anymore.'
+            ]);
         }
-        return response()->json(['state' => false]);
+
     }
 
     /**
@@ -194,15 +208,29 @@ class RepliesController extends Controller
             if (auth()->user()->can('delete', $reply)) {
 
                 if ($reply->delete() === true) {
-                    $state = true;
+                    return response()->json([
+                        'state' => true,
+                        'message' => 'The reply has been deleted.',
+                        'replies_count' => $this->getRepliesCount($reply->thread_id)
+                    ]);
                 } else {
-                    $state = false;
+                    return response()->json([
+                        'state' => false,
+                        'message' => 'Some server issue prevents the deletion of this reply.',
+                        'replies_count' => $this->getRepliesCount($reply->thread_id)
+                    ]);
                 }
+            } else {
                 return response()->json([
-                    'state' => $state,
-                    'replies_count' => $this->getRepliesCount($reply->thread_id)
+                    'state' => false,
+                    'message' => 'You are not authorized to delete this reply.'
                 ]);
             }
+        } else {
+            return response()->json([
+                'state' => false,
+                'message' => 'The reply you are deleting is not exist at the database.'
+            ]);
         }
     }
 

@@ -595,7 +595,8 @@ $(function () {
             if (response.data.state === true) {
                 $($threadBox).fadeOut(1000);
             } else {
-                console.log('thread cannot be deleted due to server issue.');
+                showFlashMessage(response.data.message, 'warning');
+                console.log(response.data.message);
             }
         }).catch((error) => {
             console.log(error);
@@ -619,7 +620,8 @@ $(function () {
                 $replyBox.fadeOut(500);
                 setRepliesCount(response.data.replies_count);
             } else {
-                console.log('reply cannot be deleted due to server issue.');
+                showFlashMessage(response.data.message, 'warning');
+                console.log(response.data.message);
             }
         }).catch((error) => {
             console.log(error);
@@ -699,7 +701,7 @@ $(function () {
                         endEditingMode(editedReply);
                     } else {
                         showFlashMessage(respData.message, 'warning');
-                        console.log('reply cannot be updated due to server issue.');
+                        console.log(respData.message);
                     }
                 }).catch((error) => {
                     console.log(error);
@@ -736,8 +738,8 @@ $(function () {
                 if (result.state === true) {
                     success(result.markState, $mark);
                 } else {
-                    showFlashMessage(result.errorMessage, 'danger', 7000);
-                    console.log('Something wrong happened at the server side');
+                    showFlashMessage(result.message, 'warning', 7000);
+                    console.log(result.message);
                 }
                 enableButton($mark, true);
             }).catch((response) => {
