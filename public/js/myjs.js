@@ -382,12 +382,22 @@ $(function () {
      * @param string message
      * @returns void
      */
-    function showFlashMessage(message, level = 'success', duration = 5000) {
+    function showFlashMessage(message, level = 'success', duration = null) {
         var flashElement = `<div class="alert alert-${level} redirect-alert" role="alert">${message}</div>`;
         $('.flashDiv').append(flashElement);
-        $('.redirect-alert').fadeOut(duration, function () {
+        if (duration === null) {
+            duration = calculateDuration(message);
+        }
+        $('.redirect-alert').delay(duration).fadeOut(500, function () {
             $(this).remove();
         });
+    }
+
+    function calculateDuration(message) {
+        var length = message.length;
+        duration = length * 70;
+        console.log(message, duration);
+        return duration;
     }
 
     /**
