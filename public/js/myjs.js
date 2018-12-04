@@ -383,7 +383,10 @@ $(function () {
      * @returns void
      */
     function showFlashMessage(message, level = 'success', duration = null) {
-        var flashElement = `<div class="alert alert-${level} redirect-alert" role="alert">${message}</div>`;
+        var flashElement = `<div class="alert alert-${level} redirect-alert alert-dismissible" role="alert">
+                                <span>${message}</span>
+                                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                            </div>`;
         $('.flashDiv').append(flashElement);
         if (duration === null) {
             duration = calculateDuration(message);
