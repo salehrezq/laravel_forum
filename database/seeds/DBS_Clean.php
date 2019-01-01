@@ -3,19 +3,22 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class DBS_Clean extends Seeder {
+class DBS_Clean extends Seeder
+{
 
     /**
      * Run the database seeds.
      *
      * @return void
      */
-    public function run() {
+    public function run()
+    {
 
         $this->clearDatabase();
     }
 
-    private function clearDatabase() {
+    private function clearDatabase()
+    {
 
         DB::table('subscriptions')->truncate();
         DB::table('notifications')->truncate();

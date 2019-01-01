@@ -2,14 +2,16 @@
 
 use Illuminate\Database\Seeder;
 
-class DBS_Channels extends Seeder {
+class DBS_Channels extends Seeder
+{
 
     /**
      * Run the database seeds.
      *
      * @return void
      */
-    public function run() {
+    public function run()
+    {
 
         factory('App\Channel')->create([
             'name' => 'Clothes',
